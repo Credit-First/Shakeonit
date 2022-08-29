@@ -1,0 +1,96 @@
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Link } from '@mui/material';
+import Box from "@material-ui/core/Box";
+import BoxCenter from '../../../components/Box/BoxCenter';
+import Grid from "@material-ui/core/Grid";
+import WestIcon from '@mui/icons-material/West';
+import Card from "@material-ui/core/Card";
+import TextField from "@material-ui/core/TextField";
+import Button from '@mui/material/Button';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import { TypographySize14, TypographySize18 } from '../../../components/Typography/TypographySize';
+import { useState } from 'react';
+import SendPost from './facebooksdk/sendpost';
+
+function Sharelink({ id, handleshowFlag }) {
+    const [value, setValue] = useState("");
+    const handleLinkaddress = () => {
+        setValue(window.location.href);
+    }
+
+    let facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u='
+    let twitterShareUrl = 'https://twitter.com/share?ref_src=twsrc%5Etfw'
+
+    console.log(id, "=====");
+    return (
+        <Box style={{ height: "100%" }}>
+            <Card
+                className="pb-4 card-m grid-size relative"
+                style={{
+                    borderRadius: "20px", height: "100%"
+                }}
+            >
+                <div className='px-10 xs:mx-9'>
+                    <Box className='pt-12 pb-10 pl-1'>
+                        <a onClick={(e) => handleshowFlag()}><WestIcon /></a>
+                    </Box>
+                    <Box>
+                        <TypographySize18>Share Link</TypographySize18>
+                        <TypographySize14 className='py-2'>Copy or Share Link Automatically</TypographySize14>
+                    </Box>
+                    <Box className='grid grid-cols-4 gap-10 my-8'>
+                        <div>
+                            <BoxCenter className='border-icon pulse'>
+                                <a href='https://www.youtube.com/' target="_blank"><YouTubeIcon /><script src="https://apis.google.com/js/platform.js"></script></a>
+                            </BoxCenter>
+                        </div>
+                        <div>
+                            <BoxCenter className='border-icon pulse'>
+                                <a href={facebookShareUrl} target="_blank"><FacebookIcon /> </a>
+                            </BoxCenter>
+                        </div>
+                        <div>
+                            <BoxCenter className='border-icon pulse'>
+                                <a href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></a>
+                            </BoxCenter>
+                        </div>
+                        <SendPost />
+                    </Box>
+                    <Box className='mt-3 mb-12 TextField-without-border-radius'>
+                        <TextField
+                            fullWidth
+                            name="content"
+                            placeholder='http://shakeonit.com'
+                            minRows={1}
+                            variant="outlined"
+                            value={value}
+                            className="address"
+                            onClick={handleLinkaddress}
+                        />
+                    </Box>
+                    <Box>
+                        <Button className='outlined-btn pulse' style={{ width: "50%" }} onClick={() => navigator.clipboard.writeText(window.location.href)}>Copy</Button>
+                    </Box>
+                </div>
+                <Box className='flex justify-center' style={{ position: "absolute", bottom: "2rem", width: "100%" }}>
+                    <Link
+                        component={RouterLink}
+                        underline="none"
+                        color="inherit"
+                        className="btn tex-btn pulse flex justify-center"
+                        to={`/list/${id}`}
+                        style={{ width: "86%" }}
+                    >
+                        Done
+                    </Link>
+                </Box>
+            </Card>
+        </Box>
+    );
+}
+
+export default Sharelink;
