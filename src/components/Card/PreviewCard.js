@@ -13,8 +13,8 @@ function PreviewCard({ image, name, value }) {
         const width = element.offsetWidth;
         element.style.height = parseInt(width * 0.85) + "px";
         const height = parseInt(width * 0.85) + "px"; 
-        console.log(width, "width");
-        console.log(height, "height");
+        // console.log(width, "width");
+        // console.log(height, "height");
     }
 
     useEffect(() => {

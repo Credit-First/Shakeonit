@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
 import BoxCenter from '../../../components/Box/BoxCenter';
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
@@ -10,7 +9,6 @@ import Sharelink from './sharelink';
 import PreviewCard from '../../../components/Card/PreviewCard';
 import { TypographySize20 } from '../../../components/Typography/TypographySize';
 import { coinTypes } from '../../../content/config'
-import { height } from '@mui/system';
 
 const collections = [
     { id: "1", image: "/static/images/cards/Rectangle 38.png", name: "Moonbirds" },
@@ -18,11 +16,12 @@ const collections = [
     { id: "3", image: "/static/images/cards/Rectangle 42.png", name: "Bored Ape Yacht Club" }
 ];
 
-function Preview() {
+function Preview( ) {
     const { collectionId } = useParams();
-
     const collection = collections.filter((item) => item.id == collectionId)[0];
-    const [priceValue, setPriceValue] = useState(0);
+    const [pageFlag, setPageFlag] = useState(false);
+    const [priceValue, setPriceValue] = useState("");
+    // console.log(priceValue);
     const [showFlag, setShowFlag] = useState(false);
     const [coinPrice, setCoinPrice] = useState(Array(coinTypes).fill(0))
     const [coin, setCoinType] = useState(0);
@@ -34,17 +33,15 @@ function Preview() {
         const width = element.offsetWidth;
         const height = parseInt(width*1.9) + "px";
         element.style.height = parseInt(width * 1.9) + "px";
-        console.log(height, "@@@@@");
     }
 
     
     useEffect(() => {
         const element = document.getElementById("content");
         const width = element.offsetWidth;
-        // const height = parseInt(width*1.9) + "px";
         element.style.height = parseInt(width * 1.9) + "px";
-      }, []);
-
+    }, []);
+    
 
     React.useEffect(() => {
         getCoinPrice()
@@ -74,7 +71,6 @@ function Preview() {
         })
     }
 
-    console.log(priceValue);
     return (
         <Box>
             <Header />
@@ -90,7 +86,7 @@ function Preview() {
                     <Box className="contentbox" id='content'>
                         {!showFlag ? 
                         <Listitemforsale handleshowFlag={handleshowFlag} priceValue={priceValue} setPriceValue={setPriceValue} coinPrice={coinPrice} coin={coin} setCoinType={setCoinType} /> : 
-                        <Sharelink id={collection.id} handleshowFlag={handleshowFlag} />}
+                        <Sharelink id={collection.id} handleshowFlag={handleshowFlag} priceValue={priceValue} coinPrice={coinPrice[coin]} coin={coin} />}
                     </Box>
                 </Box>
             </Box>

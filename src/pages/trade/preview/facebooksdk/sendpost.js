@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import InstagramIcon from '@mui/icons-material/Instagram';
 import BoxCenter from "../../../../components/Box/BoxCenter";
 
-function SendPost() {
+function SendPost(disable) {
   const [imageUrl, setImageUrl] = useState("");
   const [postCaption, setPostCaption] = useState("");
   const [isSharingPost, setIsSharingPost] = useState(false);
@@ -120,7 +120,11 @@ function SendPost() {
       <main id="app-main">
         <section className="app-section">
             <BoxCenter className='border-icon pulse'>
+              {!disable ?
                 <a onClick={logInToFB} target="_blank"><InstagramIcon /></a>
+               : 
+               <a style={{ cursor: "default", pointerEvents: "none" }} onClick={logInToFB} target="_blank"><InstagramIcon /></a>
+              }
             </BoxCenter>
             {/* {facebookUserAccessToken ? (
             <button onClick={logOutOfFB} className="btn action-btn">

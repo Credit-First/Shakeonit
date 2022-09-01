@@ -8,9 +8,18 @@ import PrivacyPolicy from './pages/privacypolicy'
 import Resources from './pages/resources';
 import Service from './pages/termsofservice';
 import Home from './pages/home';
-import Buy from './pages/client/buy';
+import ClientBuy from './pages/client/buy';
+import { useState } from 'react';
+// import Example from './components/Header/example';
 
 function App() {
+
+const [Id, setId] = useState("0");
+function getId(collectionId) {
+  setId(collectionId);
+
+}
+
   return (
     <Routes>
       <Route path='/' element={<Home />} />
@@ -21,7 +30,8 @@ function App() {
       <Route path='/privacypolicy' element={<PrivacyPolicy />} />
       <Route path='/resources' element={<Resources />} />
       <Route path='/service' element={<Service />} />
-      <Route path='/buy/:collectionId' element={<Buy />} />
+      <Route path='/buy/:collectionId' element={<ClientBuy />} />
+      {/* <Route path='/example' element={ <Example /> } /> */}
     </Routes>
   );
 }

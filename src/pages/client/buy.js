@@ -10,7 +10,6 @@ import Styled from "@mui/material/styles/styled";
 import BoxCenter from "../../components/Box/BoxCenter";
 import BoxBetween from "../../components/Box/BoxBetween";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 // import RecentActivity from "./recentactivity";
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize20, TypographySize32, TypographySize42 } from "../../components/Typography/TypographySize";
 
@@ -76,7 +75,10 @@ const ListContent = Styled(Box)({
 
 
 
-function ClientBuy() {
+function ClientBuy( Id ) {
+    const { collectionId } = useParams();
+
+    const collection = collections.filter((item) => item.id == collectionId)[0];
 
     const [OtherAction, setOtherAction] = useState("");
 
@@ -89,10 +91,10 @@ function ClientBuy() {
     // if(OtherAction != "counteroffer") {
     //     document.getElementById("counteroffer").style.display = "none";
     // }
-    console.log(OtherAction);
+    // console.log(OtherAction);
     
-    const { collectionId } = useParams();
-    const collection = collections.filter((item) => item.id == collectionId)[0];
+    // const { collectionId } = useParams();
+    // const collection = collections.filter((item) => item.id == collectionId)[0];
     return (
         <Box className="bg-list relative">
             <Header />
@@ -115,12 +117,12 @@ function ClientBuy() {
                             </BoxCenter>
                         </BoxBetween>
                         <Box className="" style={{ marginTop: "5%" }}>
-                            <TypographySize42 style={{ marginBottom: "2.5%" }}>{collection.name}</TypographySize42>
+                            <TypographySize42 style={{ marginBottom: "2.5%" }}>{collections.name}</TypographySize42>
                             <TypographySize14 style={{ marginBottom: "5%" }} className="my-3">A collection of 10000 owl-looking portraits with varying traits. The NFT gives holders access to private club memberships plus other perks</TypographySize14>
                         </Box>
                         <Box>
                             <Box className="flex">
-                                <img src="/static/images/dollar-circle.png" />
+                                <img src="../static/images/dollar-circle.png" />
                                 <TypographySize14 className="flex items-center">Price:</TypographySize14>
                             </Box>
                             <Box className="flex items-center" style={{ marginTop: "4%" }}>

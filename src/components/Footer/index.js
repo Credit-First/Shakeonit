@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -26,30 +26,35 @@ const BoxIcon = Styled(Box)({
 
 
 export default function Footer() {
-    const [isFlag, setFlag] = useState(false);
+    
     const [account, setAcccount] = useState("Connect Wallet");
-    function getAddress(account) {
-        setAcccount(account);
-        setFlag(!isFlag);
+    function getAddress(accountValue) {
+        setAcccount(accountValue);
+        window.localStorage.setItem('account', accountValue);
     }
     const location = useLocation();
     const [isOpened, setOpened] = useState(false);
     const [isOpen, setOpen] = useState(false);
     const handleOpen = () => {
-        setOpened(true);
+        setOpened(!isOpened);
     }
     const handleDisconnect = () => {
-        setOpen(true);
+        setOpen(!isOpen);
     }
     const handleClose = () => {
-        setOpened(false);
+        setOpened(!isOpened);
     }
     const handleSignClose = () => {
-        setOpen(false);
+        setOpen(!isOpen);
     }
     function ellipseAddress(address = "", width = 6) {
         return `${address.slice(0, width)}...${address.slice(-width)}`;
     }
+    useEffect(() => {
+        window.localStorage.getItem('isOpened');
+        // console.log("12");
+    })
+    // console.log(window.localStorage.getItem('isOpened'), "8888888888");
     return (
         <Box style={{ backgroundColor: "#2E3951" }}>
             <BoxCenter className="pt-12 py-6">
@@ -61,7 +66,7 @@ export default function Footer() {
                 <LinkStyle underline="none" color="inherit" href="/marketplace">Marketplace</LinkStyle>
                 <LinkStyle underline="none" color="inherit" href="/resources">Resources</LinkStyle>
                 <LinkStyle underline="none" color="inherit" href="/company">Company</LinkStyle>
-                {!isFlag ? <LinkStyle underline="none" color="inherit" onClick={() => handleOpen()}>Connect Wallet</LinkStyle> :
+                {!window.localStorage.getItem('account') ? <LinkStyle underline="none" color="inherit" onClick={() => handleOpen()}>Connect Wallet</LinkStyle> :
                     <LinkStyle underline="none" color="inherit" onClick={() => handleDisconnect()}>Connect Wallet</LinkStyle>
                 }
                 <LinkStyle underline="none" color="inherit" href="/help">Help</LinkStyle>
@@ -71,15 +76,15 @@ export default function Footer() {
                 <Box className="border-b border-gray-400"></Box>
             </Box>
             <Box className="px-24 grid grid-cols-1 md:grid-cols-2 flex items-center pb-6">
-                <BoxStart>
+                <Box className="flex justify-center md:justify-start">
                     <TypographySize141 style={{ textAlign: 'center' }}>© 2022 Shakeonit. All rights reserved</TypographySize141>
-                </BoxStart>
-                <BoxEnd>
+                </Box>
+                <Box className="flex justify-center md:justify-end">
                     <BoxIcon><InstagramIcon /></BoxIcon>
                     <BoxIcon><YouTubeIcon /></BoxIcon>
                     <BoxIcon><TwitterIcon /></BoxIcon>
                     <BoxIcon><FacebookIcon /></BoxIcon>
-                </BoxEnd>
+                </Box>
             </Box>
             <Wallet open={isOpened} onClose={handleClose} getData={getAddress} />
             <Sign open={isOpen} onClose={handleSignClose} getName={getAddress} />

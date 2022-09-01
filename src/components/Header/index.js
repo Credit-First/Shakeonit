@@ -8,6 +8,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Wallet from "../Modal/wallet";
 import Sign from "../Modal/sign";
+import useLocalStorage from "../../Hook/useLocalStorage";
+import { useEffect } from "react";
 
 const StyleMenuItem = styled('li')({
     padding: 20,
@@ -23,16 +25,29 @@ const menuTypes = [
     { url: "/resources", name: "Resources" },
 ]
 export default function Header() {
-    const [isFlag, setFlag] = useState(false);
+    const [value, setValue] = useState("");
+    const [flag, setFlag] = useState(false);
+    useEffect(() => {
+        setValue(window.location.href);
+        if(value.includes("/preview") || value.includes("/list/")) {
+            setFlag(!flag);
+        }
+    }, [value]);
+
     const [account, setAcccount] = useState("Connect Wallet");
-    function getAddress(account) {
-        setAcccount(account);
-        setFlag(!isFlag);
+    function getAddress(accountValue) {
+        setAcccount(accountValue);
+        window.localStorage.setItem('account', accountValue);
     }
     const [navbar, setNavbar] = useState(false);
     const location = useLocation();
-    const [isOpened, setOpened] = useState(false);
+    const [isOpened, setOpened] = useLocalStorage("isOpened", false);
+    useEffect(() => {
+        window.localStorage.setItem("isOpened", isOpened);
+    }, [isOpened]);
+    // console.log(isOpened);
     const [isOpen, setOpen] = useState(false);
+    // localStorage.setItem("isOpen", isOpened);
     const handleOpen = () => {
         setOpened(true);
     }
@@ -45,9 +60,11 @@ export default function Header() {
     const handleSignClose = () => {
         setOpen(false);
     }
-    function ellipseAddress(address = "", width = 6) {
+    function ellipseAddress(address = "", width = 5) {
         return `${address.slice(0, width)}...${address.slice(-width)}`;
     }
+
+    
 
     return (
         <>
@@ -58,8 +75,9 @@ export default function Header() {
                     </Link>
                 </Box>
                 <Hidden lgDown>
+                    {!flag ? 
                     <Box className="flex items-center" style={{ width: "45%" }}>
-                        <ul className="flex justify-between" style={{ width: "100%"}}>
+                        <ul className="flex justify-between" style={{ width: "100%" }}>
                             {
                                 menuTypes.map((item, _i) => {
                                     let activeClass = ""
@@ -71,23 +89,45 @@ export default function Header() {
                                 })
                             }
                         </ul>
-                    </Box>
-                    <Box className="flex items-center">
-                        <Box className="flex justify-center items-center px-2" style={{ height: "60px", width: "203px", border: "2px solid #98F7FF", borderRadius: " 24px" }}>
-                            {!isFlag ? <a style={{textAlign : "center"}} onClick={() => handleOpen()} className="items-center connect-btn">{account}</a> :
-                                <a style={{textAlign: "center"}} onClick={() => handleDisconnect()} className="items-center connect-btn">{ellipseAddress(account)}</a>
+                    </Box> : 
+                    <Box className="flex items-center" style={{ width: "45%" }}>
+                        <ul className="flex justify-between" style={{ width: "100%" }}>
+                            {
+                                menuTypes.map((item, _i) => {
+                                    let activeClass = ""
+                                    if (location.pathname == item.url)
+                                        activeClass = "active"
+                                    return <StyleMenuItem className={`text-header hover:text-indigo-200 ${activeClass}`} key={_i}>
+                                        <a style={{cursor: "default", pointerEvents: "none" }} href={item.url}>{item.name}</a>
+                                    </StyleMenuItem>
+                                })
                             }
+                        </ul>
+                    </Box>
+                    }
+                    <Box className="flex items-center">
+                        <Box className="flex justify-center items-center" style={{ height: "56px", width: "211px" }}>
+                            <div className="gradient pulse flex justify-center items-center" style={{ width: "100%", height: "100%" }}>
+                                <div className="bg-white gradient-child flex justify-center items-center" style={{ width: "100%", height: "100%" }}>
+                                    {!window.localStorage.getItem('account') ? <a style={{ textAlign: "center" }} onClick={() => handleOpen()} className="flex items-center connect-btn">{account}</a> :
+                                        <a style={{ textAlign: "center" }} onClick={() => handleDisconnect()} className="flex items-center connect-btn">{ellipseAddress(window.localStorage.getItem('account'))}</a>
+                                    }
+                                </div>
+                            </div>
+                            {/* {!window.localStorage.getItem('account') ? <a style={{textAlign : "center"}} onClick={() => handleOpen()} className="flex items-center connect-btn">{account}</a> :
+                                <a style={{textAlign: "center"}} onClick={() => handleDisconnect()} className="flex items-center connect-btn">{ellipseAddress(window.localStorage.getItem('account'))}</a>
+                            } */}
                         </Box>
                     </Box>
                 </Hidden>
                 <Hidden lgUp>
                     <Box className="flex items-center">
-                        <button onClick={() => setNavbar(!navbar)}>
+                        <a onClick={() => setNavbar(!navbar)}>
                             {!navbar ?
                                 <MenuIcon className="text-black-900" /> :
                                 <CloseIcon className="text-black-900" />
                             }
-                        </button>
+                        </a>
                     </Box>
                 </Hidden>
             </Box>

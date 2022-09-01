@@ -1,6 +1,23 @@
 import React, { useState } from "react";
-import { TypographySize18 } from "../../../components/Typography/TypographySize";
+import { TypographySize18, TypographySize20 } from "../../../components/Typography/TypographySize";
 import { Container, Box, Avatar } from "@mui/material";
+import styled from 'styled-components';
+
+const AssetCard = styled.div`
+    display: flex;
+    width: 100%;
+    height : 50px;
+    margin-right : 10px;
+    margin-top : 10px;
+    margin-bottom : 10px;
+    align-items : center;
+    background: linear-gradient(180deg, #6BD2DB 0%, #4994AC 114.29%);
+
+    @media only screen and (max-width: 1000px) {
+        width : 100%;
+        margin-right : 0px;
+    }
+`
 
 function RecentActivity() {
 
@@ -12,10 +29,32 @@ function RecentActivity() {
                 <Box className="my-6">
                     <Box className="block lg:flex">
                         <Box className="w-full">
-                            <p className="listinput text-gray-400">Somebody wants to buy your NFT</p>
+                            <div className="flex justify-between">
+                                <div style={{ width: "35%" }}>
+                                    <AssetCard style={{ justifyContent: "space-between" }} className="px-1">
+                                        <TypographySize20>15</TypographySize20>
+                                        <TypographySize20>BNB</TypographySize20>
+                                        <img src="../static/images/client/image 20.png" />
+                                    </AssetCard>
+                                </div>
+                                <div style={{ width: "35%" }}>
+                                    <AssetCard style={{ justifyContent: "space-between" }} className="px-1">
+                                        <TypographySize20>15</TypographySize20>
+                                        <TypographySize20>BNB</TypographySize20>
+                                        <img src="../static/images/client/image 20.png" />
+                                    </AssetCard>
+                                </div>
+                                <div style={{ width: "25%" }}>
+                                    <AssetCard style={{ justifyContent: "center" }} className="px-1">
+                                        {/* <TypographySize20>15</TypographySize20>
+                                        <TypographySize20>BNB</TypographySize20> */}
+                                        <img src="../static/images/client/image 20.png" />
+                                    </AssetCard>
+                                </div>
+                            </div>
                         </Box>
-                        <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center">
-                            <a href="#" className="outlined-btn1 text-list-accept pulse">Accept Sale</a>
+                        <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center items-center">
+                            <a href="#" className="outlined-btn1 text-list-accept pulse">Accept Offer</a>
                         </Box>
                     </Box>
                     <Box className="my-6" >
@@ -24,7 +63,7 @@ function RecentActivity() {
                                 <p className="listinput text-gray-400">Somebody wants to buy your NFT</p>
                             </Box>
                             <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center">
-                                <a href="#" onClick={() => setShowFlag(!showFlag)} className="outlined-btn1 text-list-accept pulse">Accept Sale</a>
+                                <a onClick={() => setShowFlag(!showFlag)} className="outlined-btn1 text-list-accept pulse">Accept Chat</a>
                             </Box>
                         </Box>
                     </Box>
@@ -34,53 +73,55 @@ function RecentActivity() {
                                 <p className="listinput text-gray-400">Somebody wants to buy your NFT</p>
                             </Box>
                             <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center">
-                                <a href="#" className="outlined-btn1 text-list-accept pulse">Accept Sale</a>
+                                <a href="#" className="outlined-btn1 text-list-accept pulse">Propose Chat</a>
                             </Box>
                         </Box>
                     </Box>
                 </Box>
             </div>
             {!showFlag ? '' :
-                <Box className="absolute rounded-xl message bg-gray-100">
-                    <Box className="rounded-xl text-white user-bg relative">
-                        <Box className="text-2xl font-medium px-12 py-3">
-                            Jordan Powell
-                        </Box>
-                        <Box className="flex pl-4 pr-16  py-3">
-                            <Avatar className="mx-3">
-                                {"J"}
-                            </Avatar>
-                            <Box className="text-white">Hello sofia, how can we help you</Box>
-                        </Box>
-                    </Box>
-                    <Box style={{ display: "block" }} className="px-5">
-                        <Box className="sms-y my-3">
-                            <p className="rounded-xl m-you px-2 text-white">Hello</p>
-                        </Box>
-                        <Box className="sms-o my-3" style={{ width: "50%" }}>
-                            <p className="rounded-xl m-other px-2">Hello Sofia, how can we help you?</p>
-                        </Box>
-                        <Box className="sms-y my-3">
-                            <p className="rounded-xl m-you px-2 text-white">Lorem Ipsum</p>
-                        </Box>
-                        <Box className="sms-o my-3">
-                            <p className="rounded-xl m-other px-2">Lorem Ipsum</p>
-                        </Box>
-                    </Box>
-                    <Box className="flex justify-between px-4 rounded-xl bg-white py-3">
-                        <Box>
-                            <input placeholder="type here..."></input>
-                        </Box>
-                        <Box className="flex">
-                            <Box>
-                                <img src="/static/images/send-2.png" />
+                <Box className="absolute rounded-xl message">
+                    <Box className=" bg-gray-100">
+                        <Box className="rounded-xl text-white user-bg relative">
+                            <Box className="text-2xl font-medium px-12 py-3">
+                                Jordan Powell
                             </Box>
+                            <Box className="flex pl-4 pr-16  py-3">
+                                <Avatar className="mx-3">
+                                    {"J"}
+                                </Avatar>
+                                <Box className="text-white">Hello sofia, how can we help you</Box>
+                            </Box>
+                        </Box>
+                        <Box style={{ display: "block" }} className="px-5">
+                            <Box className="sms-y my-3">
+                                <p className="rounded-xl m-you px-2 text-white">Hello</p>
+                            </Box>
+                            <Box className="sms-o my-3" style={{ width: "50%" }}>
+                                <p className="rounded-xl m-other px-2">Hello Sofia, how can we help you?</p>
+                            </Box>
+                            <Box className="sms-y my-3">
+                                <p className="rounded-xl m-you px-2 text-white">Lorem Ipsum</p>
+                            </Box>
+                            <Box className="sms-o my-3">
+                                <p className="rounded-xl m-other px-2">Lorem Ipsum</p>
+                            </Box>
+                        </Box>
+                        <Box className="flex justify-between px-4 rounded-xl bg-white py-3">
                             <Box>
+                                <input placeholder="type here..."></input>
+                            </Box>
+                            <Box className="block md:flex">
+                                <Box>
+                                    <img src="/static/images/send-2.png" />
+                                </Box>
+                                <Box>
 
+                                </Box>
                             </Box>
                         </Box>
                     </Box>
-                    <Box className="absolute" style={{ left: "-60px" }} onClick={() => setShowFlag(false)}><img src="/static/images/arrow-circle-down.png" /></Box>
+                    <Box style={{float : "right", marginTop : "10px"}} onClick={() => setShowFlag(false)}><img src="/static/images/arrow-circle-down.png" /></Box>
                 </Box>
             }
         </>

@@ -16,16 +16,23 @@ import { TypographySize14, TypographySize18 } from '../../../components/Typograp
 import { useState } from 'react';
 import SendPost from './facebooksdk/sendpost';
 
-function Sharelink({ id, handleshowFlag }) {
+function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coin }) {
+    const pricedata = {
+        coin : coin,
+        coinPrice : coinPrice,
+        priceValue : priceValue
+    }
     const [value, setValue] = useState("");
+    const [linkFlag, setLinkFlag] = useState(false);
     const handleLinkaddress = () => {
         setValue(window.location.href);
+        setLinkFlag(true);
     }
 
     let facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u='
     let twitterShareUrl = 'https://twitter.com/share?ref_src=twsrc%5Etfw'
 
-    console.log(id, "=====");
+    // console.log(id, "=====");
     return (
         <Box style={{ height: "100%" }}>
             <Card
@@ -45,20 +52,32 @@ function Sharelink({ id, handleshowFlag }) {
                     <Box className='grid grid-cols-4 gap-10 my-8'>
                         <div>
                             <BoxCenter className='border-icon pulse'>
-                                <a href='https://www.youtube.com/' target="_blank"><YouTubeIcon /><script src="https://apis.google.com/js/platform.js"></script></a>
+                                {!linkFlag ?
+                                    <a style={{ cursor: "default", pointerEvents: "none" }} href='https://www.youtube.com/' target="_blank"><YouTubeIcon /><script src="https://apis.google.com/js/platform.js"></script></a>
+                                    :
+                                    <a href='https://www.youtube.com/' target="_blank"><YouTubeIcon /><script src="https://apis.google.com/js/platform.js"></script></a>
+                                }
                             </BoxCenter>
                         </div>
                         <div>
                             <BoxCenter className='border-icon pulse'>
-                                <a href={facebookShareUrl} target="_blank"><FacebookIcon /> </a>
+                                {!linkFlag ?
+                                    <a style={{ cursor: "default", pointerEvents: "none" }} href={facebookShareUrl} target="_blank"><FacebookIcon /> </a>
+                                    :
+                                    <a href={facebookShareUrl} target="_blank"><FacebookIcon /> </a>
+                                }
                             </BoxCenter>
                         </div>
                         <div>
                             <BoxCenter className='border-icon pulse'>
-                                <a href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></a>
+                                {!linkFlag ?
+                                    <a style={{ cursor: "default", pointerEvents: "none" }} href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></a>
+                                    :
+                                    <a href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></a>
+                                }
                             </BoxCenter>
                         </div>
-                        <SendPost />
+                        <SendPost disable={linkFlag} />
                     </Box>
                     <Box className='mt-3 mb-12 TextField-without-border-radius'>
                         <TextField
@@ -82,7 +101,11 @@ function Sharelink({ id, handleshowFlag }) {
                         underline="none"
                         color="inherit"
                         className="btn tex-btn pulse flex justify-center"
-                        to={`/list/${id}`}
+                        to={{
+                            pathname: `/list/${id}`,
+                            
+                        }}
+                        state={pricedata}
                         style={{ width: "86%" }}
                     >
                         Done

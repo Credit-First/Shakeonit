@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Patrick+Hand+SC|Roboto&display=swap');
-
+emain-btn
 .text-inter {
     font-family: Inter;
 }
@@ -586,6 +586,19 @@
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
+    line-height: 100%;
+    /* identical to box height, or 20px */
+
+    text-align: justify;
+
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.wallet-sm {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
     line-height: 100%;
     /* identical to box height, or 20px */
 

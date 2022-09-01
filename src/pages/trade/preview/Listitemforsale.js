@@ -24,7 +24,9 @@ function Listitemforsale(props) {
             setError(false);
         }
         else {
+            // console.log("This is else.");
             setError(true);
+
         }
     }
 
@@ -80,6 +82,7 @@ function Listitemforsale(props) {
                                 multiline
                                 minRows={4}
                                 variant="outlined"
+                                placeholder='Please enter text here'
                             />
                         </Box>
                     </Box>
@@ -87,8 +90,8 @@ function Listitemforsale(props) {
                         <Box className='pb-1'>
                             <TypographySize121>Price</TypographySize121>
                         </Box>
-                        <Box className='flex grid grid-cols-3 gap-4'>
-                            <Box className="TextField-without-border-radius" >
+                        <Box className='block sm:flex sm:grid sm:grid-cols-3 gap-4'>
+                            <Box className="mb-4 sm:mb-0 TextField-without-border-radius" >
                                 <FormControl fullWidth>
                                     <Select
                                         labelId="demo-simple-select-label"
@@ -102,9 +105,9 @@ function Listitemforsale(props) {
                                     </Select>
                                 </FormControl>
                             </Box>
-                            <Box className="col-span-2 TextField-without-border-radius">
+                            <Box className="sm:col-span-2 TextField-without-border-radius">
                                 <div className='border border-1 border-gray-300 px-2 text-gray-400' style={{ borderRadius: "10px" }}>
-                                    <input onChange={handleChangemoney} value={priceValue} placeholder="000.00" style={{ outline: "none", minWidth : "100%" }}></input>
+                                <input onChange={handleChangemoney} value={priceValue} placeholder="Please enter number here" style={{ outline: "none", minWidth : "100%", color: "black" }}></input>
                                     <div>&#8776; {(priceValue * coinPrice[coin])} usd</div>
                                 </div>
                                 {isError ?
@@ -125,6 +128,7 @@ function Listitemforsale(props) {
                                     variant="outlined"
                                     onChange={handleDay}
                                     value={dayValue}
+                                    placeholder="0"
                                 />
                             </Box>
                             <Box className='px-4' style={{ alignSelf: "center" }}>
