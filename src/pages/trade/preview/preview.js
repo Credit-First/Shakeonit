@@ -19,7 +19,6 @@ const collections = [
 function Preview( ) {
     const { collectionId } = useParams();
     const collection = collections.filter((item) => item.id == collectionId)[0];
-    const [pageFlag, setPageFlag] = useState(false);
     const [priceValue, setPriceValue] = useState("");
     // console.log(priceValue);
     const [showFlag, setShowFlag] = useState(false);
@@ -86,7 +85,7 @@ function Preview( ) {
                     <Box className="contentbox" id='content'>
                         {!showFlag ? 
                         <Listitemforsale handleshowFlag={handleshowFlag} priceValue={priceValue} setPriceValue={setPriceValue} coinPrice={coinPrice} coin={coin} setCoinType={setCoinType} /> : 
-                        <Sharelink id={collection.id} handleshowFlag={handleshowFlag} priceValue={priceValue} coinPrice={coinPrice[coin]} coin={coin} />}
+                        <Sharelink id={collection.id} handleshowFlag={handleshowFlag} priceValue={priceValue} coinPrice={coinPrice[coin]} coinType={coinPrice} coin={coin} />}
                     </Box>
                 </Box>
             </Box>

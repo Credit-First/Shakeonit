@@ -16,11 +16,12 @@ import { TypographySize14, TypographySize18 } from '../../../components/Typograp
 import { useState } from 'react';
 import SendPost from './facebooksdk/sendpost';
 
-function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coin }) {
+function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
     const pricedata = {
         coin : coin,
         coinPrice : coinPrice,
-        priceValue : priceValue
+        priceValue : priceValue,
+        coinType : coinType
     }
     const [value, setValue] = useState("");
     const [linkFlag, setLinkFlag] = useState(false);
@@ -71,13 +72,13 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coin }) {
                         <div>
                             <BoxCenter className='border-icon pulse'>
                                 {!linkFlag ?
-                                    <a style={{ cursor: "default", pointerEvents: "none" }} href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></a>
+                                    <a style={{ cursor: "default", pointerEvents: "none" }} href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js"></script></a>
                                     :
-                                    <a href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></a>
+                                    <a href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js"></script></a>
                                 }
                             </BoxCenter>
                         </div>
-                        <SendPost disable={linkFlag} />
+                        {/* <SendPost disable={linkFlag} /> */}
                     </Box>
                     <Box className='mt-3 mb-12 TextField-without-border-radius'>
                         <TextField
@@ -101,8 +102,12 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coin }) {
                         underline="none"
                         color="inherit"
                         className="btn tex-btn pulse flex justify-center"
+                        // to={{
+                        //     pathname: `/list/${id}`,
+                            
+                        // }}
                         to={{
-                            pathname: `/list/${id}`,
+                            pathname: `/buy/${id}`,
                             
                         }}
                         state={pricedata}

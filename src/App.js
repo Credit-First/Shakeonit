@@ -10,7 +10,7 @@ import Service from './pages/termsofservice';
 import Home from './pages/home';
 import ClientBuy from './pages/client/buy';
 import { useState } from 'react';
-// import Example from './components/Header/example';
+import Example from './components/Header/example';
 
 function App() {
 
@@ -31,7 +31,7 @@ function getId(collectionId) {
       <Route path='/resources' element={<Resources />} />
       <Route path='/service' element={<Service />} />
       <Route path='/buy/:collectionId' element={<ClientBuy />} />
-      {/* <Route path='/example' element={ <Example /> } /> */}
+      <Route path='/example' element={ <Example /> } />
     </Routes>
   );
 }

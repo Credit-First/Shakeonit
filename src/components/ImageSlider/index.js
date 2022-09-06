@@ -11,7 +11,7 @@ import { Box } from "@mui/material";
 function Banner(props) {
   let item = props.item;
   return (
-    <Box raised className="Banner">
+    <Box className="Banner">
       <Grid container spacing={0} className="BannerGrid">
         <img alt={item.alt} src={item.imgSrc} className="" />
       </Grid>

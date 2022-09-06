@@ -617,3 +617,15 @@ background: rgba(46, 57, 81, 1);
 .MuiOutlinedInput-multiline {
     padding: 0px 14px !important;
 }
+
+.asset {
+    background-color: #E3E3E3;
+    pointer-events: auto;
+    padding-right: 0.5rem;
+}
+
+.asset-disable {
+    background-color: gray;
+    pointer-events: none;
+    padding-right: 0.5rem;
+}
