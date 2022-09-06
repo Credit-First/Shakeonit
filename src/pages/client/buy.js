@@ -33,8 +33,8 @@ const AssetCard = styled.a`
     width: 100%;
     height : 50px;
     margin-right : 10px;
-    margin-top : 10px;
-    margin-bottom : 10px;
+    margin-top : 20px;
+    margin-bottom : 20px;
     align-items : center;
 
     @media only screen and (max-width: 1000px) {
@@ -142,7 +142,7 @@ function ClientBuy(Id) {
         setValidtedCoinType(event.target.value);
     }
 
-    
+
     const re = /^[0-9.\b]+$/;
     const handleChange = (event, name) => {
         if (re.test(event.target.value) && (parseInt(event.target.value) <= parseInt(myBalances.filter((item) => item.name == name)[0].balance))) {
@@ -157,7 +157,7 @@ function ClientBuy(Id) {
         else if (!re.test(event.target.value)) {
             alert("Please input only number!")
         }
-        else if((parseInt(event.target.value) > parseInt(myBalances.filter((item) => item.name == name)[0].balance))) {
+        else if ((parseInt(event.target.value) > parseInt(myBalances.filter((item) => item.name == name)[0].balance))) {
             alert("Please input less value than your balance!")
         }
     }
@@ -285,7 +285,7 @@ function ClientBuy(Id) {
         if (parseInt(total) < parseInt(initialpriceValue * coinPrice)) {
             document.getElementById('changeprice').style.display = 'none';
             setDisableFlag(true);
-            if(OtherAction == "counteroffer") {
+            if (OtherAction == "counteroffer") {
                 alert("You can't buy this NFT because your balance is less than the NFTs price!")
             }
         }
@@ -316,7 +316,7 @@ function ClientBuy(Id) {
         else if (!re.test(e.target.value)) {
             alert("Please input only number!")
         }
-        else if(parseInt(price) > parseInt(initialpriceValue * coinPrice)) {
+        else if (parseInt(price) > parseInt(initialpriceValue * coinPrice)) {
             alert("Please input less value than your balance!")
         }
     }
@@ -401,7 +401,7 @@ function ClientBuy(Id) {
                     <Container>
                         <Grid
                             container
-                            spacing={2}
+                            spacing={3}
                         >
                             <Grid
                                 item
@@ -512,47 +512,49 @@ function ClientBuy(Id) {
                     </div>
                 </ListContainer>
             </div>
-            <Box className="rounded-xl message bg-gray-100" id="openchat" style={{ display: "none", position: "absolute" }}>
-                <Box className="rounded-xl text-white user-bg relative">
-                    <Box className="text-2xl font-medium px-12 py-3">
-                        Jordan Powell
-                    </Box>
-                    <Box className="flex pl-4 pr-16  py-3">
-                        <Avatar className="mx-3">
-                            {"J"}
-                        </Avatar>
-                        <Box className="text-white">Hello sofia, how can we help you</Box>
-                    </Box>
-                </Box>
-                <Box style={{ display: "block" }} className="px-5">
-                    <Box className="sms-y my-3">
-                        <p className="rounded-xl m-you px-2 text-white">Hello</p>
-                    </Box>
-                    <Box className="sms-o my-3" style={{ width: "50%" }}>
-                        <p className="rounded-xl m-other px-2">Hello Sofia, how can we help you?</p>
-                    </Box>
-                    <Box className="sms-y my-3">
-                        <p className="rounded-xl m-you px-2 text-white">Lorem Ipsum</p>
-                    </Box>
-                    <Box className="sms-o my-3">
-                        <p className="rounded-xl m-other px-2">Lorem Ipsum</p>
-                    </Box>
-                </Box>
-                <Box className="flex justify-between px-4 rounded-xl bg-white py-3">
-                    <Box>
-                        <input placeholder="type here..."></input>
-                    </Box>
-                    <Box className="block md:flex">
-                        <Box>
-                            <img src="/static/images/send-2.png" />
+            <div style={{position : "absolute", bottom:"280px", right : '10px'}}>
+                <Box className="rounded-xl message bg-gray-100" id="openchat" style={{ display: "none" }}>
+                    <Box className="rounded-xl text-white user-bg relative">
+                        <Box className="text-2xl font-medium px-12 py-3">
+                            Jordan Powell
                         </Box>
+                        <Box className="flex pl-4 pr-16  py-3">
+                            <Avatar className="mx-3">
+                                {"J"}
+                            </Avatar>
+                            <Box className="text-white">Hello sofia, how can we help you</Box>
+                        </Box>
+                    </Box>
+                    <Box style={{ display: "block" }} className="px-5">
+                        <Box className="sms-y my-3">
+                            <p className="rounded-xl m-you px-2 text-white">Hello</p>
+                        </Box>
+                        <Box className="sms-o my-3" style={{ width: "50%" }}>
+                            <p className="rounded-xl m-other px-2">Hello Sofia, how can we help you?</p>
+                        </Box>
+                        <Box className="sms-y my-3">
+                            <p className="rounded-xl m-you px-2 text-white">Lorem Ipsum</p>
+                        </Box>
+                        <Box className="sms-o my-3">
+                            <p className="rounded-xl m-other px-2">Lorem Ipsum</p>
+                        </Box>
+                    </Box>
+                    <Box className="flex justify-between px-4 rounded-xl bg-white py-3">
                         <Box>
+                            <input placeholder="type here..."></input>
+                        </Box>
+                        <Box className="block md:flex">
+                            <Box>
+                                <img src="/static/images/send-2.png" />
+                            </Box>
+                            <Box>
 
+                            </Box>
                         </Box>
                     </Box>
+                    <Box style={{ position: "absolute", top: "-60px" }} onClick={closechat}><img src="/static/images/arrow-circle-down.png" /></Box>
                 </Box>
-                <Box style={{ position: "absolute", top: "-60px", right: "130px" }} onClick={closechat}><img src="/static/images/arrow-circle-down.png" /></Box>
-            </Box>
+            </div>
             <Footer />
         </Box>
     );
