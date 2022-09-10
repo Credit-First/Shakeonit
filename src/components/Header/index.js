@@ -71,7 +71,7 @@ export default function Header() {
             <Box className="flex justify-between px-6" style={{ height: "100px", width: "100%", background: "white" }}>
                 <Box className="flex items-center">
                     <Link href="/">
-                        <img src="../logo.png" />
+                        <img src="../logo.png" alt="logo" />
                     </Link>
                 </Box>
                 <Hidden lgDown>
@@ -81,7 +81,7 @@ export default function Header() {
                             {
                                 menuTypes.map((item, _i) => {
                                     let activeClass = ""
-                                    if (location.pathname == item.url)
+                                    if (location.pathname === item.url)
                                         activeClass = "active"
                                     return <StyleMenuItem className={`text-header hover:text-indigo-200 ${activeClass}`} key={_i}>
                                         <a href={item.url}>{item.name}</a>
@@ -95,7 +95,7 @@ export default function Header() {
                             {
                                 menuTypes.map((item, _i) => {
                                     let activeClass = ""
-                                    if (location.pathname == item.url)
+                                    if (location.pathname === item.url)
                                         activeClass = "active"
                                     return <StyleMenuItem className={`text-header hover:text-indigo-200 ${activeClass}`} key={_i}>
                                         <a style={{cursor: "default", pointerEvents: "none" }} href={item.url}>{item.name}</a>
@@ -114,9 +114,6 @@ export default function Header() {
                                     }
                                 </div>
                             </div>
-                            {/* {!window.localStorage.getItem('account') ? <a style={{textAlign : "center"}} onClick={() => handleOpen()} className="flex items-center connect-btn">{account}</a> :
-                                <a style={{textAlign: "center"}} onClick={() => handleDisconnect()} className="flex items-center connect-btn">{ellipseAddress(window.localStorage.getItem('account'))}</a>
-                            } */}
                         </Box>
                     </Box>
                 </Hidden>

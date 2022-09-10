@@ -1,5 +1,7 @@
 import { Box, Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { Link as RouterLink } from 'react-router-dom';
+import { Link } from '@mui/material';
 import styled from 'styled-components';
 import { Avatar } from "@mui/material";
 import { useLocation, useParams } from "react-router";
@@ -15,10 +17,8 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { coinTypes, myBalances } from "../../content/config";
 import { validatedTokens } from "../../content/config";
 import CloseIcon from '@mui/icons-material/Close';
-// import RecentActivity from "./recentactivity";
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize20, TypographySize32, TypographySize42 } from "../../components/Typography/TypographySize";
-import { Flag } from "@mui/icons-material";
-// import { setFlagsFromString } from "v8";
+import ABI from "../../content/shakeonitABI.json";
 
 const Container = styled.div`
     width: 70%;
@@ -61,7 +61,7 @@ const CounterCard = styled.div`
     }
 `
 
-const OfferButton = styled.a`
+const OfferButton = styled.div`
     color: white !important;
     background: linear-gradient(265.83deg, #98F7FF -23.13%, #10B0C7 21.83%, #14365C 93.42%);
     height: 60px;
@@ -118,7 +118,10 @@ const ListContent = Styled(Box)({
 
 
 
-function ClientBuy(Id) {
+function Buyer(Id) {
+    const contractAbi = ABI;
+    const contractAddress = "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4";
+    
     const { collectionId } = useParams();
 
     const collection = collections.filter((item) => item.id == collectionId)[0];
@@ -138,6 +141,7 @@ function ClientBuy(Id) {
 
     const [validatedCoinType, setValidtedCoinType] = useState(Array(validatedTokens).fill(0));
     const [validatedcoinPrice, setValidatedCoinPrice] = useState(Array(validatedTokens).fill(0))
+    const [isflag, setFlag] = useState(false);
     const handlevalidatedCoinType = (event) => {
         setValidtedCoinType(event.target.value);
     }
@@ -308,6 +312,7 @@ function ClientBuy(Id) {
         var price = 0;
         price = e.target.value * validatedcoinPrice[validatedCoinType];
         if (re.test(e.target.value) && parseInt(price) <= parseInt(initialpriceValue * coinPrice)) {
+            setFlag(true);
             console.log(e.target.value, "e.target.value");
             setValidatedPrice(e.target.value);
             setTotalPrice(e.target.value * validatedcoinPrice[validatedCoinType]);
@@ -346,6 +351,19 @@ function ClientBuy(Id) {
         }
     }
 
+    //send datas
+    const pricedata = {
+        coin : coin,
+        coinPrice : coinPrice,
+        priceValue : initialpriceValue,
+        coinType : coinType,
+        //after connecting backend
+        finalOfferdatas : finalOfferdatas,
+        isflag : isflag,
+        valiatedprice : valiatedprice,
+        validatedCoinType : validatedCoinType
+
+    }
 
 
     return (
@@ -357,7 +375,7 @@ function ClientBuy(Id) {
             <div>
                 <ListContainer className="block lg:flex justify-between">
                     <ListImage className="listImage" >
-                        <img src={collection.image} style={{ width: "100%" }} />
+                        <img src={collection.image} className = "img" />
                     </ListImage>
                     <ListContent className="listContent">
                         <BoxBetween>
@@ -384,15 +402,15 @@ function ClientBuy(Id) {
                             </Box>
                         </Box>
                         <Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-                            <a className="flex justify-center btn pulse1 w-full" href="#">Buy</a>
-                            <a className="outlined-btn px-3">
+                            <a className="flex justify-center btn pulse1 w-full">Buy</a>
+                            <Box className="outlined-btn px-3">
                                 <select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
                                     <option value="otheractions" >Other Actions</option>
                                     <option value="counteroffer">Counter Offer</option>
                                     <option value="openchat">Open a chat</option>
                                     <option value="initiatecall">Initiate a Call</option>
                                 </select>
-                            </a>
+                            </Box>
                         </Box>
                     </ListContent>
                 </ListContainer>
@@ -422,7 +440,6 @@ function ClientBuy(Id) {
                                             onDragStart={(e) => onDragStart(e, myBalance.name)}
                                             key={myBalance.id}
                                             className={className}
-                                        // onClick={(e) => handleBalance(myBalance)}
                                         >
                                             {!offerdata ?
                                                 <>
@@ -486,7 +503,6 @@ function ClientBuy(Id) {
                                     </Select>
                                 </CounterCard>
                             </div>
-                            {/* <ContentCopyIcon style={{ position: "absolute", top: "10px", right: "10px" }} /> */}
                             {finalOfferdatas.map((offerdata) =>
                                 <CounterCard key={offerdata.id} style={{ justifyContent: "space-between" }}>
                                     <div>
@@ -507,12 +523,31 @@ function ClientBuy(Id) {
                             <TypographySize20 className="pl-6">$ {totalprice}</TypographySize20>
                         </div>
                         <div>
-                            <OfferButton className="flex justify-center pulse1 px-6">Make Offer</OfferButton>
+                        <OfferButton className=" pulse1">
+                            <Link
+                                component={RouterLink}
+                                underline="none"
+                                color="inherit"
+                                className="flex justify-center px-6"
+                                // to={{
+                                //     pathname: `/list/${id}`,
+
+                                // }}
+                                to={{
+                                    pathname: `/list/${collectionId}`,
+
+                                }}
+                                state = {pricedata}
+                                style={{ width: "86%" }}
+                            >
+                                Make Offer
+                            </Link>
+                        </OfferButton>
                         </div>
                     </div>
                 </ListContainer>
             </div>
-            <div style={{position : "absolute", bottom:"280px", right : '10px'}}>
+            <div style={{ position: "absolute", bottom: "330px", right: '10px' }}>
                 <Box className="rounded-xl message bg-gray-100" id="openchat" style={{ display: "none" }}>
                     <Box className="rounded-xl text-white user-bg relative">
                         <Box className="text-2xl font-medium px-12 py-3">
@@ -552,7 +587,7 @@ function ClientBuy(Id) {
                             </Box>
                         </Box>
                     </Box>
-                    <Box style={{ position: "absolute", top: "-60px" }} onClick={closechat}><img src="/static/images/arrow-circle-down.png" /></Box>
+                    <Box style={{ position: "absolute", bottom: "-60px", right: "0px" }} onClick={closechat}><img src="/static/images/arrow-circle-down.png" /></Box>
                 </Box>
             </div>
             <Footer />
@@ -560,4 +595,4 @@ function ClientBuy(Id) {
     );
 }
 
-export default ClientBuy;
+export default Buyer;

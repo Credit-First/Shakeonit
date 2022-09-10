@@ -30,7 +30,7 @@ const TermsContain = styled.div`
     
 `
 
-function Buy() {
+function BuyAndSell() {
     return (
         <Container>
             <Contain>
@@ -43,4 +43,4 @@ function Buy() {
     )
 }
 
-export default Buy;
+export default BuyAndSell;

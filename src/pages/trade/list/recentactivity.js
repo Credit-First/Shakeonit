@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { TypographySize18, TypographySize20 } from "../../../components/Typography/TypographySize";
 import { Container, Box, Avatar } from "@mui/material";
+import SearchIcon from '@mui/icons-material/Search';
 import styled from 'styled-components';
 
 const AssetCard = styled.div`
@@ -11,15 +12,18 @@ const AssetCard = styled.div`
     margin-top : 10px;
     margin-bottom : 10px;
     align-items : center;
-    background: linear-gradient(180deg, #6BD2DB 0%, #4994AC 114.29%);
-
+    background: #E3E3E3;
     @media only screen and (max-width: 1000px) {
         width : 100%;
         margin-right : 0px;
     }
 `
 
-function RecentActivity() {
+function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinType }) {
+    console.log(finalOfferdatas, "finalOfferdatas");
+    console.log(isflag, "isflag");
+    console.log(valiatedprice, "valiatedprice");
+    console.log(validatedCoinType, "validatedCoinType");
 
     const [showFlag, setShowFlag] = useState(false);
     return (
@@ -29,32 +33,37 @@ function RecentActivity() {
                 <Box className="my-6">
                     <Box className="block lg:flex">
                         <Box className="w-full">
-                            <div className="flex justify-between">
-                                <div style={{ width: "35%" }}>
-                                    <AssetCard style={{ justifyContent: "space-between" }} className="px-1">
-                                        <TypographySize20>15</TypographySize20>
-                                        <TypographySize20>BNB</TypographySize20>
-                                        <img src="../static/images/client/image 20.png" />
-                                    </AssetCard>
-                                </div>
-                                <div style={{ width: "35%" }}>
-                                    <AssetCard style={{ justifyContent: "space-between" }} className="px-1">
-                                        <TypographySize20>15</TypographySize20>
-                                        <TypographySize20>BNB</TypographySize20>
-                                        <img src="../static/images/client/image 20.png" />
-                                    </AssetCard>
-                                </div>
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                {isflag ?
+                                    <div style={{ width: "35%" }}>
+                                        <AssetCard style={{ justifyContent: "space-between" }} className="px-1">
+                                            <TypographySize20>{valiatedprice}</TypographySize20>
+                                            <TypographySize20>{validatedCoinType}</TypographySize20>
+                                            <img src="../static/images/client/image 20.png" />
+                                        </AssetCard>
+                                    </div>
+                                    :
+                                    <>
+                                        {finalOfferdatas.map((offerdata) =>
+                                            <div key={offerdata.name} style={{ width: "35%" }}>
+                                                <AssetCard style={{ justifyContent: "space-between" }} className="px-2">
+                                                    <TypographySize20>{offerdata.balance}</TypographySize20>
+                                                    <TypographySize20>{offerdata.name}</TypographySize20>
+                                                    <img src="../static/images/client/image 20.png" />
+                                                </AssetCard>
+                                            </div>
+                                        )}
+                                    </>
+                                }
                                 <div style={{ width: "25%" }}>
                                     <AssetCard style={{ justifyContent: "center" }} className="px-1">
-                                        {/* <TypographySize20>15</TypographySize20>
-                                        <TypographySize20>BNB</TypographySize20> */}
-                                        <img src="../static/images/client/image 20.png" />
+                                        <SearchIcon style={{color : "white"}} />
                                     </AssetCard>
                                 </div>
                             </div>
                         </Box>
                         <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center items-center">
-                            <a href="#" className="outlined-btn1 text-list-accept pulse">Accept Offer</a>
+                            <Box className="outlined-btn1 text-list-accept pulse">Accept Offer</Box>
                         </Box>
                     </Box>
                     <Box className="my-6" >
@@ -63,7 +72,7 @@ function RecentActivity() {
                                 <p className="listinput text-gray-400">Somebody wants to buy your NFT</p>
                             </Box>
                             <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center">
-                                <a href="#" onClick={() => setShowFlag(!showFlag)} className="outlined-btn1 text-list-accept pulse">Accept Chat</a>
+                                <Box onClick={() => setShowFlag(!showFlag)} className="outlined-btn1 text-list-accept pulse">Accept Chat</Box>
                             </Box>
                         </Box>
                     </Box>
@@ -73,7 +82,7 @@ function RecentActivity() {
                                 <p className="listinput text-gray-400">Somebody wants to buy your NFT</p>
                             </Box>
                             <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center">
-                                <a href="#" className="outlined-btn1 text-list-accept pulse">Propose Chat</a>
+                                <Box className="outlined-btn1 text-list-accept pulse">Propose Chat</Box>
                             </Box>
                         </Box>
                     </Box>

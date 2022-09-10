@@ -75,7 +75,6 @@ function Preview( ) {
             <Header />
             <Box className="total py-16" style={{ backgroundColor: "#ebf2f5" }}>
                 <Box className='totalbox'>
-                    {/* <a onClick={handlePreview}><TypographySize20>Preview</TypographySize20></a> */}
                     <BoxCenter className="imagebox">
                         <Box className='image'>
                             <a onClick={handlePreview} className="hidden md:block"><TypographySize20>Preview</TypographySize20></a>

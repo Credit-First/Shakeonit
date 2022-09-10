@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import CloseIcon from '@mui/icons-material/Close';
-import { set } from "nprogress";
 
 function ChangePrice({ open, onClose, image, price, setPrice, coinPrice, setPriceValue, handleFlag, handleChangeFlag }) {
     const [isErrorprice, setErrorPrice] = useState(false);

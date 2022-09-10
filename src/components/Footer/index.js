@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router";
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -10,8 +9,6 @@ import Box from "@mui/material/Box";
 import Wallet from "../Modal/wallet";
 import Sign from "../Modal/sign";
 import BoxCenter from "../Box/BoxCenter";
-import BoxEnd from "../Box/BoxEnd";
-import BoxStart from "../Box/BoxStart";
 import { TypographySize141 } from "../Typography/TypographySize";
 
 const LinkStyle = Styled(Link)({
@@ -32,7 +29,6 @@ export default function Footer() {
         setAcccount(accountValue);
         window.localStorage.setItem('account', accountValue);
     }
-    const location = useLocation();
     const [isOpened, setOpened] = useState(false);
     const [isOpen, setOpen] = useState(false);
     const handleOpen = () => {
@@ -47,9 +43,9 @@ export default function Footer() {
     const handleSignClose = () => {
         setOpen(!isOpen);
     }
-    function ellipseAddress(address = "", width = 6) {
-        return `${address.slice(0, width)}...${address.slice(-width)}`;
-    }
+    // function ellipseAddress(address = "", width = 6) {
+    //     return `${address.slice(0, width)}...${address.slice(-width)}`;
+    // }
     useEffect(() => {
         window.localStorage.getItem('isOpened');
         // console.log("12");

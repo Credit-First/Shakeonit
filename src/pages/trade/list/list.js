@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import React, { useState } from "react";
 import { useLocation } from 'react-router-dom';
-import Container from "@material-ui/core/Container";
 import { Avatar } from "@mui/material";
 import { useParams } from "react-router";
 import "../../../assets/scss/customize.scss";
@@ -29,14 +28,14 @@ const ActiveContainer = Styled(Box)({
 });
 
 const ListContainer = Styled(Box)({
-    width: "100%",
+    // width: "100%",
     paddingLeft: "7%",
     paddingRight: "7%",
     marginBottom: "4.4rem"
 });
 
 const ListImage = Styled(Box)({
-    width: "38%"
+    width: "30%"
 });
 
 const ListContent = Styled(Box)({
@@ -51,6 +50,14 @@ function List(props) {
     const initialpriceValue = location.state.priceValue;
     const coin = location.state.coin;
     const coinPrice = location.state.coinPrice;
+
+
+    const finalOfferdatas = location.state.finalOfferdatas;
+    const isflag = location.state.isflag;
+    const valiatedprice = location.state.valiatedprice;
+    const validatedCoinType = location.state.validatedCoinType;
+
+
     const initialPrice = initialpriceValue * coinPrice;
     const [price, setPrice] = useState(initialPrice);
     const [priceValue, setPriceValue] = useState(initialpriceValue);
@@ -86,7 +93,7 @@ function List(props) {
             <div>
                 <ListContainer className="block lg:flex justify-between">
                     <ListImage className="listImage" >
-                        <img src={collection.image} style={{ width: "100%" }} />
+                        <img src={collection.image} className = "img" />
                     </ListImage>
                     <ListContent className="listContent">
                         <BoxBetween>
@@ -126,7 +133,7 @@ function List(props) {
                         </Box>
                     </ListContent>
                 </ListContainer>
-                <RecentActivity />
+                <RecentActivity finalOfferdatas = {finalOfferdatas} isflag = {isflag} valiatedprice = {valiatedprice} validatedCoinType = {validatedCoinType} />
                 <CancelSale open={isOpened} onClose={handleClose} image={collection.image} />
                 <ChangePrice open={isOpen} onClose={handleChangeClose} image={collection.image} setPrice={setPrice} price={price} setPriceValue={setPriceValue} coinPrice={coinPrice} handleFlag={handleFlag} handleChangeFlag={handleChangeFlag} />
             </div>

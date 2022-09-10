@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Container from "../../components/Container/Container";
 import ExploreBG from "../../components/Background/ExploreBG";
-import Buy from "./Terms/buy";
+import BuyAndSell from "./Terms/buyandsell";
 import NFT from "./nft";
 import NFTBG from "../../components/Background/NFTBG";
 import ExploreContainer from "../../components/Container/ExploreContainer";
@@ -18,7 +18,7 @@ function Home() {
         <>
             <Header />
             <BuyBg>
-                <Buy />
+                <BuyAndSell />
             </BuyBg>
             <NFTBG>
                 <Container>

@@ -1,9 +1,6 @@
 import React from "react";
 import Card from "@material-ui/core/Card";
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
 import { TypographySize20 } from "../Typography/TypographySize";
 import Link from "@mui/material/Link";
 import { Link as RouterLink } from 'react-router-dom';
@@ -18,7 +15,7 @@ function TradeCard({ image, name, id }) {
         // to={`/buy/${id}`}
         >
             <div>
-                <Card className="my-3 px-3 pt-5 pb-5 lg:mx-5 lg:px-5 raise"
+                <Card className="my-3 px-3 pt-5 pb-5 lg:mx-5 lg:px-5"
                     style={{
                         borderRadius: "24px"
                     }}>
@@ -34,7 +31,7 @@ function TradeCard({ image, name, id }) {
                         </TypographySize20>
                     </div>
                     <div className="flex justify-center">
-                        <a className="sell_btn tex-btn pulse">Sell</a>
+                        <div className="sell_btn tex-btn pulse">Sell</div>
                     </div>
                 </Card>
             </div>

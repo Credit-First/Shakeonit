@@ -107,7 +107,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }
                             
                         // }}
                         to={{
-                            pathname: `/buy/${id}`,
+                            pathname: `/buyer/${id}`,
                             
                         }}
                         state={pricedata}
