@@ -4,13 +4,12 @@ import Grid from "@mui/material/Grid";
 import Styled from "@mui/material/styles/styled";
 import Avatar from "@material-ui/core/Avatar";
 import { TypographySize48,TypographySize16, TypographySize14 } from "../../components/Typography/TypographySize";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 const ContainerBox = Styled(Box)({
+    display : "flex",
+    alignItems : "center",
     position: "relative",
-    minHeight: "100vh",
-    paddingBottom: "250px"
+    minHeight: "100vh"
 });
 const GridStyle = Styled(Grid)({
     paddingLeft : "2.5rem",
@@ -30,11 +29,9 @@ const resources = [
 function Resources() {
     return (
         <ContainerBox>
-            <Header />
             <Box className="company-bg1">
                 <center className="resources-bg">
-                    <TypographySize48 className="py-12">Resources for getting started</TypographySize48>
-                    {/* <Box className="text-resources-header py-12">Resources for getting started</Box> */}
+                    <TypographySize48 className="pb-12">Resources for getting started</TypographySize48>
                 </center>
 
                 <GridStyle alignItems="center"
@@ -59,9 +56,6 @@ function Resources() {
                         </Grid>
                     )}
                 </GridStyle>
-            </Box>
-            <Box style={{ position: "absolute", bottom: "0px", width: "100%" }}>
-                <Footer />
             </Box>
         </ContainerBox>
     );

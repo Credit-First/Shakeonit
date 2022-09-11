@@ -3,6 +3,7 @@ import { TypographySize18, TypographySize20 } from "../../../components/Typograp
 import { Container, Box, Avatar } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import styled from 'styled-components';
+import { contract, web3 } from '../../../content/contractMethods'
 
 const AssetCard = styled.div`
     display: flex;
@@ -18,6 +19,14 @@ const AssetCard = styled.div`
         margin-right : 0px;
     }
 `
+const acceptTradeOffer = async () => {
+    const orderActiveSet = await contract.methods.getFromActiveOrderSet().call()
+
+    const acceptTrade = await contract.methods.acceptOffer(orderActiveSet).call();
+
+    acceptTradeOffer(acceptTrade)
+
+}
 
 function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinType }) {
     console.log(finalOfferdatas, "finalOfferdatas");
@@ -63,7 +72,7 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
                             </div>
                         </Box>
                         <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center items-center">
-                            <Box className="outlined-btn1 text-list-accept pulse">Accept Offer</Box>
+                        <Box onClick={() => acceptTradeOffer} className="outlined-btn1 text-list-accept pulse">Accept Offer</Box>
                         </Box>
                     </Box>
                     <Box className="my-6" >

@@ -8,7 +8,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Wallet from "../Modal/wallet";
 import Sign from "../Modal/sign";
-import useLocalStorage from "../../Hook/useLocalStorage";
 import { useEffect } from "react";
 
 const StyleMenuItem = styled('li')({
@@ -24,15 +23,13 @@ const menuTypes = [
     { url: "/company", name: "Company" },
     { url: "/resources", name: "Resources" },
 ]
-export default function Header() {
-    const [value, setValue] = useState("");
+export default function Header({isOpen, isOpened, setOpen, setOpened}) {
     const [flag, setFlag] = useState(false);
     useEffect(() => {
-        setValue(window.location.href);
-        if(value.includes("/preview") || value.includes("/list/")) {
-            setFlag(!flag);
+        if(window.location.href.includes("/preview") || window.location.href.includes("/list/") || window.location.href.includes("/buyer")) {
+            setFlag(true);
         }
-    }, [value]);
+    });
 
     const [account, setAcccount] = useState("Connect Wallet");
     function getAddress(accountValue) {
@@ -41,16 +38,6 @@ export default function Header() {
     }
     const [navbar, setNavbar] = useState(false);
     const location = useLocation();
-    const [isOpened, setOpened] = useLocalStorage("isOpened", false);
-    useEffect(() => {
-        window.localStorage.setItem("isOpened", isOpened);
-    }, [isOpened]);
-    // console.log(isOpened);
-    const [isOpen, setOpen] = useState(false);
-    // localStorage.setItem("isOpen", isOpened);
-    const handleOpen = () => {
-        setOpened(true);
-    }
     const handleDisconnect = () => {
         setOpen(true);
     }
@@ -98,7 +85,7 @@ export default function Header() {
                                     if (location.pathname === item.url)
                                         activeClass = "active"
                                     return <StyleMenuItem className={`text-header hover:text-indigo-200 ${activeClass}`} key={_i}>
-                                        <a style={{cursor: "default", pointerEvents: "none" }} href={item.url}>{item.name}</a>
+                                        <a style={{cursor: "default", pointerEvents: "none" }}>{item.name}</a>
                                     </StyleMenuItem>
                                 })
                             }
@@ -109,7 +96,7 @@ export default function Header() {
                         <Box className="flex justify-center items-center" style={{ height: "56px", width: "211px" }}>
                             <div className="gradient pulse flex justify-center items-center" style={{ width: "100%", height: "100%" }}>
                                 <div className="bg-white gradient-child flex justify-center items-center" style={{ width: "100%", height: "100%" }}>
-                                    {!window.localStorage.getItem('account') ? <a style={{ textAlign: "center" }} onClick={() => handleOpen()} className="flex items-center connect-btn">{account}</a> :
+                                    {!window.localStorage.getItem('account') ? <a style={{ textAlign: "center" }} onClick={() => setOpened(true)} className="flex items-center connect-btn">{account}</a> :
                                         <a style={{ textAlign: "center" }} onClick={() => handleDisconnect()} className="flex items-center connect-btn">{ellipseAddress(window.localStorage.getItem('account'))}</a>
                                     }
                                 </div>

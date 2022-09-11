@@ -16,7 +16,6 @@ import GreenLine_h_bg from "../../components/Background/greenline_h_bg";
 function Home() {
     return (
         <>
-            <Header />
             <BuyBg>
                 <BuyAndSell />
             </BuyBg>
@@ -34,7 +33,6 @@ function Home() {
                     <Explore />
                 </ExploreContainer>
             </ExploreBG>
-            <Footer />
         </>
     );
 }

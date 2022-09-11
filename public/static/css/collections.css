@@ -247,6 +247,12 @@ textarea {
     background-size: auto;
 }
 
+@media only screen and (min-width: 1200px) {
+    .company-bg1 {
+        margin-bottom: 150px;
+    }
+}
+
 .resources-bg {
     /* background-image: url("/public/static/images/resources/company.png"); */
     background-repeat: repeat-x;

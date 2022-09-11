@@ -1,6 +1,7 @@
 import { Dialog } from "@material-ui/core";
 import React, { useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
+import { contract } from '../../content/contractMethods'
 
 function CancelSale({ open, onClose, image }) {
     const [isOpened, setOpened] = useState(false);
@@ -10,6 +11,14 @@ function CancelSale({ open, onClose, image }) {
     const handleOpen = () => {
         onClose();
         setOpened(true);
+    }
+    const cancelSale = async () => {
+        // getActiveOrderLength 
+        const orderListLength = contract.methods.getActiveOrderLength().call()
+
+        const cancel = await contract.methods.cancelOrderByAdmin(orderListLength).call()
+
+        cancelSale(cancel)
     }
 
     const account = "Connect Wallet";
@@ -37,6 +46,7 @@ function CancelSale({ open, onClose, image }) {
                         <a className="welcome-btn1 py-3" onClick={() => {
                             onClose();
                             window.localStorage.clear();
+                            cancelSale();
                         }} href="/collections">Cancel</a>
                     </div>
                 </div>

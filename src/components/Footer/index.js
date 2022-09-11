@@ -22,26 +22,21 @@ const BoxIcon = Styled(Box)({
 })
 
 
-export default function Footer() {
+export default function Footer({isOpen, isOpened, setOpen, setOpened}) {
     
     const [account, setAcccount] = useState("Connect Wallet");
     function getAddress(accountValue) {
         setAcccount(accountValue);
         window.localStorage.setItem('account', accountValue);
     }
-    const [isOpened, setOpened] = useState(false);
-    const [isOpen, setOpen] = useState(false);
-    const handleOpen = () => {
-        setOpened(!isOpened);
-    }
     const handleDisconnect = () => {
-        setOpen(!isOpen);
+        setOpen(true);
     }
     const handleClose = () => {
-        setOpened(!isOpened);
+        setOpened(false);
     }
     const handleSignClose = () => {
-        setOpen(!isOpen);
+        setOpen(false);
     }
     // function ellipseAddress(address = "", width = 6) {
     //     return `${address.slice(0, width)}...${address.slice(-width)}`;
@@ -62,7 +57,7 @@ export default function Footer() {
                 <LinkStyle underline="none" color="inherit" href="/marketplace">Marketplace</LinkStyle>
                 <LinkStyle underline="none" color="inherit" href="/resources">Resources</LinkStyle>
                 <LinkStyle underline="none" color="inherit" href="/company">Company</LinkStyle>
-                {!window.localStorage.getItem('account') ? <LinkStyle underline="none" color="inherit" onClick={() => handleOpen()}>Connect Wallet</LinkStyle> :
+                {!window.localStorage.getItem('account') ? <LinkStyle underline="none" color="inherit" onClick={() => setOpened(true)}>Connect Wallet</LinkStyle> :
                     <LinkStyle underline="none" color="inherit" onClick={() => handleDisconnect()}>Connect Wallet</LinkStyle>
                 }
                 <LinkStyle underline="none" color="inherit" href="/help">Help</LinkStyle>

@@ -16,7 +16,9 @@ import { TypographySize14, TypographySize18 } from '../../../components/Typograp
 import { useState } from 'react';
 import SendPost from './facebooksdk/sendpost';
 
-function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
+import { contract, web3 } from '../../../content/contractMethods'
+
+function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, coinGet, coinGive }) {
     const pricedata = {
         coin : coin,
         coinPrice : coinPrice,
@@ -32,6 +34,19 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }
 
     let facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u='
     let twitterShareUrl = 'https://twitter.com/share?ref_src=twsrc%5Etfw'
+
+    const createOrder = async () => {
+
+        let get = coinGet
+        let give = coinGive
+        let amountGive = pricedata.priceValue
+        let amountGet = pricedata.coinPrice
+        let buyerAddr = 0x0
+
+        const makeTradeOrder = contract.methods.makeOrder(give, get, amountGive, amountGet, buyerAddr).send()
+
+        createOrder(makeTradeOrder)
+    }
 
     // console.log(id, "=====");
     return (
@@ -112,6 +127,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }
                         }}
                         state={pricedata}
                         style={{ width: "86%" }}
+                        onClick={() => createOrder()}
                     >
                         Done
                     </Link>

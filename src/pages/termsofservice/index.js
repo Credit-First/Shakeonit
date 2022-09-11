@@ -7,7 +7,6 @@ import Header from "../../components/Header";
 function Service() {
     return (
         <div>
-            <Header />
             <div className="privacy-bg">
                 <TypographySize40 className="flex justify-center font-md-list py-12">Terms Of Service</TypographySize40>
             </div>
@@ -29,7 +28,6 @@ function Service() {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 }

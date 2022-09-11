@@ -30,7 +30,6 @@ function Collections() {
 
     return (
         <Box style={{ backgroundColor: "#f5fafe" }}>
-            <Header />
             <CollectionBg>
                 <BoxCenter className="relative hidden mt-10">
                     <Hidden xlDown>
@@ -65,7 +64,6 @@ function Collections() {
                     </Grid>
                 </CollectionContainer>
             </CollectionBg>
-            <Footer />
         </Box>
     );
 }

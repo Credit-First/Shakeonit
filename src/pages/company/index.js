@@ -17,7 +17,6 @@ const companies = [
 function Company() {
     return (
         <>
-            <Header />
             <Box className="company-bg1">
                 <center>
                     <Box className="mb-12">
@@ -83,7 +82,6 @@ function Company() {
                     )}
                 </Grid>
             </Box>
-            <Footer />
         </>
     );
 }

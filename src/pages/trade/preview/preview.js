@@ -72,7 +72,6 @@ function Preview( ) {
 
     return (
         <Box>
-            <Header />
             <Box className="total py-16" style={{ backgroundColor: "#ebf2f5" }}>
                 <Box className='totalbox'>
                     <BoxCenter className="imagebox">
@@ -88,7 +87,6 @@ function Preview( ) {
                     </Box>
                 </Box>
             </Box>
-            <Footer />
         </Box>
     );
 }

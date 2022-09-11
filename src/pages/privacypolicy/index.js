@@ -14,7 +14,6 @@ import { LastUpdate, HowCollect, HowUse, Updates, GeneralInformation, Sharing } 
 function PrivacyPolicy() {
     return (
         <>
-            <Header />
             <Box className="privacy-bg">
                 <Box className="pb-12">
                     <TypographySize40 className="py-12">Privacy Policy</TypographySize40>
@@ -51,7 +50,6 @@ function PrivacyPolicy() {
                     </Box>
                 </Box>
             </Box>
-            <Footer />
         </>
     );
 }

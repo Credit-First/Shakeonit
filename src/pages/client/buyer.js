@@ -6,19 +6,16 @@ import styled from 'styled-components';
 import { Avatar } from "@mui/material";
 import { useLocation, useParams } from "react-router";
 import "../../assets/scss/customize.scss";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import Styled from "@mui/material/styles/styled";
 import BoxCenter from "../../components/Box/BoxCenter";
 import BoxBetween from "../../components/Box/BoxBetween";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { coinTypes, myBalances } from "../../content/config";
 import { validatedTokens } from "../../content/config";
 import CloseIcon from '@mui/icons-material/Close';
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize20, TypographySize32, TypographySize42 } from "../../components/Typography/TypographySize";
-import ABI from "../../content/shakeonitABI.json";
+import { contract, web3, orderActiveSet, orderListLength } from '../../content/contractMethods'
 
 const Container = styled.div`
     width: 70%;
@@ -93,7 +90,7 @@ const collections = [
 ];
 
 const ActiveContainer = Styled(Box)({
-    marginTop: "4.5rem",
+    paddingTop: "4.5rem",
     marginBottom: "3.2rem",
     paddingLeft: "7%",
     paddingRight: "7%"
@@ -103,7 +100,7 @@ const ListContainer = Styled(Box)({
     width: "100%",
     paddingLeft: "7%",
     paddingRight: "7%",
-    marginBottom: "4.4rem"
+    paddingBottom: "4.5rem"
 });
 
 const ListImage = Styled(Box)({
@@ -119,9 +116,6 @@ const ListContent = Styled(Box)({
 
 
 function Buyer(Id) {
-    const contractAbi = ABI;
-    const contractAddress = "0x5B38Da6a701c568545dCfcB03FcB875f56beddC4";
-    
     const { collectionId } = useParams();
 
     const collection = collections.filter((item) => item.id == collectionId)[0];
@@ -350,32 +344,63 @@ function Buyer(Id) {
             }
         }
     }
+    
+    // READ OPERATIONS
+    // getActiveOrderLength 
+    // const orderListLength = contract.methods.getActiveOrderLength().call()
+    // getFromActiveOrderSet
+    // const orderActiveSet = contract.methods.getFromActiveOrderSet().call()
+
+    // WRITE OPERATIONS
+    const makeCounterOffer = async () => {
+        // getActiveOrderLength 
+        const orderListLength = contract.methods.getActiveOrderLength().call()
+
+        // @params
+        // orderActiveSet = uint refNonce
+        // finalOfferdatas = gives Token Adddresses (fungible and non-fungible)
+        // totalprice = amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
+        const orderFromOrder = await contract.methods.makeOrderFromOrder(orderListLength, finalOfferdatas, totalprice).send()
+
+        makeCounterOffer(orderFromOrder)
+    }
+    
+
+    const buyOrder = async () => {
+        // getActiveOrderLength 
+        const orderListLength = contract.methods.getActiveOrderLength().call()
+    
+        /// @notice Buy Few Orders at once. Anyone can execute this action
+        /// @dev If at lesat one order is possible then transaction will be successful
+        /// @param nonce - Array - Unique identifier of the order (always incremental)
+        const purchaseOrder = await contract.methods.buyOrders(orderListLength).send()
+        buyOrder(purchaseOrder)
+    }
 
     //send datas
     const pricedata = {
-        coin : coin,
-        coinPrice : coinPrice,
-        priceValue : initialpriceValue,
-        coinType : coinType,
+        coin: coin,
+        coinPrice: coinPrice,
+        priceValue: initialpriceValue,
+        coinType: coinType,
         //after connecting backend
-        finalOfferdatas : finalOfferdatas,
-        isflag : isflag,
-        valiatedprice : valiatedprice,
-        validatedCoinType : validatedCoinType
+        finalOfferdatas: finalOfferdatas,
+        isflag: isflag,
+        valiatedprice: valiatedprice,
+        validatedCoinType: validatedCoinType
 
     }
 
 
     return (
         <Box className="bg-list relative">
-            <Header />
             <ActiveContainer>
                 <TypographySize32>Active Listing</TypographySize32>
             </ActiveContainer>
             <div>
                 <ListContainer className="block lg:flex justify-between">
                     <ListImage className="listImage" >
-                        <img src={collection.image} className = "img" />
+                        <img src={collection.image} className="img" />
                     </ListImage>
                     <ListContent className="listContent">
                         <BoxBetween>
@@ -402,7 +427,7 @@ function Buyer(Id) {
                             </Box>
                         </Box>
                         <Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-                            <a className="flex justify-center btn pulse1 w-full">Buy</a>
+                            <a className="flex justify-center btn pulse1 w-full" onClick={() => buyOrder()}>Buy</a>
                             <Box className="outlined-btn px-3">
                                 <select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
                                     <option value="otheractions" >Other Actions</option>
@@ -523,26 +548,27 @@ function Buyer(Id) {
                             <TypographySize20 className="pl-6">$ {totalprice}</TypographySize20>
                         </div>
                         <div>
-                        <OfferButton className=" pulse1">
-                            <Link
-                                component={RouterLink}
-                                underline="none"
-                                color="inherit"
-                                className="flex justify-center px-6"
-                                // to={{
-                                //     pathname: `/list/${id}`,
+                            <OfferButton className=" pulse1">
+                                <Link
+                                    component={RouterLink}
+                                    underline="none"
+                                    color="inherit"
+                                    className="flex justify-center px-6"
+                                    // to={{
+                                    //     pathname: `/list/${id}`,
 
-                                // }}
-                                to={{
-                                    pathname: `/list/${collectionId}`,
+                                    // }}
+                                    to={{
+                                        pathname: `/list/${collectionId}`,
 
-                                }}
-                                state = {pricedata}
-                                style={{ width: "86%" }}
-                            >
-                                Make Offer
-                            </Link>
-                        </OfferButton>
+                                    }}
+                                    state={pricedata}
+                                    style={{ width: "86%" }}
+                                    onClick={() => makeCounterOffer()}
+                                >
+                                    Make Offer
+                                </Link>
+                            </OfferButton>
                         </div>
                     </div>
                 </ListContainer>
@@ -590,7 +616,6 @@ function Buyer(Id) {
                     <Box style={{ position: "absolute", bottom: "-60px", right: "0px" }} onClick={closechat}><img src="/static/images/arrow-circle-down.png" /></Box>
                 </Box>
             </div>
-            <Footer />
         </Box>
     );
 }

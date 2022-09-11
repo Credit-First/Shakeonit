@@ -21,7 +21,7 @@ const collections = [
 ];
 
 const ActiveContainer = Styled(Box)({
-    marginTop: "4.5rem",
+    paddingTop: "4.5rem",
     marginBottom: "3.2rem",
     paddingLeft: "7%",
     paddingRight: "7%"
@@ -31,7 +31,7 @@ const ListContainer = Styled(Box)({
     // width: "100%",
     paddingLeft: "7%",
     paddingRight: "7%",
-    marginBottom: "4.4rem"
+    paddingBottom: "4.5rem"
 });
 
 const ListImage = Styled(Box)({
@@ -86,7 +86,6 @@ function List(props) {
     }
     return (
         <Box className="bg-list relative">
-            <Header />
             <ActiveContainer>
                 <TypographySize32>Active Listing</TypographySize32>
             </ActiveContainer>
@@ -137,7 +136,6 @@ function List(props) {
                 <CancelSale open={isOpened} onClose={handleClose} image={collection.image} />
                 <ChangePrice open={isOpen} onClose={handleChangeClose} image={collection.image} setPrice={setPrice} price={price} setPriceValue={setPriceValue} coinPrice={coinPrice} handleFlag={handleFlag} handleChangeFlag={handleChangeFlag} />
             </div>
-            <Footer />
         </Box>
     );
 }
