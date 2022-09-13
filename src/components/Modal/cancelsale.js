@@ -1,7 +1,8 @@
 import { Dialog } from "@material-ui/core";
 import React, { useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
-import { contract } from '../../content/contractMethods'
+import { ethers } from 'ethers'
+import { contract, contractAddress, contractAbi } from '../../content/contractMethods'
 
 function CancelSale({ open, onClose, image }) {
     const [isOpened, setOpened] = useState(false);
@@ -12,13 +13,26 @@ function CancelSale({ open, onClose, image }) {
         onClose();
         setOpened(true);
     }
-    const cancelSale = async () => {
+    const cancelOrder = async () => {
+        // ETHERS SETUP
+        const ethereum = window.ethereum;
+        const provider = new ethers.providers.Web3Provider(ethereum)
+
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const signer = provider.getSigner(walletAddress)
+
+
+        // ethers contract instantiation
+        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
         // getActiveOrderLength 
-        const orderListLength = contract.methods.getActiveOrderLength().call()
+        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
 
-        const cancel = await contract.methods.cancelOrderByAdmin(orderListLength).call()
-
-        cancelSale(cancel)
+        await shakeContract.cancelOrderByAdmin(orderActiveSet, {
+            gasLimit: 60000
+        })
     }
 
     const account = "Connect Wallet";
@@ -46,7 +60,7 @@ function CancelSale({ open, onClose, image }) {
                         <a className="welcome-btn1 py-3" onClick={() => {
                             onClose();
                             window.localStorage.clear();
-                            cancelSale();
+                            cancelOrder();
                         }} href="/collections">Cancel</a>
                     </div>
                 </div>

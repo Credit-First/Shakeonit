@@ -14,9 +14,11 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { TypographySize14, TypographySize18 } from '../../../components/Typography/TypographySize';
 import { useState } from 'react';
+import Web3 from 'web3'
+import { ethers } from 'ethers'
 import SendPost from './facebooksdk/sendpost';
 
-import { contract, web3 } from '../../../content/contractMethods'
+import { contract, contractAddress, contractAbi, web3  } from '../../../content/contractMethods'
 
 function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, coinGet, coinGive }) {
     const pricedata = {
@@ -27,6 +29,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
     }
     const [value, setValue] = useState("");
     const [linkFlag, setLinkFlag] = useState(false);
+    const [addr, setAddr] = useState('')
     const handleLinkaddress = () => {
         setValue(window.location.href);
         setLinkFlag(true);
@@ -35,17 +38,37 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
     let facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u='
     let twitterShareUrl = 'https://twitter.com/share?ref_src=twsrc%5Etfw'
 
-    const createOrder = async () => {
 
-        let get = coinGet
-        let give = coinGive
+    const createOrder = async () => {
+        // ETHERS SETUP
+        const ethereum = window.ethereum;
+
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner(walletAddress)
+
+
+        // ethers contract instantiation
+        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
+        // const accounts = await web3.eth.getAccounts();
+        // const account = accounts[0];
+
+        // const w3 = new Web3(window.web3.currentProvider)
+        // const ac = await w3.eth.getAccounts()
+
+        let get = "0x0000000000000000000000000000000000000000" 
+        let give = "0x0000000000000000000000000000000000000000"
         let amountGive = pricedata.priceValue
         let amountGet = pricedata.coinPrice
-        let buyerAddr = 0x0
 
-        const makeTradeOrder = contract.methods.makeOrder(give, get, amountGive, amountGet, buyerAddr).send()
+        // const signTx = await web3.eth.signTransaction({ from: ac[0], to: contractAddress, gas: '21000' })
 
-        createOrder(makeTradeOrder)
+        await shakeContract.makeOrder(give, get, 1, 1, '0x0000000000000000000000000000000000000000', {
+            gasLimit: 60000
+        })
     }
 
     // console.log(id, "=====");
@@ -93,7 +116,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
                                 }
                             </BoxCenter>
                         </div>
-                        {/* <SendPost disable={linkFlag} /> */}
+                        <SendPost disable={linkFlag} />
                     </Box>
                     <Box className='mt-3 mb-12 TextField-without-border-radius'>
                         <TextField
@@ -127,7 +150,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
                         }}
                         state={pricedata}
                         style={{ width: "86%" }}
-                        onClick={() => createOrder()}
+                        onClick={createOrder}
                     >
                         Done
                     </Link>

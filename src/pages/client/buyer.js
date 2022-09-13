@@ -15,7 +15,9 @@ import { coinTypes, myBalances } from "../../content/config";
 import { validatedTokens } from "../../content/config";
 import CloseIcon from '@mui/icons-material/Close';
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize20, TypographySize32, TypographySize42 } from "../../components/Typography/TypographySize";
-import { contract, web3, orderActiveSet, orderListLength } from '../../content/contractMethods'
+import Web3 from 'web3'
+import { ethers } from 'ethers'
+import { contract, web3, orderActiveSet, orderListLength, contractAbi, contractAddress } from '../../content/contractMethods'
 
 const Container = styled.div`
     width: 70%;
@@ -351,30 +353,62 @@ function Buyer(Id) {
     // getFromActiveOrderSet
     // const orderActiveSet = contract.methods.getFromActiveOrderSet().call()
 
+    // ETHERS SETUP
+    const ethereum = window.ethereum;
+    const provider = new ethers.providers.Web3Provider(ethereum)
+
     // WRITE OPERATIONS
     const makeCounterOffer = async () => {
-        // getActiveOrderLength 
-        const orderListLength = contract.methods.getActiveOrderLength().call()
+        // let w3 = new Web3(window.web3.currentProvider)
+        // const acct = await w3.eth.getAccounts[0]
+
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const signer = provider.getSigner(walletAddress)
+
+
+        // ethers contract instantiation
+        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
+        // getActiveOrderSet
+        const orderActiveSet = await shakeContract.getFromActiveOrderSet([1])
+
+        let coinSelect = coinTypes.filter((x) => x.address == coinTypes[coin].address)
+        let selectedCoinAddr = coinSelect.map(addr => addr.coinSelect[0].address)
 
         // @params
         // orderActiveSet = uint refNonce
         // finalOfferdatas = gives Token Adddresses (fungible and non-fungible)
         // totalprice = amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
-        const orderFromOrder = await contract.methods.makeOrderFromOrder(orderListLength, finalOfferdatas, totalprice).send()
-
-        makeCounterOffer(orderFromOrder)
+        await shakeContract.makeOrderFromOrder(1, [selectedCoinAddr], [finalOfferdatas], {
+            gasLimit: 60000
+        })
     }
     
 
     const buyOrder = async () => {
+        // let w3 = new Web3(window.web3.currentProvider)
+        // const acct = await w3.eth.getAccounts[0]
+
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const signer = provider.getSigner(walletAddress)
+
+
+        // ethers contract instantiation
+        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
         // getActiveOrderLength 
-        const orderListLength = contract.methods.getActiveOrderLength().call()
+        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
     
         /// @notice Buy Few Orders at once. Anyone can execute this action
         /// @dev If at lesat one order is possible then transaction will be successful
         /// @param nonce - Array - Unique identifier of the order (always incremental)
-        const purchaseOrder = await contract.methods.buyOrders(orderListLength).send()
-        buyOrder(purchaseOrder)
+        await shakeContract.buyOrders([orderActiveSet], {
+            gasLimit: 60000
+        })
     }
 
     //send datas
@@ -427,7 +461,7 @@ function Buyer(Id) {
                             </Box>
                         </Box>
                         <Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-                            <a className="flex justify-center btn pulse1 w-full" onClick={() => buyOrder()}>Buy</a>
+                            <a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>Buy</a>
                             <Box className="outlined-btn px-3">
                                 <select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
                                     <option value="otheractions" >Other Actions</option>
@@ -564,7 +598,7 @@ function Buyer(Id) {
                                     }}
                                     state={pricedata}
                                     style={{ width: "86%" }}
-                                    onClick={() => makeCounterOffer()}
+                                    onClick={makeCounterOffer}
                                 >
                                     Make Offer
                                 </Link>

@@ -2,10 +2,12 @@ import Web3 from 'web3'
 import shakeonitABI from '../abis/shakeonit.json'
 
 export const contractAbi = shakeonitABI;
-export const contractAddress = "0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8";
+export const contractAddress = "0x43069D5713Cb77DAC642836b6c3bC38B279B57CE";
+
+// 0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8
 
 // web3 instantiation
-export const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/138a070a8c734e448e46beaa2c244861'));
+export const web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/1ed0db279080490bb5a02a515d51213e'));
 
 // contract instantiation for method calls
 export const contract = new web3.eth.Contract(contractAbi, contractAddress);
