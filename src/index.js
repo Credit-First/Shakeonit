@@ -5,7 +5,7 @@ import './index.css';
 import App from './App';
 import initFacebookSDK from './pages/trade/preview/facebooksdk/initFacebookSDK';
 
-// const renderApp = () => {
+const renderApp = () => {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
@@ -16,8 +16,8 @@ root.render(
     </BrowserRouter>
   </>
 );
-// }
+}
 
-// initFacebookSDK().then(() => {
-//   renderApp();
-// })
+initFacebookSDK().then(() => {
+  renderApp();
+})
