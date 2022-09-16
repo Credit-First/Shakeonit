@@ -388,43 +388,24 @@ function Buyer(Id) {
     
 
     const buyOrder = async () => {
-<<<<<<< HEAD
-=======
-        // let w3 = new Web3(window.web3.currentProvider)
-        // const acct = await w3.eth.getAccounts[0]
-
->>>>>>> f895b0ed35f74991d35423a1fafd72a20b97fcfa
         const accounts = await ethereum.request({
             method: "eth_requestAccounts",
         });
         const walletAddress = accounts[0]    // first account in MetaMask
         const signer = provider.getSigner(walletAddress)
 
-<<<<<<< HEAD
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
         // getActiveOrderLength 
         const orderActiveSet = await shakeContract.getFromActiveOrderSet(1)
-=======
-
-        // ethers contract instantiation
-        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
-        // getActiveOrderLength 
-        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
->>>>>>> f895b0ed35f74991d35423a1fafd72a20b97fcfa
     
         /// @notice Buy Few Orders at once. Anyone can execute this action
         /// @dev If at lesat one order is possible then transaction will be successful
         /// @param nonce - Array - Unique identifier of the order (always incremental)
-<<<<<<< HEAD
         shakeContract.buyOrders([...orderActiveSet], {
             gasLimit: 60000
         }).then(res=>{
             console.log(res)
-=======
-        await shakeContract.buyOrders([orderActiveSet], {
-            gasLimit: 60000
->>>>>>> f895b0ed35f74991d35423a1fafd72a20b97fcfa
         })
     }
 

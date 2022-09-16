@@ -66,15 +66,9 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
 
         // const signTx = await web3.eth.signTransaction({ from: ac[0], to: contractAddress, gas: '21000' })
 
-<<<<<<< HEAD
         await shakeContract.makeOrder(give, get, amountGive, amountGet, '0x0000000000000000000000000000000000000000', {
             gasLimit: 60000
         }, signer)
-=======
-        await shakeContract.makeOrder(give, get, 1, 1, '0x0000000000000000000000000000000000000000', {
-            gasLimit: 60000
-        })
->>>>>>> f895b0ed35f74991d35423a1fafd72a20b97fcfa
     }
 
     // console.log(id, "=====");
