@@ -388,26 +388,24 @@ function Buyer(Id) {
     
 
     const buyOrder = async () => {
-        // let w3 = new Web3(window.web3.currentProvider)
-        // const acct = await w3.eth.getAccounts[0]
-
         const accounts = await ethereum.request({
             method: "eth_requestAccounts",
         });
         const walletAddress = accounts[0]    // first account in MetaMask
         const signer = provider.getSigner(walletAddress)
 
-
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
         // getActiveOrderLength 
-        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
+        const orderActiveSet = await shakeContract.getFromActiveOrderSet(1)
     
         /// @notice Buy Few Orders at once. Anyone can execute this action
         /// @dev If at lesat one order is possible then transaction will be successful
         /// @param nonce - Array - Unique identifier of the order (always incremental)
-        await shakeContract.buyOrders([orderActiveSet], {
+        shakeContract.buyOrders([...orderActiveSet], {
             gasLimit: 60000
+        }).then(res=>{
+            console.log(res)
         })
     }
 
@@ -494,7 +492,6 @@ function Buyer(Id) {
                                     var className = !disableflag ? "asset" : "asset-disable";
                                     return (
                                         <AssetCard
-                                            style={{ justifyContent: "space-between" }}
                                             draggable
                                             onDragStart={(e) => onDragStart(e, myBalance.name)}
                                             key={myBalance.id}
@@ -503,21 +500,21 @@ function Buyer(Id) {
                                             {!offerdata ?
                                                 <>
                                                     <img src="../static/images/client/image 14.png" />
-                                                    <TypographySize20 style={{ width: "50px" }}>{myBalance.balance}</TypographySize20>
-                                                    <TypographySize20>{myBalance.name}</TypographySize20>
+                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "87px" }}>{myBalance.balance}</TypographySize20>
+                                                    <TypographySize20 style={{ position: "relative", left: "171px"}}>{myBalance.name}</TypographySize20>
                                                     {!validatedToken ?
-                                                        <img id={"error-img" + myBalance.name} src="../static/images/client/image 21.png" />
+                                                        <img id={"error-img" + myBalance.name}  style={{ position: "relative", left: "250px"}}/>
                                                         :
-                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" />
+                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png"  style={{ position: "relative", left: "250px"}}/>
                                                     }
                                                 </> : <>
                                                     <img src="../static/images/client/image 14.png" />
-                                                    <TypographySize20 style={{ width: "50px" }}>{myBalance.balance - offerdata.balance}</TypographySize20>
-                                                    <TypographySize20>{myBalance.name}</TypographySize20>
+                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "87px" }}>{myBalance.balance - offerdata.balance}</TypographySize20>
+                                                    <TypographySize20 style={{ position: "relative", left: "171px"}}>{myBalance.name}</TypographySize20>
                                                     {!validatedToken ?
-                                                        <img id={"error-img" + myBalance.name} src="../static/images/client/image 21.png" />
+                                                        <img id={"error-img" + myBalance.name}  style={{ position: "relative", left: "250px"}}/>
                                                         :
-                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" />
+                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png"  style={{ position: "relative", left: "250px"}}/>
                                                     }
                                                 </>
                                             }

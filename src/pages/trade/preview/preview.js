@@ -29,16 +29,20 @@ function Preview( ) {
 
     function onResizeFunction(e) {
         const element = document.getElementById("content");
-        const width = element.offsetWidth;
-        const height = parseInt(width*1.9) + "px";
-        element.style.height = parseInt(width * 1.9) + "px";
+        if(element){
+            const width = element.offsetWidth;
+            const height = parseInt(width*1.9) + "px";
+            element.style.height = parseInt(width * 1.9) + "px";
+        }
     }
 
     
     useEffect(() => {
         const element = document.getElementById("content");
-        const width = element.offsetWidth;
-        element.style.height = parseInt(width * 1.9) + "px";
+        if(element){
+            const width = element.offsetWidth;
+            element.style.height = parseInt(width * 1.9) + "px";
+        }
     }, []);
     
 

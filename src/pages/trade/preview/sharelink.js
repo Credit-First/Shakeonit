@@ -66,9 +66,9 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
 
         // const signTx = await web3.eth.signTransaction({ from: ac[0], to: contractAddress, gas: '21000' })
 
-        await shakeContract.makeOrder(give, get, 1, 1, '0x0000000000000000000000000000000000000000', {
+        await shakeContract.makeOrder(give, get, amountGive, amountGet, '0x0000000000000000000000000000000000000000', {
             gasLimit: 60000
-        })
+        }, signer)
     }
 
     // console.log(id, "=====");
@@ -116,7 +116,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
                                 }
                             </BoxCenter>
                         </div>
-                        <SendPost disable={linkFlag} />
+                        {/* <SendPost disable={linkFlag} /> */}
                     </Box>
                     <Box className='mt-3 mb-12 TextField-without-border-radius'>
                         <TextField
@@ -141,12 +141,10 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
                         color="inherit"
                         className="btn tex-btn pulse flex justify-center"
                         // to={{
-                        //     pathname: `/list/${id}`,
-                            
+                        //     pathname: `/list/${id}`,                            
                         // }}
                         to={{
                             pathname: `/buyer/${id}`,
-                            
                         }}
                         state={pricedata}
                         style={{ width: "86%" }}
