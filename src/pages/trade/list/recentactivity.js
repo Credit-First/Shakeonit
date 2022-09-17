@@ -47,7 +47,7 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
         const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
     
         await shakeContract.acceptOffer(ethers.BigNumber.from([orderActiveSet[1]]), {
-            gasLimit: 60000
+            gasLimit: 250000
         })
     }
 

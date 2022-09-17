@@ -15,12 +15,12 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import { TypographySize14, TypographySize18 } from '../../../components/Typography/TypographySize';
 import { useState } from 'react';
 import Web3 from 'web3'
-import { ethers } from 'ethers'
+import { ethers, BigNumber } from 'ethers'
 import SendPost from './facebooksdk/sendpost';
 
 import { contract, contractAddress, contractAbi, web3  } from '../../../content/contractMethods'
 
-function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, coinGet, coinGive }) {
+function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
     const pricedata = {
         coin : coin,
         coinPrice : coinPrice,
@@ -29,7 +29,6 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
     }
     const [value, setValue] = useState("");
     const [linkFlag, setLinkFlag] = useState(false);
-    const [addr, setAddr] = useState('')
     const handleLinkaddress = () => {
         setValue(window.location.href);
         setLinkFlag(true);
@@ -50,25 +49,31 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
         const provider = new ethers.providers.Web3Provider(ethereum)
         const signer = provider.getSigner(walletAddress)
 
-
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
-        // const accounts = await web3.eth.getAccounts();
-        // const account = accounts[0];
 
-        // const w3 = new Web3(window.web3.currentProvider)
-        // const ac = await w3.eth.getAccounts()
+        // Ropsten ETH Faucet Address
+        // 0x81b7e08f65bdf5648606c89998a9cc8164397647
 
-        let get = "0x0000000000000000000000000000000000000000" 
-        let give = "0x0000000000000000000000000000000000000000"
-        let amountGive = pricedata.priceValue
-        let amountGet = pricedata.coinPrice
+        // Ropsten WETH Address
+        // 0xc778417E063141139Fce010982780140Aa0cD5Ab
+        // 100000000000000 <--- wei for .001 WETH
+        // Ropsten DAI Address
+        // 0xaD6D458402F60fD3Bd25163575031ACDce07538D
 
-        // const signTx = await web3.eth.signTransaction({ from: ac[0], to: contractAddress, gas: '21000' })
+        let get = '0xc778417E063141139Fce010982780140Aa0cD5Ab' // Ropsten WETH
+        let give = '0xc778417E063141139Fce010982780140Aa0cD5Ab' // Ropsten WETH
+        // Units in wei
+        let amountGive = 100000000000000 // (wei for 0.0001 WETH) SHOULD BE THE NFT @ AMOUNT OF 1
+        // Units in wei
+        let amountGet = ethers.utils.parseUnits(pricedata.priceValue) // Should pull in price data value from the input in Listitemforsale File
+        let buyer = '0x0000000000000000000000000000000000000000' // 0x0 address so anyone can buy
 
-        await shakeContract.makeOrder(give, get, amountGive, amountGet, '0x0000000000000000000000000000000000000000', {
-            gasLimit: 60000
-        }, signer)
+        await shakeContract.makeOrder(give, get, amountGive, amountGet, buyer, {
+            gasLimit: 275000
+        }).then(res => {
+            console.log(res)
+        })
     }
 
     // console.log(id, "=====");
@@ -116,7 +121,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin, 
                                 }
                             </BoxCenter>
                         </div>
-                        <SendPost disable={linkFlag} />
+                        {/* <SendPost disable={linkFlag} /> */}
                     </Box>
                     <Box className='mt-3 mb-12 TextField-without-border-radius'>
                         <TextField

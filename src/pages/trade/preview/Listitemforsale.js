@@ -12,6 +12,7 @@ import Select from '@mui/material/Select';
 import { TypographySize121, TypographySize14, TypographySize18 } from '../../../components/Typography/TypographySize';
 import { coinTypes } from '../../../content/config'
 import { contract, web3 } from '../../../content/contractMethods'
+import { BigNumber, ethers } from 'ethers'
 
 function Listitemforsale(props) {
     const { handleshowFlag, priceValue, setPriceValue, coinPrice, coin, setCoinType } = props

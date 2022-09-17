@@ -30,9 +30,12 @@ function CancelSale({ open, onClose, image }) {
         // getActiveOrderLength 
         const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
 
-        await shakeContract.cancelOrderByAdmin(orderActiveSet, {
-            gasLimit: 60000
-        })
+        await shakeContract.cancelOrderByAdmin([...orderActiveSet], {
+            gasLimit: 250000
+        }).then(res => {
+            console.log(res)
+        }
+        )
     }
 
     const account = "Connect Wallet";
@@ -58,9 +61,9 @@ function CancelSale({ open, onClose, image }) {
                     </div>
                     <div className="flex justify-center mx-6 border-2 border-gray-200 mb-5 mt-3 pulse">
                         <a className="welcome-btn1 py-3" onClick={() => {
+                            cancelOrder();
                             onClose();
                             window.localStorage.clear();
-                            cancelOrder();
                         }} href="/collections">Cancel</a>
                     </div>
                 </div>

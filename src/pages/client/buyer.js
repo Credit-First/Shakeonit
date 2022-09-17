@@ -114,9 +114,6 @@ const ListContent = Styled(Box)({
     height: "100%"
 });
 
-
-
-
 function Buyer(Id) {
     const { collectionId } = useParams();
 
@@ -125,10 +122,8 @@ function Buyer(Id) {
     const location = useLocation();
     const initialpriceValue = location.state.priceValue;
     const coin = location.state.coin;
-    // console.log(coin, "coin");
     const coinPrice = location.state.coinPrice;
     const coinType = location.state.coinType;
-    // console.log(location.state.coinType, "!!!!");
 
     const [OtherAction, setOtherAction] = useState("");
     const [offerdatas, setOfferData] = useState([]);
@@ -141,7 +136,6 @@ function Buyer(Id) {
     const handlevalidatedCoinType = (event) => {
         setValidtedCoinType(event.target.value);
     }
-
 
     const re = /^[0-9.\b]+$/;
     const handleChange = (event, name) => {
@@ -167,7 +161,6 @@ function Buyer(Id) {
     };
 
     useEffect(() => {
-
         if (OtherAction == "counteroffer") {
             document.getElementById("counteroffer").style.display = "block";
         }
@@ -269,6 +262,7 @@ function Buyer(Id) {
     const [total, setPreTotal] = useState(0);
     const [disableflag, setDisableFlag] = useState(false);
     useEffect(() => {
+        console.log("useeffect");
         let pretotal = 0;
         let currentPrice = 0;
         const currentcoinType = myBalances.filter((item) => item.name == coinTypes[coin].name);
@@ -281,7 +275,6 @@ function Buyer(Id) {
             }
         })
         setPreTotal(pretotal);
-        // console.log(initialpriceValue * coinPrice, "initialpriceValue * coinPrice");
         if (parseInt(total) < parseInt(initialpriceValue * coinPrice)) {
             document.getElementById('changeprice').style.display = 'none';
             setDisableFlag(true);
@@ -322,7 +315,6 @@ function Buyer(Id) {
         }
     }
 
-
     //drag and drop
 
     const onDragStart = (ev, id) => {
@@ -340,8 +332,6 @@ function Buyer(Id) {
         setOfferData([...offerdatas, myBalance]);
         if (validatedTokens.find((item) => item.name == id)) {
             if (!finalOfferdatas.find(item => item.name == id)) {
-                // console.log( myBalance , "get data");
-                // console.log( finalOfferdatas, "finalofferdatas" );
                 setFinalOfferdatas([...finalOfferdatas, ...myBalance]);
             }
         }
@@ -382,7 +372,7 @@ function Buyer(Id) {
         // finalOfferdatas = gives Token Adddresses (fungible and non-fungible)
         // totalprice = amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
         await shakeContract.makeOrderFromOrder(1, [selectedCoinAddr], [finalOfferdatas], {
-            gasLimit: 60000
+            gasLimit: 265000
         })
     }
     
@@ -403,7 +393,7 @@ function Buyer(Id) {
         /// @dev If at lesat one order is possible then transaction will be successful
         /// @param nonce - Array - Unique identifier of the order (always incremental)
         shakeContract.buyOrders([...orderActiveSet], {
-            gasLimit: 60000
+            gasLimit: 265000
         }).then(res=>{
             console.log(res)
         })
@@ -420,7 +410,6 @@ function Buyer(Id) {
         isflag: isflag,
         valiatedprice: valiatedprice,
         validatedCoinType: validatedCoinType
-
     }
 
 
@@ -500,21 +489,21 @@ function Buyer(Id) {
                                             {!offerdata ?
                                                 <>
                                                     <img src="../static/images/client/image 14.png" />
-                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "87px" }}>{myBalance.balance}</TypographySize20>
-                                                    <TypographySize20 style={{ position: "relative", left: "171px"}}>{myBalance.name}</TypographySize20>
+                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "25%" }}>{myBalance.balance}</TypographySize20>
+                                                    <TypographySize20 style={{ position: "relative", left: "50%"}}>{myBalance.name}</TypographySize20>
                                                     {!validatedToken ?
-                                                        <img id={"error-img" + myBalance.name}  style={{ position: "relative", left: "250px"}}/>
+                                                        <img id={"error-img" + myBalance.name} style={{ position: "relative", left: "100%", marginLeft: "-150px"}} />
                                                         :
-                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png"  style={{ position: "relative", left: "250px"}}/>
+                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" style={{ position: "relative", left: "100%", marginLeft: "-150px"}} />
                                                     }
                                                 </> : <>
                                                     <img src="../static/images/client/image 14.png" />
-                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "87px" }}>{myBalance.balance - offerdata.balance}</TypographySize20>
-                                                    <TypographySize20 style={{ position: "relative", left: "171px"}}>{myBalance.name}</TypographySize20>
+                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "25%" }}>{myBalance.balance - offerdata.balance}</TypographySize20>
+                                                    <TypographySize20 style={{ position: "relative", left: "50%"}}>{myBalance.name}</TypographySize20>
                                                     {!validatedToken ?
-                                                        <img id={"error-img" + myBalance.name}  style={{ position: "relative", left: "250px"}}/>
+                                                        <img id={"error-img" + myBalance.name} style={{ position: "relative", left: "100%", marginLeft: "-150px"}} />
                                                         :
-                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png"  style={{ position: "relative", left: "250px"}}/>
+                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" style={{ position: "relative", left: "100%", marginLeft: "-150px"}} />
                                                     }
                                                 </>
                                             }
