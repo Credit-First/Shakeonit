@@ -4,7 +4,7 @@ import { Container, Box, Avatar } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import styled from 'styled-components';
 import { contract, web3, contractAbi, contractAddress } from '../../../content/contractMethods'
-import { ethers } from 'ethers'
+import { ethers, BigNumber } from 'ethers'
 
 const AssetCard = styled.div`
     display: flex;
@@ -22,11 +22,6 @@ const AssetCard = styled.div`
 `
 
 function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinType }) {
-    console.log(finalOfferdatas, "finalOfferdatas");
-    console.log(isflag, "isflag");
-    console.log(valiatedprice, "valiatedprice");
-    console.log(validatedCoinType, "validatedCoinType");
-
     const [showFlag, setShowFlag] = useState(false);
 
     // ETHERS SETUP
@@ -44,12 +39,16 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
         // getActiveOrderLength 
+        const getActiveOrderLength = shakeContract.getActiveOrderLength()
         const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
-    
-        await shakeContract.acceptOffer(ethers.BigNumber.from([orderActiveSet[1]]), {
-            gasLimit: 250000
+
+        shakeContract.acceptOffer(BigNumber.from(orderActiveSet), {
+            gasLimit: 300000
+        }).then(res=>{
+            console.log(res)
         })
     }
+
 
     return (
         <>

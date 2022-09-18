@@ -262,7 +262,6 @@ function Buyer(Id) {
     const [total, setPreTotal] = useState(0);
     const [disableflag, setDisableFlag] = useState(false);
     useEffect(() => {
-        console.log("useeffect");
         let pretotal = 0;
         let currentPrice = 0;
         const currentcoinType = myBalances.filter((item) => item.name == coinTypes[coin].name);
@@ -302,10 +301,8 @@ function Buyer(Id) {
         price = e.target.value * validatedcoinPrice[validatedCoinType];
         if (re.test(e.target.value) && parseInt(price) <= parseInt(initialpriceValue * coinPrice)) {
             setFlag(true);
-            console.log(e.target.value, "e.target.value");
             setValidatedPrice(e.target.value);
             setTotalPrice(e.target.value * validatedcoinPrice[validatedCoinType]);
-            console.log(price);
         }
         else if (!re.test(e.target.value)) {
             alert("Please input only number!")
@@ -358,21 +355,34 @@ function Buyer(Id) {
         const walletAddress = accounts[0]    // first account in MetaMask
         const signer = provider.getSigner(walletAddress)
 
-
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
         // getActiveOrderSet
         const orderActiveSet = await shakeContract.getFromActiveOrderSet([1])
 
-        let coinSelect = coinTypes.filter((x) => x.address == coinTypes[coin].address)
-        let selectedCoinAddr = coinSelect.map(addr => addr.coinSelect[0].address)
+        let filterCoinTypes = []
+        let givesTokenAddress = []
+        let amountOrTokenIds = []
 
-        // @params
-        // orderActiveSet = uint refNonce
-        // finalOfferdatas = gives Token Adddresses (fungible and non-fungible)
-        // totalprice = amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
-        await shakeContract.makeOrderFromOrder(1, [selectedCoinAddr], [finalOfferdatas], {
-            gasLimit: 265000
+        finalOfferdatas.map(function(i){
+            filterCoinTypes.push(coinTypes.filter((el) => el.name == i.name))
+            amountOrTokenIds.push(i.balance)
+        })
+
+        filterCoinTypes.map(function(e){
+            givesTokenAddress.push(e[0].address)
+        })
+
+        /// @notice Make a counter offer and transfor the array of tokens into internal nft (if needed)
+        /// @dev ShakeOnIt DAO
+        /// @param refNonce Order ID
+        /// @param gives Token Addresses (fungible and non-fungible)
+        /// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
+            
+        shakeContract.makeOfferFromOrder(1, [...givesTokenAddress], [...amountOrTokenIds], {
+            gasLimit: 300000,
+        }).then(res=>{
+            console.log(res)
         })
     }
     
@@ -393,7 +403,34 @@ function Buyer(Id) {
         /// @dev If at lesat one order is possible then transaction will be successful
         /// @param nonce - Array - Unique identifier of the order (always incremental)
         shakeContract.buyOrders([...orderActiveSet], {
-            gasLimit: 265000
+            gasLimit: 300000
+        }).then(res=>{
+            console.log(res)
+        })
+    }
+
+    const updateOrder = async () => {
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const signer = provider.getSigner(walletAddress)
+
+
+        // ethers contract instantiation
+        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
+        // getActiveOrderLength 
+        const getActiveOrderLength = shakeContract.getActiveOrderLength()
+        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
+
+        /// @notice Update the order by the user. We can cancel partially (if too call trade_amountGive = 0) then timestamp should be updated only
+        /// @dev ShakeOnIt DAO
+        /// @param nonce Unique identifier of the order (always incremental)
+        /// @param newGet new token user wants get
+        /// @param newAmountGet new token amount
+
+        shakeContract.updateOrder(1, "newGet", "newAmountGet", {
+            gasLimit: 300000
         }).then(res=>{
             console.log(res)
         })
@@ -627,9 +664,6 @@ function Buyer(Id) {
                         <Box className="block md:flex">
                             <Box>
                                 <img src="/static/images/send-2.png" />
-                            </Box>
-                            <Box>
-
                             </Box>
                         </Box>
                     </Box>

@@ -121,7 +121,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }
                                 }
                             </BoxCenter>
                         </div>
-                        {/* <SendPost disable={linkFlag} /> */}
+                        <SendPost disable={linkFlag} />
                     </Box>
                     <Box className='mt-3 mb-12 TextField-without-border-radius'>
                         <TextField

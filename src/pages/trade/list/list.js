@@ -4,13 +4,13 @@ import { useLocation } from 'react-router-dom';
 import { Avatar } from "@mui/material";
 import { useParams } from "react-router";
 import "../../../assets/scss/customize.scss";
-import Footer from "../../../components/Footer";
-import Header from "../../../components/Header";
 import Styled from "@mui/material/styles/styled";
 import BoxCenter from "../../../components/Box/BoxCenter";
 import BoxBetween from "../../../components/Box/BoxBetween";
 import RecentActivity from "./recentactivity";
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize32, TypographySize42 } from "../../../components/Typography/TypographySize";
+import { ethers, BigNumber } from 'ethers'
+import { contract, web3, contractAbi, contractAddress } from '../../../content/contractMethods'
 import CancelSale from "../../../components/Modal/cancelsale";
 import ChangePrice from "../../../components/Modal/changeprice";
 
@@ -61,7 +61,7 @@ function List(props) {
     const initialPrice = initialpriceValue * coinPrice;
     const [price, setPrice] = useState(initialPrice);
     const [priceValue, setPriceValue] = useState(initialpriceValue);
-    console.log(location.state, "11111");
+    
     const { collectionId } = useParams();
     const collection = collections.filter((item) => item.id == collectionId)[0];
     const [isOpened, setOpened] = useState(false);
@@ -84,6 +84,32 @@ function List(props) {
     const handleClose = () => {
         setOpened(!isOpened);
     }
+
+    // ETHERS SETUP
+    const ethereum = window.ethereum;
+    const provider = new ethers.providers.Web3Provider(ethereum)
+
+    const cancelOrder = async () => {
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const signer = provider.getSigner(walletAddress)
+
+
+        // ethers contract instantiation
+        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
+        // getActiveOrderLength 
+        const getActiveOrderLength = shakeContract.getActiveOrderLength()
+        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
+        
+        shakeContract.cancelOrder(BigNumber.from(orderActiveSet), {
+            gasLimit: 300000
+        }).then(res=>{
+            console.log(res)
+        })
+    }
+
     return (
         <Box className="bg-list relative">
             <ActiveContainer>
