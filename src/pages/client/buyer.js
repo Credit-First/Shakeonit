@@ -11,7 +11,7 @@ import BoxCenter from "../../components/Box/BoxCenter";
 import BoxBetween from "../../components/Box/BoxBetween";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { coinTypes, myBalances } from "../../content/config";
+import { coinTypes } from "../../content/config";
 import { validatedTokens } from "../../content/config";
 import CloseIcon from '@mui/icons-material/Close';
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize20, TypographySize32, TypographySize42 } from "../../components/Typography/TypographySize";
@@ -140,6 +140,37 @@ function Buyer(Id) {
         setValidtedCoinType(event.target.value);
     }
 
+    const [myBalances, setMyBalances] = useState([]);
+    
+    
+    // Get the Accounts current Balance and convert to Wei and ETH
+    React.useEffect(() => {
+        handleGetBalance()
+    }, [])
+    const handleGetBalance = async () => {
+        let index = 0;
+        index++;
+        console.log(index, "sfsdfsdr");
+
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const account = accounts[0];
+
+        const balance = await window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
+
+        // // Returns a hex value of Wei
+        const wei = parseInt(balance, 16)
+        const gwei = (wei / Math.pow(10, 9)) // parse to Gwei
+        const eth = (wei / Math.pow(10, 18))// parse to ETH
+        const obj = {'id':index, 'name':"ETH", 'balance':eth};
+        setMyBalances([...myBalances, obj]);
+        console.log(wei, "wei");
+        console.log(gwei, "gwei");
+        console.log(eth, "eth");
+        console.log(balance);
+        // setEthBalance({ wei, gwei, eth })
+        // setShowBalanceModal(true)
+
+    }
     const re = /^[0-9.\b]+$/;
     const handleChange = (event, name) => {
         if (re.test(event.target.value) && (parseInt(event.target.value) <= parseInt(myBalances.filter((item) => item.name == name)[0].balance))) {
@@ -197,7 +228,7 @@ function Buyer(Id) {
 
     React.useEffect(() => {
         getMybalanceCoinPrice()
-    }, [])
+    }, [myBalances])
     const getMybalanceCoinPrice = () => {
         myBalances.forEach((item, index) => {
             // fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
@@ -214,6 +245,7 @@ function Buyer(Id) {
                 })
         })
     }
+
 
     //CoinType
 
@@ -336,7 +368,7 @@ function Buyer(Id) {
             }
         }
     }
-    
+
     // ETHERS SETUP
     const ethereum = window.ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum)
@@ -361,12 +393,12 @@ function Buyer(Id) {
         let givesTokenAddress = []
         let amountOrTokenIds = []
 
-        finalOfferdatas.map(function(i){
+        finalOfferdatas.map(function (i) {
             filterCoinTypes.push(coinTypes.filter((el) => el.name == i.name))
             amountOrTokenIds.push(i.balance)
         })
 
-        filterCoinTypes.map(function(e){
+        filterCoinTypes.map(function (e) {
             givesTokenAddress.push(e[0].address)
         })
 
@@ -375,14 +407,14 @@ function Buyer(Id) {
         /// @param refNonce Order ID
         /// @param gives Token Addresses (fungible and non-fungible)
         /// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
-            
+
         shakeContract.makeOfferFromOrder(1, [...givesTokenAddress], [...amountOrTokenIds], {
             gasLimit: 300000,
-        }).then(res=>{
+        }).then(res => {
             console.log(res)
         })
     }
-    
+
 
     const buyOrder = async () => {
         const accounts = await ethereum.request({
@@ -395,13 +427,13 @@ function Buyer(Id) {
         const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
         // getActiveOrderLength 
         const orderActiveSet = await shakeContract.getFromActiveOrderSet(1)
-    
+
         /// @notice Buy Few Orders at once. Anyone can execute this action
         /// @dev If at lesat one order is possible then transaction will be successful
         /// @param nonce - Array - Unique identifier of the order (always incremental)
         shakeContract.buyOrders([...orderActiveSet], {
             gasLimit: 300000
-        }).then(res=>{
+        }).then(res => {
             console.log(res)
         })
     }
@@ -493,25 +525,26 @@ function Buyer(Id) {
                                             onDragStart={(e) => onDragStart(e, myBalance.name)}
                                             key={myBalance.id}
                                             className={className}
+                                            style={{display : "flex", justifyContent : "space-between"}}
                                         >
                                             {!offerdata ?
                                                 <>
                                                     <img src="../static/images/client/image 14.png" />
-                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "25%" }}>{myBalance.balance}</TypographySize20>
-                                                    <TypographySize20 style={{ position: "relative", left: "50%"}}>{myBalance.name}</TypographySize20>
+                                                    <TypographySize20 >{myBalance.balance}</TypographySize20>
+                                                    <TypographySize20>{myBalance.name}</TypographySize20>
                                                     {!validatedToken ?
-                                                        <img id={"error-img" + myBalance.name} style={{ position: "relative", left: "100%", marginLeft: "-150px"}} />
+                                                        <img id={"error-img" + myBalance.name}  />
                                                         :
-                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" style={{ position: "relative", left: "100%", marginLeft: "-150px"}} />
+                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png"  />
                                                     }
                                                 </> : <>
                                                     <img src="../static/images/client/image 14.png" />
-                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "25%" }}>{myBalance.balance - offerdata.balance}</TypographySize20>
-                                                    <TypographySize20 style={{ position: "relative", left: "50%"}}>{myBalance.name}</TypographySize20>
+                                                    <TypographySize20>{myBalance.balance - offerdata.balance}</TypographySize20>
+                                                    <TypographySize20>{myBalance.name}</TypographySize20>
                                                     {!validatedToken ?
-                                                        <img id={"error-img" + myBalance.name} style={{ position: "relative", left: "100%", marginLeft: "-150px"}} />
+                                                        <img id={"error-img" + myBalance.name} />
                                                         :
-                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" style={{ position: "relative", left: "100%", marginLeft: "-150px"}} />
+                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" />
                                                     }
                                                 </>
                                             }
