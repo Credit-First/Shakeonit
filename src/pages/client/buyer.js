@@ -18,6 +18,8 @@ import { TypographySize12, TypographySize14, TypographySize18, TypographySize20,
 import Web3 from 'web3'
 import { ethers } from 'ethers'
 import { contract, web3, orderActiveSet, orderListLength, contractAbi, contractAddress } from '../../content/contractMethods'
+import { v4 as uuid } from 'uuid';
+
 
 const Container = styled.div`
     width: 70%;
@@ -82,7 +84,6 @@ const Border = styled.div`
     width : 100%;
     height : 250px;
     border : 2px dashed gray;
-
 `
 
 const collections = [
@@ -106,7 +107,7 @@ const ListContainer = Styled(Box)({
 });
 
 const ListImage = Styled(Box)({
-    width: "38%"
+    width: "30%"
 });
 
 const ListContent = Styled(Box)({
@@ -124,6 +125,8 @@ function Buyer(Id) {
     const coin = location.state.coin;
     const coinPrice = location.state.coinPrice;
     const coinType = location.state.coinType;
+
+    let uniqueId = "";
 
     const [OtherAction, setOtherAction] = useState("");
     const [offerdatas, setOfferData] = useState([]);
@@ -334,12 +337,6 @@ function Buyer(Id) {
         }
     }
     
-    // READ OPERATIONS
-    // getActiveOrderLength 
-    // const orderListLength = contract.methods.getActiveOrderLength().call()
-    // getFromActiveOrderSet
-    // const orderActiveSet = contract.methods.getFromActiveOrderSet().call()
-
     // ETHERS SETUP
     const ethereum = window.ethereum;
     const provider = new ethers.providers.Web3Provider(ethereum)
@@ -348,7 +345,7 @@ function Buyer(Id) {
     const makeCounterOffer = async () => {
         // let w3 = new Web3(window.web3.currentProvider)
         // const acct = await w3.eth.getAccounts[0]
-
+        uniqueId = uuid();
         const accounts = await ethereum.request({
             method: "eth_requestAccounts",
         });
@@ -409,33 +406,6 @@ function Buyer(Id) {
         })
     }
 
-    const updateOrder = async () => {
-        const accounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const walletAddress = accounts[0]    // first account in MetaMask
-        const signer = provider.getSigner(walletAddress)
-
-
-        // ethers contract instantiation
-        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
-        // getActiveOrderLength 
-        const getActiveOrderLength = shakeContract.getActiveOrderLength()
-        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
-
-        /// @notice Update the order by the user. We can cancel partially (if too call trade_amountGive = 0) then timestamp should be updated only
-        /// @dev ShakeOnIt DAO
-        /// @param nonce Unique identifier of the order (always incremental)
-        /// @param newGet new token user wants get
-        /// @param newAmountGet new token amount
-
-        shakeContract.updateOrder(1, "newGet", "newAmountGet", {
-            gasLimit: 300000
-        }).then(res=>{
-            console.log(res)
-        })
-    }
-
     //send datas
     const pricedata = {
         coin: coin,
@@ -443,6 +413,7 @@ function Buyer(Id) {
         priceValue: initialpriceValue,
         coinType: coinType,
         //after connecting backend
+        uniqueId: uniqueId,
         finalOfferdatas: finalOfferdatas,
         isflag: isflag,
         valiatedprice: valiatedprice,
@@ -463,8 +434,8 @@ function Buyer(Id) {
                     <ListContent className="listContent">
                         <BoxBetween>
                             <BoxCenter className=" px-2 py-2 rounded-xl bg-white">
-                                <Avatar className="mx-3" alt="Remy Sharp" src="/static/images/cards/avatar.png" />
-                                <TypographySize18 className="flex items-center px-3">Steven Bartlett</TypographySize18>
+                                <Avatar className="" alt="Remy Sharp" src="/static/images/cards/avatar.png" />
+                                <TypographySize18 className="flex items-center pl-3">Steven Bartlett</TypographySize18>
                             </BoxCenter>
                             <BoxCenter className="flex items-center">
                                 <TypographySize12 className="remain-btn pulse1 px-1 sm:px-2 py-2">Remaining 100/500</TypographySize12>
@@ -630,7 +601,7 @@ function Buyer(Id) {
                     </div>
                 </ListContainer>
             </div>
-            <div style={{ position: "absolute", bottom: "330px", right: '10px' }}>
+            <div style={{ position: "absolute", bottom: "70px", right: '10px' }}>
                 <Box className="rounded-xl message bg-gray-100" id="openchat" style={{ display: "none" }}>
                     <Box className="rounded-xl text-white user-bg relative">
                         <Box className="text-2xl font-medium px-12 py-3">

@@ -1,5 +1,6 @@
 import './App.css';
 import { Routes, Route } from "react-router-dom";
+import { Box } from '@mui/material';
 import Collections from './pages/trade/collections';
 import Preview from './pages/trade/preview/preview';
 import List from './pages/trade/list/list';
@@ -19,7 +20,7 @@ function App() {
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <>
+    <Box style={{minHeight : "100vh", position : "relative"}}>
       <Header isOpen={isOpen} isOpened = {isOpened} setOpen = {setOpen} setOpened = {setOpened} />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -33,7 +34,7 @@ function App() {
         <Route path='/buyer/:collectionId' element={<Buyer />} />
       </Routes>
       <Footer isOpen={isOpen} isOpened = {isOpened} setOpen = {setOpen} setOpened = {setOpened} />
-    </>
+    </Box>
   );
 }
 

@@ -31,7 +31,7 @@ function Resources() {
         <ContainerBox>
             <Box className="company-bg1">
                 <center className="resources-bg">
-                    <TypographySize48 className="pb-12">Resources for getting started</TypographySize48>
+                    <TypographySize48 className="py-12">Resources for getting started</TypographySize48>
                 </center>
 
                 <GridStyle alignItems="center"

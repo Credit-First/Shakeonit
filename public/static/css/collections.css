@@ -150,9 +150,9 @@ nav {
     border-color: #71BED8 !important;
 }
 
-.bg-list {
+/* .bg-list {
     background-color: #ebf2f5;
-}
+} */
 
 .message {
     width: 320px;
@@ -562,9 +562,9 @@ background: rgba(46, 57, 81, 1);
 
 @media only screen and (min-width : 1301px) and (max-width : 1469px) {
 
-    .img {
+    /* .img {
         height: 90%;
-    }
+    } */
 
     .previewcard {
         width: 90%;
@@ -625,7 +625,7 @@ background: rgba(46, 57, 81, 1);
     padding: 14px !important;
 }
 
-@media only screen and (max-width : 1023px) {
+@media only screen and (max-width : 850px) {
     .listImage {
         display: flex;
         justify-content: center;
@@ -648,10 +648,33 @@ background: rgba(46, 57, 81, 1);
     padding-right: 1.5rem;
     padding-left: 1.5rem;
 }
+@media only screen and (min-width : 851px) and (max-width : 1023px) {
+    .listImage {
+        display: flex;
+        justify-content: center;
+        width: 100% !important;
+        margin-bottom: 7%;
+    }
+
+    .img {
+        width: 70%;
+    }
+
+    .listContent {
+        width: 100% !important;
+    }
+}
+
+.recentactivity {
+    margin-right: 19%;
+    margin-left: 19%;
+    padding-right: 1.5rem;
+    padding-left: 1.5rem;
+}
 
 @media only screen and (min-width : 1024px) {
     .img {
-        width: 85%;
+        width: 100%;
     }
 }
 

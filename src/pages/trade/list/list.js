@@ -51,6 +51,7 @@ function List(props) {
     const coin = location.state.coin;
     const coinPrice = location.state.coinPrice;
 
+    const uniqueId = location.state.uniqueId;
 
     const finalOfferdatas = location.state.finalOfferdatas;
     const isflag = location.state.isflag;
@@ -101,7 +102,7 @@ function List(props) {
         const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
         // getActiveOrderLength 
         const getActiveOrderLength = shakeContract.getActiveOrderLength()
-        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
+        const orderActiveSet = shakeContract.getFromActiveOrderSet([uniqueId])
         
         shakeContract.cancelOrder(BigNumber.from(orderActiveSet), {
             gasLimit: 300000

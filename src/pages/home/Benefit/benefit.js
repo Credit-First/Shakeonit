@@ -5,11 +5,11 @@ import { TypographySize40, TypographySize242 } from "../../../components/Typogra
 
 function OurBenefit() {
     return (
-        <Box className="flex items-center">
+        <Box className="flex items-center md:px-4">
             <Box>
-                <BoxCenter>
+                <Box className="flex items-start mx-3" style={{paddingTop : "15px" }}>
                     <TypographySize40>Our Benefits</TypographySize40>
-                </BoxCenter>
+                </Box>
                 <Box className="mx-3 lg:mx-10 my-10">
                     <Box className="relative" style={{ float: "left" }}>
                         <img src="static/images/home/Group 4460.png" alt="" />

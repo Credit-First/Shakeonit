@@ -16,7 +16,7 @@ function NFT() {
                 className="flex items-center"
             >
                 <div>
-                    <img src="/static/images/home/Vector 19.png" alt="vector" className="pb-3" />
+                    <img src="/static/images/home/Vector 19.png" alt="vector" className="py-3" />
                     <TypographySize40 className="flex justify-start pb-12 lg:pb-32">Sell your NTFs</TypographySize40>
                 </div>
             </Grid>

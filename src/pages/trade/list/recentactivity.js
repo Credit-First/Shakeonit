@@ -44,7 +44,7 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
 
         shakeContract.acceptOffer(BigNumber.from(orderActiveSet), {
             gasLimit: 300000
-        }).then(res=>{
+        }).then(res => {
             console.log(res)
         })
     }
@@ -81,13 +81,13 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
                                 }
                                 <div style={{ width: "25%" }}>
                                     <AssetCard style={{ justifyContent: "center" }} className="px-1">
-                                        <SearchIcon style={{color : "white"}} />
+                                        <SearchIcon style={{ color: "white" }} />
                                     </AssetCard>
                                 </div>
                             </div>
                         </Box>
                         <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center items-center">
-                        <Box onClick={acceptTradeOffer} className="outlined-btn1 text-list-accept pulse">Accept Offer</Box>
+                            <Box onClick={acceptTradeOffer} className="outlined-btn1 text-list-accept pulse">Accept Offer</Box>
                         </Box>
                     </Box>
                     <Box className="my-6" >
@@ -113,47 +113,49 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
                 </Box>
             </div>
             {!showFlag ? '' :
-                <Box className="absolute rounded-xl message bg-gray-100">
-                    <Box className="rounded-xl text-white user-bg relative">
-                        <Box className="text-2xl font-medium px-12 py-3">
-                            Jordan Powell
-                        </Box>
-                        <Box className="flex pl-4 pr-16  py-3">
-                            <Avatar className="mx-3">
-                                {"J"}
-                            </Avatar>
-                            <Box className="text-white">Hello sofia, how can we help you</Box>
-                        </Box>
-                    </Box>
-                    <Box style={{ display: "block" }} className="px-5">
-                        <Box className="sms-y my-3">
-                            <p className="rounded-xl m-you px-2 text-white">Hello</p>
-                        </Box>
-                        <Box className="sms-o my-3" style={{ width: "50%" }}>
-                            <p className="rounded-xl m-other px-2">Hello Sofia, how can we help you?</p>
-                        </Box>
-                        <Box className="sms-y my-3">
-                            <p className="rounded-xl m-you px-2 text-white">Lorem Ipsum</p>
-                        </Box>
-                        <Box className="sms-o my-3">
-                            <p className="rounded-xl m-other px-2">Lorem Ipsum</p>
-                        </Box>
-                    </Box>
-                    <Box className="flex justify-between px-4 rounded-xl bg-white py-3">
-                        <Box>
-                            <input placeholder="type here..."></input>
-                        </Box>
-                        <Box className="block md:flex">
-                            <Box>
-                                <img src="/static/images/send-2.png" />
+                <div style={{ position: "absolute", bottom: "25px", right: '10px' }}>
+                    <Box className="rounded-xl message bg-gray-100">
+                        <Box className="rounded-xl text-white user-bg relative">
+                            <Box className="text-2xl font-medium px-12 py-3">
+                                Jordan Powell
                             </Box>
+                            <Box className="flex pl-4 pr-16  py-3">
+                                <Avatar className="mx-3">
+                                    {"J"}
+                                </Avatar>
+                                <Box className="text-white">Hello sofia, how can we help you</Box>
+                            </Box>
+                        </Box>
+                        <Box style={{ display: "block" }} className="px-5">
+                            <Box className="sms-y my-3">
+                                <p className="rounded-xl m-you px-2 text-white">Hello</p>
+                            </Box>
+                            <Box className="sms-o my-3" style={{ width: "50%" }}>
+                                <p className="rounded-xl m-other px-2">Hello Sofia, how can we help you?</p>
+                            </Box>
+                            <Box className="sms-y my-3">
+                                <p className="rounded-xl m-you px-2 text-white">Lorem Ipsum</p>
+                            </Box>
+                            <Box className="sms-o my-3">
+                                <p className="rounded-xl m-other px-2">Lorem Ipsum</p>
+                            </Box>
+                        </Box>
+                        <Box className="flex justify-between px-4 rounded-xl bg-white py-3">
                             <Box>
+                                <input placeholder="type here..."></input>
+                            </Box>
+                            <Box className="block md:flex">
+                                <Box>
+                                    <img src="/static/images/send-2.png" />
+                                </Box>
+                                <Box>
 
+                                </Box>
                             </Box>
                         </Box>
+                        <Box style={{ position: "absolute", bottom: "-60px", right: "0px" }} onClick={() => setShowFlag(false)}><img src="/static/images/arrow-circle-down.png" /></Box>
                     </Box>
-                    <Box className="absolute" style={{ left: "-60px" }} onClick={() => setShowFlag(false)}><img src="/static/images/arrow-circle-down.png" /></Box>
-                </Box>
+                </div>
             }
         </>
     );

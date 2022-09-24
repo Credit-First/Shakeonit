@@ -12,10 +12,11 @@ import Shakeoint from "./shakeoint";
 import Explore from "./explore";
 import BuyBg from "../../components/Background/buybg";
 import GreenLine_h_bg from "../../components/Background/greenline_h_bg";
+import { Box } from "@mui/material";
 
 function Home() {
     return (
-        <>
+        <Box style={{background : "white"}}>
             <BuyBg>
                 <BuyAndSell />
             </BuyBg>
@@ -33,7 +34,7 @@ function Home() {
                     <Explore />
                 </ExploreContainer>
             </ExploreBG>
-        </>
+        </Box>
     );
 }
 

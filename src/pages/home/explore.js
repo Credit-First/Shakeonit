@@ -5,8 +5,8 @@ import { TypographySize40, TypographySize242, TypographySize14 } from "../../com
 function Explore() {
     return (
         <>
-            <TypographySize40 style={{display : "flex" , justifyContent : "start !important"}}>Explore Our Collections</TypographySize40>
-            <div>
+            <TypographySize40 style={{display : "flex" , justifyContent : "start !important", paddingBottom : "15px"}}>Explore Our Collections</TypographySize40>
+            <div className="lg:pr-12">
                 <div className="grid grid-cols-1 lg:gap-6 lg:grid-cols-2">
                     <div className="flex justify-center">
                         <img className="img-radius" src="static/images/home/bakc4343.jpg" alt="" />

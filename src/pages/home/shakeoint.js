@@ -7,7 +7,7 @@ import BoxCenter from "../../components/Box/BoxCenter";
 function Shakeoint() {
     return (
         <Box className="px-4 md:px-12 lg:px-24 xl:px-72 py-6 md:py-24">
-            <BoxCenter>
+            <BoxCenter className="mb-4">
                 <TypographySize40>Shakeoint brings value to...</TypographySize40>
             </BoxCenter>
             <Grid

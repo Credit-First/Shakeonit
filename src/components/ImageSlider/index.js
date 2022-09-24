@@ -12,9 +12,9 @@ function Banner(props) {
   let item = props.item;
   return (
     <Box className="Banner">
-      <Grid container spacing={0} className="BannerGrid">
-        <img alt={item.alt} src={item.imgSrc} className="" />
-      </Grid>
+      <Box className="BannerGrid">
+        <img alt={item.alt} src={item.imgSrc} />
+      </Box>
     </Box>
   );
 }
@@ -104,7 +104,6 @@ class BannerExample extends React.Component {
   render() {
     return (
       <Carousel
-        className="Example"
         autoPlay={this.state.autoPlay}
         animation={this.state.animation}
         indicators={this.state.indicators}

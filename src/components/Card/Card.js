@@ -15,7 +15,7 @@ function TradeCard({ image, name, id }) {
         // to={`/buy/${id}`}
         >
             <div>
-                <Card className="my-3 px-16 pt-5 pb-5 md:px-10 lg:mx-5 lg:px-5"
+                <Card className="my-3 mx-2 px-3 pt-3 md:px-5 md:pt-5 pb-5 md:mx-10 lg:mx-5"
                     style={{
                         borderRadius: "24px"
                     }}>

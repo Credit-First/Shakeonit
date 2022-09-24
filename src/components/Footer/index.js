@@ -47,20 +47,20 @@ export default function Footer({isOpen, isOpened, setOpen, setOpened}) {
     })
     // console.log(window.localStorage.getItem('isOpened'), "8888888888");
     return (
-        <Box style={{ backgroundColor: "#2E3951" }}>
+        <Box style={{ backgroundColor: "#2E3951" , position : "absolute", minWidth : "100%" }}>
             <BoxCenter className="pt-12 py-6">
                 <LinkStyle href="/">
                     <img src="/static/images/footer/Frame 2 (1).png" alt="footer" />
                 </LinkStyle>
             </BoxCenter>
             <Box className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 text-footer pb-4 lg:px-64" style={{ fontSize: "20px", fontWeight: "400" }}>
-                <LinkStyle underline="none" color="inherit" href="/marketplace">Marketplace</LinkStyle>
+                <LinkStyle underline="none" color="inherit">Marketplace</LinkStyle>
                 <LinkStyle underline="none" color="inherit" href="/resources">Resources</LinkStyle>
                 <LinkStyle underline="none" color="inherit" href="/company">Company</LinkStyle>
                 {!window.localStorage.getItem('account') ? <LinkStyle underline="none" color="inherit" onClick={() => setOpened(true)}>Connect Wallet</LinkStyle> :
                     <LinkStyle underline="none" color="inherit" onClick={() => handleDisconnect()}>Connect Wallet</LinkStyle>
                 }
-                <LinkStyle underline="none" color="inherit" href="/help">Help</LinkStyle>
+                <LinkStyle underline="none" color="inherit">Help</LinkStyle>
                 <LinkStyle underline="none" color="inherit" href="/privacypolicy">Privacy Policy</LinkStyle>
             </Box>
             <Box style={{ height: "30px" }} className="px-24">

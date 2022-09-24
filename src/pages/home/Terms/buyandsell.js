@@ -25,7 +25,7 @@ const TermsContain = styled.div`
     display : flex;
     align-items : center;
     @media only screen and (max-width : 1200px) {
-        width : 100%
+        width : 100%;
     }
     
 `
