@@ -11,7 +11,7 @@ import BoxCenter from "../../components/Box/BoxCenter";
 import BoxBetween from "../../components/Box/BoxBetween";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { coinTypes } from "../../content/config";
+import { coinTypes, myBalances } from "../../content/config";
 import { validatedTokens } from "../../content/config";
 import CloseIcon from '@mui/icons-material/Close';
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize20, TypographySize32, TypographySize42 } from "../../components/Typography/TypographySize";
@@ -19,7 +19,7 @@ import Web3 from 'web3'
 import { ethers } from 'ethers'
 import { contract, web3, orderActiveSet, orderListLength, contractAbi, contractAddress } from '../../content/contractMethods'
 import { v4 as uuid } from 'uuid';
-import Modal from "../../components/Modal/modal";
+import Modal from "./src/components/Modal/modal";
 
 
 const Container = styled.div`
@@ -134,10 +134,6 @@ function Buyer(Id) {
     const [finalOfferdatas, setFinalOfferdatas] = useState([]);
     const [totalprice, setTotalPrice] = useState(0);
     const [content, setContent] = useState("");
-    const [isOpen, setOpen] = useState(false);
-    const handleClose = () => {
-        setOpen(false);
-    }
 
     const [validatedCoinType, setValidtedCoinType] = useState(Array(validatedTokens).fill(0));
     const [validatedcoinPrice, setValidatedCoinPrice] = useState(Array(validatedTokens).fill(0))
@@ -146,30 +142,34 @@ function Buyer(Id) {
         setValidtedCoinType(event.target.value);
     }
 
-    const [myBalances, setMyBalances] = useState([]);
+    // const [myBalances, setMyBalances] = useState([]);
     
     // Get the Accounts current Balance and convert to Wei and ETH
-    React.useEffect(() => {
-        handleGetBalance()
-    }, [])
-    const handleGetBalance = async () => {
+    // React.useEffect(() => {
+    //     handleGetBalance()
+    // }, [])
+    // const handleGetBalance = async () => {
 
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = accounts[0];
+    //     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    //     const account = accounts[0];
 
-        const balance = await window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
+    //     const balance = await window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
 
-        // // Returns a hex value of Wei
-        const wei = parseInt(balance, 16)
-        const gwei = (wei / Math.pow(10, 9)) // parse to Gwei
-        const eth = Math.round((wei / Math.pow(10, 18))*10000)// parse to ETH
-        const ceth = parseFloat(eth/10000);
-        const obj = {'id':1, 'name':"ETH", 'balance':ceth};
-        setMyBalances([...myBalances, obj]);
-        // setEthBalance({ wei, gwei, eth })
-        // setShowBalanceModal(true)
+    //     // // Returns a hex value of Wei
+    //     const wei = parseInt(balance, 16)
+    //     const gwei = (wei / Math.pow(10, 9)) // parse to Gwei
+    //     const eth = Math.round((wei / Math.pow(10, 18)))// parse to ETH
+    //     const obj = {'id':1, 'name':"Eth", 'balance':eth};
+    //     // setMyBalances([...myBalances, obj]);
+    //     console.log(wei, "wei");
+    //     console.log(obj, "obj");
+    //     console.log(gwei, "gwei");
+    //     console.log(eth, "eth");
+    //     console.log(balance);
+    //     // setEthBalance({ wei, gwei, eth })
+    //     // setShowBalanceModal(true)
 
-    }
+    // }
     const re = /^[0-9.\b]+$/;
     const handleChange = (event, name) => {
         if (re.test(event.target.value) && (parseInt(event.target.value) <= parseInt(myBalances.filter((item) => item.name == name)[0].balance))) {
@@ -182,11 +182,9 @@ function Buyer(Id) {
             );
         }
         else if (!re.test(event.target.value)) {
-            setOpen(true);
             setContent("Please input only number!");
         }
         else if ((parseInt(event.target.value) > parseInt(myBalances.filter((item) => item.name == name)[0].balance))) {
-            setOpen(true);
             setContent("Please input less value than your balance!")
         }
     }
@@ -227,11 +225,10 @@ function Buyer(Id) {
 
     const [myBalancePrice, setMyBalancePrice] = useState(Array(myBalances).fill(0))
 
-    
+    console.log(myBalances, "/////");
     React.useEffect(() => {
-        getMybalanceCoinPrice();
-        getCoinType();
-    }, [myBalances])
+        getMybalanceCoinPrice()
+    }, [])
     const getMybalanceCoinPrice = () => {
         myBalances.forEach((item, index) => {
             // fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
@@ -253,6 +250,10 @@ function Buyer(Id) {
     //CoinType
 
     const [CoinTypesPrice, setCoinTypesPrice] = useState(Array(myBalances).fill(0))
+
+    React.useEffect(() => {
+        getCoinType()
+    }, [])
     const getCoinType = () => {
         myBalances.forEach((item, index) => {
             // fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
@@ -295,7 +296,6 @@ function Buyer(Id) {
     //validation balance
     const [total, setPreTotal] = useState(0);
     const [disableflag, setDisableFlag] = useState(false);
-    const [flag, setIsflag] = useState(true);
     useEffect(() => {
         let pretotal = 0;
         let currentPrice = 0;
@@ -305,17 +305,15 @@ function Buyer(Id) {
                 currentPrice = currentcoinType[0].balance;
                 // setPreTotal(parseInt(pretotal) + parseInt(myBalance.balance));
                 var id = parseInt(myBalance.id) - 1;
-                pretotal += (parseFloat(myBalance.balance) * parseInt(myBalancePrice[id]));
+                pretotal += ((myBalance.balance) * (myBalancePrice[id]));
             }
         })
         setPreTotal(pretotal);
-        if (parseInt(total) < parseInt(initialpriceValue * coinPrice) && flag) {
+        if (parseInt(total) < parseInt(initialpriceValue * coinPrice)) {
             document.getElementById('changeprice').style.display = 'none';
             setDisableFlag(true);
             if (OtherAction == "counteroffer") {
-                setOpen(true);
                 setContent("You can't buy this NFT because your balance is less than the NFTs price!")
-                setIsflag(false);
             }
         }
         else if (parseInt(total) > parseInt(initialpriceValue * coinPrice)) {
@@ -330,6 +328,7 @@ function Buyer(Id) {
             // document.getElementsByClassName('assetcard').style.pointerEvents = 'auto';
         }
     });
+
     //validtedTodtalPrice
     const [valiatedprice, setValidatedPrice] = useState("");
     const validatedTotalprice = (e) => {
@@ -341,11 +340,9 @@ function Buyer(Id) {
             setTotalPrice(e.target.value * validatedcoinPrice[validatedCoinType]);
         }
         else if (!re.test(e.target.value)) {
-            setOpen(true);
             setContent("Please input only number!")
         }
         else if (parseInt(price) > parseInt(initialpriceValue * coinPrice)) {
-            setOpen(true);
             setContent("Please input less value than your balance!")
         }
     }
@@ -353,6 +350,7 @@ function Buyer(Id) {
     //drag and drop
 
     const onDragStart = (ev, id) => {
+        console.log('dragstart:', id);
         ev.dataTransfer.setData("id", id);
     }
 
@@ -419,33 +417,25 @@ function Buyer(Id) {
 
 
     const buyOrder = async () => {
-        setIsflag(true);
-        if (parseInt(total) < parseInt(initialpriceValue * coinPrice) && flag) {
-                setOpen(true);
-                setContent("You can't buy this NFT because your balance is less than the NFTs price!")
-                setIsflag(false);
-        }
-        else if(parseInt(total) >= parseInt(initialpriceValue * coinPrice)) {
-            const accounts = await ethereum.request({
-                method: "eth_requestAccounts",
-            });
-            const walletAddress = accounts[0]    // first account in MetaMask
-            const signer = provider.getSigner(walletAddress)
-    
-            // ethers contract instantiation
-            const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
-            // getActiveOrderLength 
-            const orderActiveSet = await shakeContract.getFromActiveOrderSet(1)
-    
-            /// @notice Buy Few Orders at once. Anyone can execute this action
-            /// @dev If at lesat one order is possible then transaction will be successful
-            /// @param nonce - Array - Unique identifier of the order (always incremental)
-            shakeContract.buyOrders([...orderActiveSet], {
-                gasLimit: 300000
-            }).then(res => {
-                console.log(res)
-            })
-        }
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const signer = provider.getSigner(walletAddress)
+
+        // ethers contract instantiation
+        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
+        // getActiveOrderLength 
+        const orderActiveSet = await shakeContract.getFromActiveOrderSet(1)
+
+        /// @notice Buy Few Orders at once. Anyone can execute this action
+        /// @dev If at lesat one order is possible then transaction will be successful
+        /// @param nonce - Array - Unique identifier of the order (always incremental)
+        shakeContract.buyOrders([...orderActiveSet], {
+            gasLimit: 300000
+        }).then(res => {
+            console.log(res)
+        })
     }
 
     //send datas

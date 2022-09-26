@@ -593,9 +593,9 @@ background: rgba(46, 57, 81, 1);
 
 @media only screen and (min-width : 1470px) {
 
-    .img {
+    /* .img {
         height: 90%;
-    }
+    } */
 
     .previewcard {
         width: 75%;

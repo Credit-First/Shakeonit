@@ -5,6 +5,12 @@ export const coinTypes = [
     {id: 4, name: 'DAI', address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D', router: 'https://makerdao.com', logo: '/coin/dai.svg'}
 ]
 
+export const myBalances = [
+    {id: 1, name: 'ETH', balance : '25'},
+    {id: 2, name: 'BNB', balance : '750'},
+    {id: 3, name: 'SOL', balance : '550'},
+]
+
 export const validatedTokens = [
     {id: 1, name: 'ETH'},
     {id: 2, name: 'SOL'},

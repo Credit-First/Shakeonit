@@ -20,6 +20,7 @@ import SendPost from './facebooksdk/sendpost';
 
 import { contract, contractAddress, contractAbi, web3  } from '../../../content/contractMethods';
 
+
 function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
     const pricedata = {
         coin : coin,
@@ -36,6 +37,7 @@ function Sharelink({ id, handleshowFlag, priceValue, coinPrice, coinType, coin }
 
     let facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u='
     let twitterShareUrl = 'https://twitter.com/share?ref_src=twsrc%5Etfw'
+
 
     const createOrder = async () => {
         // ETHERS SETUP
