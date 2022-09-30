@@ -1,16 +1,22 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "../../assets/scss/customize.scss";
 import { Grid, Hidden } from "@mui/material";
 import Styled from "@mui/material/styles/styled";
 import Box from "@material-ui/core/Box";
 import BoxCenter from "../../components/Box/BoxCenter";
-import Container from "@material-ui/core/Container";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import TradeCard from '../../components/Card/Card';
 import { TypographySize14 } from "../../components/Typography/TypographySize";
 import CollectionBg from "../../components/Background/collectionbg";
+import Web3 from "web3";
+import CryptoPunks from "../../abis/NFT/CryptoPunks";
+import Bored_Ape_Yacht from "../../abis/NFT/Bored Ape Yacht"
 
+
+const RPC_URL = 'wss://speedy-nodes-nyc.moralis.io/abdb0d6d64ec4cb0abe4efdd/eth/ropsten/ws';
+const web3 = new Web3(new Web3.providers.WebsocketProvider(RPC_URL));
+
+const cryptoPunksCtx = new web3.eth.Contract(CryptoPunks.abi, CryptoPunks.address);
+const bored_Ape_Yacht = new web3.eth.Contract(Bored_Ape_Yacht.abi, Bored_Ape_Yacht.address);
 
 const collections = [
     { id: "1", image: "../static/images/cards/Rectangle 38.png", name: "Moonbirds" },
@@ -22,7 +28,6 @@ const CollectionContainer = Styled(Box)({
     paddingLeft: "7%",
     paddingRight: "7%"
 });
-
 
 
 function Collections() {
