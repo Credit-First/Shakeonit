@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './App.css';
 import { Routes, Route } from "react-router-dom";
 import { Box } from '@mui/material';
@@ -12,7 +13,7 @@ import Home from './pages/home';
 import Buyer from './pages/client/buyer';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { useState } from 'react';
+import Web3Provider from "./providers/web3Provider";
 
 function App() {
 
@@ -20,6 +21,8 @@ function App() {
   const [isOpen, setOpen] = useState(false);
 
   return (
+    
+    <Web3Provider>
     <Box style={{minHeight : "100vh", position : "relative"}}>
       <Header isOpen={isOpen} isOpened = {isOpened} setOpen = {setOpen} setOpened = {setOpened} />
       <Routes>
@@ -35,6 +38,7 @@ function App() {
       </Routes>
       <Footer isOpen={isOpen} isOpened = {isOpened} setOpen = {setOpen} setOpened = {setOpened} />
     </Box>
+    </Web3Provider>
   );
 }
 
