@@ -9,6 +9,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Wallet from "../Modal/wallet";
 import Sign from "../Modal/sign";
 import { useEffect } from "react";
+import WalletModal from "../Modal/wallet";
 
 const StyleMenuItem = styled('li')({
     padding: 20,
@@ -51,8 +52,6 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
         return `${address.slice(0, width)}...${address.slice(-width)}`;
     }
 
-    
-
     return (
         <>
             <Box className="flex justify-between px-6" style={{ height: "100px", width: "100%", background: "white" }}>
@@ -94,13 +93,7 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                     }
                     <Box className="flex items-center">
                         <Box className="flex justify-center items-center" style={{ height: "56px", width: "211px" }}>
-                            <div className="gradient pulse flex justify-center items-center" style={{ width: "100%", height: "100%" }}>
-                                <div className="bg-white gradient-child flex justify-center items-center" style={{ width: "100%", height: "100%" }}>
-                                    {!window.localStorage.getItem('account') ? <a style={{ textAlign: "center" }} onClick={() => setOpened(true)} className="flex items-center connect-btn">{account}</a> :
-                                        <a style={{ textAlign: "center" }} onClick={() => handleDisconnect()} className="flex items-center connect-btn">{ellipseAddress(window.localStorage.getItem('account'))}</a>
-                                    }
-                                </div>
-                            </div>
+                            <WalletModal />
                         </Box>
                     </Box>
                 </Hidden>
@@ -136,7 +129,6 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                     </ul>
                 </Box>
             </Hidden>
-            <Wallet open={isOpened} onClose={handleClose} getData={getAddress} />
             <Sign open={isOpen} onClose={handleSignClose} getName={getAddress} />
         </>
     );

@@ -77,7 +77,7 @@ export default function Footer({isOpen, isOpened, setOpen, setOpened}) {
                     <BoxIcon><FacebookIcon /></BoxIcon>
                 </Box>
             </Box>
-            <Wallet open={isOpened} onClose={handleClose} getData={getAddress} />
+            {/* <Wallet open={isOpened} onClose={handleClose} getData={getAddress} /> */}
             <Sign open={isOpen} onClose={handleSignClose} getName={getAddress} />
         </Box>
     );

@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import shakeonitABI from '../abis/shakeonit.json'
+import shakeonitABI from '../config/abi/shakeonit.json';
 
 export const contractAbi = shakeonitABI;
 export const contractAddress = "0x706C0D0dD4a9DA0d058a0ae137Fa4999186D8d5C";
