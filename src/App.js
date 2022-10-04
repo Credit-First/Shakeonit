@@ -28,7 +28,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/collections' element={<Collections />} />
-        <Route path='/preview/:collectionId' element={<Preview />} />
+        <Route path='/preview/:tokenId' element={<Preview />} />
         <Route path='/list/:collectionId' element={<List />} />
         <Route path='/company' element={<Company />} />
         <Route path='/privacypolicy' element={<PrivacyPolicy />} />

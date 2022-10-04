@@ -2,17 +2,19 @@ import React from "react";
 import Card from "@material-ui/core/Card";
 import CardMedia from '@mui/material/CardMedia';
 import { TypographySize20 } from "../Typography/TypographySize";
-import Link from "@mui/material/Link";
-import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-function TradeCard({ image, name, id }) {
+function TradeCard(item) {
+    const navigate = useNavigate();
+
+    const handleLink = () => {
+        localStorage.setItem('shakeonit_preview', JSON.stringify(item))
+        navigate(`/preview/${item.tokenId}`)
+    }
+
     return (
-        <Link
-            component={RouterLink}
-            underline="none"
-            color="inherit"
-            to={`/preview/${id}`}
-        // to={`/buy/${id}`}
+        <div
+            onClick={handleLink}
         >
             <div>
                 <Card className="my-3 mx-2 px-3 pt-3 md:px-5 md:pt-5 pb-5 md:mx-10 lg:mx-5"
@@ -21,21 +23,20 @@ function TradeCard({ image, name, id }) {
                     }}>
                     <CardMedia
                         component="img"
-                        // height="140"
-                        image={image}
+                        image={item.image}
                         style={{ objectFit: "cover" }}
                     />
                     <div className="flex justify-center">
                         <TypographySize20>
-                            {name}
+                            {item.name}
                         </TypographySize20>
                     </div>
                     <div className="flex justify-center">
-                        <div className="sell_btn tex-btn pulse">Sell</div>
+                        <div className="cursor-pointer sell_btn tex-btn pulse">Sell</div>
                     </div>
                 </Card>
             </div>
-        </Link>
+        </div>
     );
 }
 

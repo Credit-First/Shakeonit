@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import clsx from 'clsx';
 import "../../assets/scss/customize.scss";
 import { Grid, Hidden } from "@mui/material";
 import Styled from "@mui/material/styles/styled";
@@ -10,16 +9,20 @@ import { TypographySize14 } from "../../components/Typography/TypographySize";
 import CollectionBg from "../../components/Background/collectionbg";
 import Config from '../../config/app';
 import Web3 from "web3";
-import { useWeb3React } from "@web3-react/core";
 import { httpGet } from "../../utils/http.utils";
 import CollectionCard from "../../components/Card/CollectionCard";
 
 const collections = [
-    { id: 1, image: "../static/images/collections/art_blocks.avif", name: "artBlocks", label: "Art Blocks" },
-    { id: 2, image: "../static/images/collections/azuki.avif", name: "azuki", label: "Azuki" }, 
+    { id: 1, image: "../static/images/collections/azuki.avif", name: "azuki", label: "Azuki" }, 
+    { id: 2, image: "../static/images/collections/bored_ape_kennel.avif", name: "boredApeKennel", label: "Bored Ape Kennel" },
     { id: 3, image: "../static/images/collections/bored_ape_yacht.avif", name: "boredApeYacht", label: "Bored Ape Yacht" },
     { id: 4, image: "../static/images/collections/cryptopunks.avif", name: "cryptoPunks", label: "CryptoPunks" },
-    { id: 5, image: "../static/images/collections/doodles.avif", name: "doodles", label: "Doodles" },
+    { id: 5, image: "../static/images/collections/clonex.avif", name: "cloneX", label: "CloneX" }, 
+    { id: 6, image: "../static/images/collections/doodles.avif", name: "doodles", label: "Doodles" },
+    { id: 7, image: "../static/images/collections/deadfellaz.avif", name: "deadFellaz", label: "DeadFellaz" },
+    { id: 8, image: "../static/images/collections/mutant_ape_yacht.avif", name: "mutantApeYacht", label: "Mutant Ape Yacht" },
+    { id: 9, image: "../static/images/collections/moonbirds.avif", name: "moonbirds", label: "Moonbirds" },
+    { id: 10, image: "../static/images/collections/otherside.avif", name: "otherside", label: "Otherside" },
 ];
 
 const CollectionContainer = Styled(Box)({
@@ -27,56 +30,188 @@ const CollectionContainer = Styled(Box)({
     paddingRight: "7%"
 });
 
-const image = "../static/image/cards/Frame 2 (2).png";
-
 function Collections() {
-    const { account } = useWeb3React();
     const [balance, setBalance] = useState({
-        artBlocks: 0,
+        otherside: 0,
         azuki: 0,
         boredApeYacht: 0,
         cryptoPunks: 0,
-        doodles: 0
+        doodles: 0,
+        boredApeKennel: 0,
+        cloneX: 0,
+        mutantApeYacht: 0,
+        moonbirds: 0,
+        deadFellaz: 0
     });
     const [loading, setLoading] = useState({
-        artBlocks: true,
         azuki: true,
         boredApeYacht: true,
+        boredApeKennel: true,
         cryptoPunks: true,
-        doodles: true
+        cloneX: true,
+        doodles: true,
+        deadFellaz: true,
+        mutantApeYacht: true,
+        moonbirds: true,
+        otherside: true,
+
     })
     const [collectionShow, setCollectionShow] = useState(true);
     const [selectedCollection, setSelectedCollection] = useState('');
-    const [artBlocksNFT, setArtBlocksNFT] = useState([]);
+    const [othersideNFT, setOthersideNFT] = useState([]);
     const [azukiNFT, setAzukiNFT] = useState([]);
     const [boredApeYachtNFT, setBoredApeYachtNFT] = useState([]);
     const [cryptoPunksNFT, setCryptoPunksNFT] = useState([]);
     const [doodlesNFT, setDoodlesNFT] = useState([]);
+    const [boredApeKennelNFT, setBoredApeKennelNFT] = useState([]);
+    const [cloneXNFT, setCloneXNFT] = useState([]);
+    const [deadFellazNFT, setDeadFellazNFT] = useState([]);
+    const [mutantApeYachtNFT, setMutantApeYachtNFT] = useState([]);
+    const [moonbirdsNFT, setMoonbirdsNFT] = useState([]);
 
     const handleSelectCollection = (name) => {
         setSelectedCollection(name);
         setCollectionShow(!collectionShow);
     }
 
-    const getArtBlocksNFT = async (contract) => {
-        const totalSupply = await contract.methods.balanceOf(Config.artBlocks_account).call();
-        setBalance((state) => ({...state, artBlocks:totalSupply}));
+    const getOthersideNFT = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.otherside_account).call();
+        setBalance((state) => ({...state, otherside:totalSupply}));
         for (let i = 0; i < totalSupply; i++) {
-            const tokenId = await contract.methods.tokenOfOwnerByIndex(Config.artBlocks_account, i).call();
+            const tokenId = await contract.methods.tokenOfOwnerByIndex(Config.otherside_account, i).call();
             try {
                 const tokenURI = await contract.methods.tokenURI(tokenId).call();
                 const { image, name, collection_name, description } = await httpGet(tokenURI);
-                setArtBlocksNFT((list) => {
+                setOthersideNFT((list) => {
                     return [...list, { tokenId, image, name, collection_name, description }]
                 });
             } catch (error) {
             }
         }
-        setLoading((state) => ({...state, artBlocks: false}));
+        setLoading((state) => ({...state, otherside: false}));
     }
-    const getArtBlocksBalance = async (contract) => {
-        const totalSupply = await contract.methods.balanceOf(Config.artBlocks_account).call();
-        setBalance((state) => ({...state, artBlocks:totalSupply}));
+    const getOthersideBalance = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.otherside_account).call();
+        setBalance((state) => ({...state, otherside:totalSupply}));
+    }
+    const getCloneXNFT = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.cloneX_account).call();
+        setBalance((state) => ({...state, cloneX:totalSupply}));
+        for (let i = 0; i < totalSupply; i++) {
+            const tokenId = await contract.methods.tokenOfOwnerByIndex(Config.cloneX_account, i).call();
+            try {
+                const tokenURI = await contract.methods.tokenURI(tokenId).call();
+                const { image, name, description } = await httpGet(tokenURI);
+                setCloneXNFT((list) => {
+                    return [...list, { tokenId, image, name, description }]
+                });
+            } catch (error) {
+            }
+        }
+        setLoading((state) => ({...state, cloneX: false}));
+    }
+    const getCloneXBalance = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.cloneX_account).call();
+        setBalance((state) => ({...state, cloneX:totalSupply}));
+    }
+    const getMutantApeYachtNFT = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.mutantApeYacht_account).call();
+        setBalance((state) => ({...state, mutantApeYacht: totalSupply}));
+        for (let i = 0; i < totalSupply; i++) {
+            const tokenId = await contract.methods.tokenOfOwnerByIndex(Config.mutantApeYacht_account, i).call();
+
+            try {
+                let name = `Mutant Ape Yacht #${tokenId}`;
+                let tokenURI = await contract.methods.tokenURI(tokenId).call();
+                let { image } = await httpGet(tokenURI);
+                image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                setMutantApeYachtNFT((list) => {
+                    return [...list, { tokenId, image, name }]
+                });
+            } catch (error) {
+                
+            }
+        }
+        setLoading((state) => ({...state, mutantApeYacht: false}));
+    }
+    const getMutantApeYachtBalance = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.mutantApeYacht_account).call();
+        setBalance((state) => ({...state, mutantApeYacht:totalSupply}));
+    }
+    const getDeadFellazNFT = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.deadFellaz_account).call();
+        setBalance((state) => ({...state, deadFellaz:totalSupply}));
+        for (let i = 0; i < totalSupply; i++) {
+            const tokenId = await contract.methods.tokenOfOwnerByIndex(Config.deadFellaz_account, i).call();
+            try {
+                let tokenURI = await contract.methods.tokenURI(tokenId).call();
+                tokenURI = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                const { image, name, description } = await httpGet(tokenURI);
+                setDeadFellazNFT((list) => {
+                    return [...list, { tokenId, image, name, description }]
+                });
+            } catch (error) {
+            }
+        }
+        setLoading((state) => ({...state, deadFellaz: false}));
+    }
+    const getDeadFellazBalance = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.deadFellaz_account).call();
+        setBalance((state) => ({...state, deadFellaz:totalSupply}));
+    }
+    const getMoonbirdsNFT = async (contract) => {
+        const totalSupply = await contract.methods.totalSupply().call();
+        const balance = await contract.methods.balanceOf(Config.moonbirds_account).call();
+
+        for (let i = 0, j = 0; i < totalSupply, j < balance; i++) {
+            const tokenId = i;
+            const owner = await contract.methods.ownerOf(i).call();
+
+            try {
+                if(owner === Config.moonbirds_account) {
+                    const name = `Moonbirds #${tokenId}`;
+                    const tokenURI = await contract.methods.tokenURI(tokenId).call();
+                    const { image } = await httpGet(tokenURI);
+
+                    setMoonbirdsNFT((list) => {
+                        return [...list, { tokenId, image, name }]
+                    });
+                    
+                    j++;
+                }
+            } catch (error) {
+                
+            }
+        }
+        setLoading((state) => ({...state, moonbirds: false}));
+    }
+    const getMoonbirdsBalance = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.moonbirds_account).call();
+        setBalance((state) => ({...state, moonbirds:totalSupply}));
+    }
+    const getBoredApeKennelNFT = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.boredApeKennel_account).call();
+        setBalance((state) => ({...state, boredApeKennel: totalSupply}));
+        for (let i = 0; i < totalSupply; i++) {
+            const tokenId = await contract.methods.tokenOfOwnerByIndex(Config.boredApeKennel_account, i).call();
+            try {
+                let name = 'BORED APE KENNEL #' + tokenId;
+                let tokenURI = await contract.methods.tokenURI(tokenId).call();
+                tokenURI = tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                let { image } = await httpGet(tokenURI);
+                image = image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+                setBoredApeKennelNFT((list) => {
+                    return [...list, { tokenId, image, name }]
+                });
+            } catch (error) {
+                
+            }
+        }
+        setLoading((state) => ({...state, boredApeKennel: false}));
+    }
+    const getBoredApeKennelBalance = async (contract) => {
+        const totalSupply = await contract.methods.balanceOf(Config.boredApeKennel_account).call();
+        setBalance((state) => ({...state, boredApeKennel:totalSupply}));
     }
     const getAzukiNFT = async (contract) => {
         const totalSupply = await contract.methods.balanceOf(Config.azuki_account).call();
@@ -173,23 +308,38 @@ function Collections() {
     }
     const loadContract = () => {
         const web3 = new Web3(Web3.givenProvider);
-        const ArtBlocks = new web3.eth.Contract(Config.art_bloacks.abi, Config.art_bloacks.address);
+        const Otherside = new web3.eth.Contract(Config.otherside.abi, Config.otherside.address);
         const Azuki = new web3.eth.Contract(Config.azuki.abi, Config.azuki.address);
         const BoredApeYacht = new web3.eth.Contract(Config.boredApeYacht.abi, Config.boredApeYacht.address);
         const CryptoPunks = new web3.eth.Contract(Config.cryptoPunks.abi, Config.cryptoPunks.address);
         const Doodles = new web3.eth.Contract(Config.doodles.abi, Config.doodles.address);
+        const CloneX = new web3.eth.Contract(Config.cloneX.abi, Config.cloneX.address);
+        const MutantApeYacht = new web3.eth.Contract(Config.mutantApeYacht.abi, Config.mutantApeYacht.address);
+        const DeadFellaz = new web3.eth.Contract(Config.deadFellaz.abi, Config.deadFellaz.address);
+        const Moonbirds = new web3.eth.Contract(Config.moonbirds.abi, Config.moonbirds.address);
+        const BoredApeKennel = new web3.eth.Contract(Config.boredApeKennel.abi, Config.boredApeKennel.address);
 
-        getArtBlocksBalance(ArtBlocks);
+        getOthersideBalance(Otherside);
         getAzukiBalance(Azuki);
         getBoredApeYachtBalance(BoredApeYacht);
         getCryptoPunksBalance(CryptoPunks);
         getDoodlesBalance(Doodles);
+        getCloneXBalance(CloneX);
+        getMutantApeYachtBalance(MutantApeYacht);
+        getDeadFellazBalance(DeadFellaz);
+        getMoonbirdsBalance(Moonbirds);
+        getBoredApeKennelBalance(BoredApeKennel);
 
-        getArtBlocksNFT(ArtBlocks);
+        getOthersideNFT(Otherside);
         getAzukiNFT(Azuki);
         getBoredApeYachtNFT(BoredApeYacht);
         getCryptoPunksNFT(CryptoPunks);
         getDoodlesNFT(Doodles);
+        getCloneXNFT(CloneX);
+        getMutantApeYachtNFT(MutantApeYacht);
+        getDeadFellazNFT(DeadFellaz);
+        getMoonbirdsNFT(Moonbirds);
+        getBoredApeKennelNFT(BoredApeKennel);
     }
 
     useEffect(() => {
@@ -246,15 +396,15 @@ function Collections() {
                 }
 
                 <CollectionContainer className="pb-24"
-                style={ selectedCollection === "artBlocks" ? {display: 'block'} : {display: 'none'}}>
-                    {!loading.artBlocks && artBlocksNFT.length === 0 && <div>No Items</div>}
-                    {loading.artBlocks && <div>Loading...</div>}
+                style={ selectedCollection === "otherside" ? {display: 'block'} : {display: 'none'}}>
+                    {!loading.otherside && othersideNFT.length === 0 && <div>No Items</div>}
+                    {loading.otherside && <div>Loading...</div>}
                     <Grid
                         container
                         spacing={3}
                         justifyContent="center"
                     >
-                        {selectedCollection === "artBlocks" && artBlocksNFT.map((item, index) => {
+                        {selectedCollection === "otherside" && othersideNFT.map((item, index) => {
                             return (
                                 <Grid
                                     item
@@ -264,7 +414,7 @@ function Collections() {
                                     xs={12}
                                     key={index}
                                     className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
-                                    <TradeCard image={item.image} name={item.name} id={item.id} description={item.description} collectionName={item.collection_name} />
+                                    <TradeCard {...item} />
                                 </Grid>
                             )
                         } 
@@ -290,7 +440,7 @@ function Collections() {
                                 xs={12}
                                 key={index}
                                 className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
-                                <TradeCard image={item.image} name={item.name} id={item.id} description={item.description} collectionName={item.collection_name} />
+                                <TradeCard {...item} />
                             </Grid>
                         )}
                     </Grid>
@@ -314,7 +464,7 @@ function Collections() {
                                 xs={12}
                                 key={index}
                                 className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
-                                <TradeCard image={item.image} name={item.name} id={item.id} description={item.description} collectionName={item.collection_name} />
+                                <TradeCard {...item} />
                             </Grid>
                         )}
                     </Grid>
@@ -338,7 +488,7 @@ function Collections() {
                                 xs={12}
                                 key={index}
                                 className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
-                                <TradeCard image={item.image} name={item.name} id={item.id} description={item.description} collectionName={item.collection_name} />
+                                <TradeCard {...item} />
                             </Grid>
                         )}
                     </Grid>
@@ -362,7 +512,129 @@ function Collections() {
                                 xs={12}
                                 key={index}
                                 className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
-                                <TradeCard image={item.image} name={item.name} id={item.id} description={item.description} collectionName={item.collection_name} />
+                                <TradeCard {...item} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </CollectionContainer>
+                <CollectionContainer className="pb-24"
+                style={ selectedCollection === "boredApeKennel" ? {display: 'block'} : {display: 'none'}}>
+                    {!loading.boredApeKennel && boredApeKennelNFT.length === 0 && <div>No Items</div>}
+                    {loading.boredApeKennel && <div>Loading...</div>}
+                    <Grid
+                        container
+                        spacing={3}
+                        justifyContent="center"
+                    >
+                        {selectedCollection === "boredApeKennel" && boredApeKennelNFT.map((item, index) => {
+                            return (
+                                <Grid
+                                    item
+                                    lg={6}
+                                    md={6}
+                                    xl={4}
+                                    xs={12}
+                                    key={index}
+                                    className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
+                                    <TradeCard {...item} />
+                                </Grid>
+                            )
+                        } 
+                        )}
+                    </Grid>
+                </CollectionContainer>
+
+                <CollectionContainer className="pb-24"
+                style={ selectedCollection === "cloneX" ? {display: 'block'} : {display: 'none'}}>
+                    {!loading.cloneX && cloneXNFT.length === 0 && <div>No Items</div>}
+                    {loading.cloneX && <div>Loading...</div>}
+                    <Grid
+                        container
+                        spacing={3}
+                        justifyContent="center"
+                    >
+                        {cloneXNFT.map((item, index) =>
+                            <Grid
+                                item
+                                lg={6}
+                                md={6}
+                                xl={4}
+                                xs={12}
+                                key={index}
+                                className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
+                                <TradeCard {...item} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </CollectionContainer>
+
+                <CollectionContainer className="pb-24"
+                style={ selectedCollection === "deadFellaz" ? {display: 'block'} : {display: 'none'}}>
+                    {!loading.deadFellaz && deadFellazNFT.length === 0 && <div>No Items</div>}
+                    {loading.deadFellaz && <div>Loading...</div>}
+                    <Grid
+                        container
+                        spacing={3}
+                        justifyContent="center"
+                    >
+                        {deadFellazNFT.map((item, index) =>
+                            <Grid
+                                item
+                                lg={6}
+                                md={6}
+                                xl={4}
+                                xs={12}
+                                key={index}
+                                className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
+                                <TradeCard {...item} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </CollectionContainer>
+
+                <CollectionContainer className="pb-24"
+                style={ selectedCollection === "mutantApeYacht" ? {display: 'block'} : {display: 'none'}}>
+                    {!loading.mutantApeYacht && mutantApeYachtNFT.length === 0 && <div>No Items</div>}
+                    {loading.mutantApeYacht && <div>Loading...</div>}
+                    <Grid
+                        container
+                        spacing={3}
+                        justifyContent="center"
+                    >
+                        {mutantApeYachtNFT.map((item, index) =>
+                            <Grid
+                                item
+                                lg={6}
+                                md={6}
+                                xl={4}
+                                xs={12}
+                                key={index}
+                                className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
+                                <TradeCard {...item} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </CollectionContainer>
+
+                <CollectionContainer className="pb-24"
+                style={ selectedCollection === "moonbirds" ? {display: 'block'} : {display: 'none'}}>
+                    {!loading.moonbirds && moonbirdsNFT.length === 0 && <div>No Items</div>}
+                    {loading.moonbirds && <div>Loading...</div>}
+                    <Grid
+                        container
+                        spacing={3}
+                        justifyContent="center"
+                    >
+                        {moonbirdsNFT.map((item, index) =>
+                            <Grid
+                                item
+                                lg={6}
+                                md={6}
+                                xl={4}
+                                xs={12}
+                                key={index}
+                                className="mx-4 md:mx-24 lg:mx-4 rounded-2xl">
+                                <TradeCard {...item} />
                             </Grid>
                         )}
                     </Grid>
