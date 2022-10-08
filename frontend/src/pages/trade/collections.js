@@ -1,0 +1,96 @@
+import React, {useState, useEffect, useContext} from "react";
+import { useNavigate } from 'react-router-dom';
+import "../../assets/scss/customize.scss";
+import { Grid, Hidden } from "@mui/material";
+import Styled from "@mui/material/styles/styled";
+import Box from "@material-ui/core/Box";
+import BoxCenter from "../../components/Box/BoxCenter";
+import { TypographySize14 } from "../../components/Typography/TypographySize";
+import CollectionBg from "../../components/Background/collectionbg";
+import CollectionCard from "../../components/Card/CollectionCard";
+import NftContext from '../../context/nftContext';
+import { useWeb3React } from "@web3-react/core";
+import Config from '../../config/app';
+
+const CollectionContainer = Styled(Box)({
+    paddingLeft: "7%",
+    paddingRight: "7%"
+});
+
+function Collections() {
+    const navigate = useNavigate();
+    const nftCtx = useContext(NftContext);
+    const {account} = useWeb3React();
+    const [collections, setCollections] = useState([]);
+
+    const loadData = () => {
+        nftCtx.getNfts(Config.template_address);
+    }
+
+    const handleSearch = () => {
+        loadData();
+    }
+
+    const handleSelectCollection = (address) => {
+        navigate(`/collectionItems/${address}`)
+    }
+
+    useEffect(() => {
+        if (nftCtx.collections?.length > 0) {
+            setCollections(nftCtx.collections);
+        }
+    }, [nftCtx]);
+
+    useEffect(() => {
+        account && loadData();
+    }, [account]);
+
+    return (
+        <Box style={{ backgroundColor: "#f5fafe" }}>
+            <CollectionBg>
+                <BoxCenter className="relative hidden mt-10">
+                    <Hidden xlDown>
+                        <img src="../static/images/cards/Frame 2 (2).png" />
+                        <TypographySize14 className="modal py-6 px-12">List your assets for sale, share with friends and chat with potential buyers</TypographySize14>
+                    </Hidden>
+                </BoxCenter>
+                <Hidden xlUp className="lg:hidden">
+                    <Box className="collection-bg pt-16 pb-16">
+                        <BoxCenter className="sm-text-modal-lg text-sm-title">Your NTF's Collections</BoxCenter>
+                        <BoxCenter className="sm-text-modal pl-6 pr-2 py-2 text-md text-black-200">List your assets for sale, share with friends and chat with potential buyers</BoxCenter>
+                    </Box>
+                </Hidden>
+
+                {
+                    !account && <div className="flex items-center justify-center mt-10">
+                        <span className="text-2xl">Please check your wallet connection</span>
+                    </div>
+                }
+
+                <CollectionContainer className="pt-16 pb-24">
+                    <Grid
+                        container
+                        spacing={3}
+                        justifyContent="center"
+                    >
+                        {collections.map((item, index) =>
+                            <Grid
+                                item
+                                lg={4}
+                                md={4}
+                                xl={4}
+                                xs={12}
+                                key={index}
+                                className="mx-4 md:mx-24 lg:mx-4 rounded-xl">
+                                <CollectionCard onSelect={handleSelectCollection} {...item} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </CollectionContainer> 
+
+            </CollectionBg>
+        </Box>
+    );
+}
+
+export default Collections;

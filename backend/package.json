@@ -1,0 +1,41 @@
+{
+  "name": "express",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "commonjs",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^3.0.8",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "config": "^3.3.7",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "eslint": "^8.11.0",
+    "eslint-plugin-import": "^2.25.4",
+    "express": "^4.17.1",
+    "express-validator": "^6.14.0",
+    "gravatar": "^1.8.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.1",
+    "moralis": "^2.6.3",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^2.0.0",
+    "socket.io": "^4.5.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*"
+    ],
+    "delay": "500"
+  }
+}
