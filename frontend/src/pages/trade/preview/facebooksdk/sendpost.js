@@ -10,9 +10,9 @@ function SendPost(disable) {
 
   // Check if the user is authenticated with Facebook
   useEffect(() => {
-    window.FB.getLoginStatus((response) => {
-      setFacebookUserAccessToken(response.authResponse?.accessToken);
-    });
+    // window.FB.getLoginStatus((response) => {
+    //   setFacebookUserAccessToken(response.authResponse?.accessToken);
+    // });
   }, []);
 
   const logInToFB = () => {
@@ -121,9 +121,9 @@ function SendPost(disable) {
         <section className="app-section">
             <BoxCenter className='border-icon pulse'>
               {!disable ?
-                <a onClick={logInToFB} target="_blank"><InstagramIcon /></a>
+                <div onClick={logInToFB} target="_blank"><InstagramIcon /></div>
                : 
-               <a style={{ cursor: "default", pointerEvents: "none" }} onClick={logInToFB} target="_blank"><InstagramIcon /></a>
+               <div style={{ cursor: "default", pointerEvents: "none" }} onClick={logInToFB} target="_blank"><InstagramIcon /></div>
               }
             </BoxCenter>
             {/* {facebookUserAccessToken ? (

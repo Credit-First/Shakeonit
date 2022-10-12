@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import Container from "../../components/Container/Container";
 import ExploreBG from "../../components/Background/ExploreBG";
 import BuyAndSell from "./Terms/buyandsell";
@@ -11,7 +9,7 @@ import Benefit from "./Benefit";
 import Shakeoint from "./shakeoint";
 import Explore from "./explore";
 import BuyBg from "../../components/Background/buybg";
-import GreenLine_h_bg from "../../components/Background/greenline_h_bg";
+import GreenLineHBg from "../../components/Background/greenline_h_bg";
 import { Box } from "@mui/material";
 
 function Home() {
@@ -25,9 +23,9 @@ function Home() {
                     <NFT />
                 </Container>
             </NFTBG>
-            <GreenLine_h_bg>
+            <GreenLineHBg>
                 <Benefit />
-            </GreenLine_h_bg>
+            </GreenLineHBg>
             <Shakeoint />
             <ExploreBG>
                 <ExploreContainer>

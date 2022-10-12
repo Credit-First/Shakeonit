@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { useLocation } from 'react-router-dom';
 import { Avatar } from "@mui/material";
 import { useParams } from "react-router";
@@ -9,18 +9,11 @@ import BoxCenter from "../../../components/Box/BoxCenter";
 import BoxBetween from "../../../components/Box/BoxBetween";
 import RecentActivity from "./recentactivity";
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize32, TypographySize42 } from "../../../components/Typography/TypographySize";
-import { ethers, BigNumber } from 'ethers'
-import { contract, web3, contractAbi, contractAddress } from '../../../content/contractMethods'
+// import { ethers, BigNumber } from 'ethers'
+// import { contractAbi, contractAddress } from '../../../content/contractMethods'
 import CancelSale from "../../../components/Modal/cancelsale";
 import ChangePrice from "../../../components/Modal/changeprice";
-import Config from '../../../config/app';
 import NftContext from '../../../context/nftContext';
-
-const collections = [
-    { id: "1", image: "/static/images/trade/Rectangle 38.png", name: "Moonbirds" },
-    { id: "2", image: "/static/images/trade/Rectangle 40.png", name: "Bored Ape" },
-    { id: "3", image: "/static/images/trade/Rectangle 42.png", name: "Bored Ape Yacht Club" }
-];
 
 const ActiveContainer = Styled(Box)({
     paddingTop: "4.5rem",
@@ -46,14 +39,14 @@ const ListContent = Styled(Box)({
 });
 const coinTypes = ["ETH", "BNB", "SOL"]
 
-function List(props) {
+function List() {
     const [flag, setFlag] = useState(false);
     const location = useLocation();
     const initialpriceValue = location.state.priceValue;
     const coin = location.state.coin;
     const coinPrice = location.state.coinPrice;
 
-    const uniqueId = location.state.uniqueId;
+    // const uniqueId = location.state.uniqueId;
 
     const finalOfferdatas = location.state.finalOfferdatas;
     const isflag = location.state.isflag;
@@ -73,17 +66,12 @@ function List(props) {
 
     React.useEffect(() => {
         if (nftCtx.nfts.length > 0) getNft();
-        else loadData();
-    }, [nftCtx, address, tokenId]);
+    }, [nftCtx, address, tokenId, getNft]);
 
-    const getNft = () => {
+    const getNft = useCallback(() => {
         const nft = nftCtx.nfts.find(nft => (nft.contract_address === address && nft.tokenId === tokenId));
         setNftDetail(nft);
-    }
-
-    const loadData = () => {
-        nftCtx.getNfts(Config.template_address);
-    }
+    }, [nftCtx, address, tokenId])
 
     const handleFlag = () => {
         setFlag(true);
@@ -105,29 +93,29 @@ function List(props) {
     }
 
     // ETHERS SETUP
-    const ethereum = window.ethereum;
-    const provider = new ethers.providers.Web3Provider(ethereum)
+    // const ethereum = window.ethereum;
+    // const provider = new ethers.providers.Web3Provider(ethereum)
 
-    const cancelOrder = async () => {
-        const accounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const walletAddress = accounts[0]    // first account in MetaMask
-        const signer = provider.getSigner(walletAddress)
+    // const cancelOrder = async () => {
+    //     const accounts = await ethereum.request({
+    //         method: "eth_requestAccounts",
+    //     });
+    //     const walletAddress = accounts[0]    // first account in MetaMask
+    //     const signer = provider.getSigner(walletAddress)
 
 
-        // ethers contract instantiation
-        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
-        // getActiveOrderLength 
-        const getActiveOrderLength = shakeContract.getActiveOrderLength()
-        const orderActiveSet = shakeContract.getFromActiveOrderSet([uniqueId])
+    //     // ethers contract instantiation
+    //     const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
+    //     // getActiveOrderLength 
+    //     const getActiveOrderLength = shakeContract.getActiveOrderLength()
+    //     const orderActiveSet = shakeContract.getFromActiveOrderSet([uniqueId])
         
-        shakeContract.cancelOrder(BigNumber.from(orderActiveSet), {
-            gasLimit: 300000
-        }).then(res=>{
-            console.log(res)
-        })
-    }
+    //     shakeContract.cancelOrder(BigNumber.from(orderActiveSet), {
+    //         gasLimit: 300000
+    //     }).then(res=>{
+    //         console.log(res)
+    //     })
+    // }
 
     return (
         <Box className="bg-list relative">
@@ -137,7 +125,7 @@ function List(props) {
             <div>
                 <ListContainer className="block lg:flex justify-between">
                     <ListImage className="listImage" >
-                        <img src={nftDetail.image} className = "img" />
+                        <img src={nftDetail.image} className = "img"  alt=''/>
                     </ListImage>
                     <ListContent className="listContent">
                         <BoxBetween>
@@ -155,7 +143,7 @@ function List(props) {
                         </Box>
                         <Box>
                             <Box className="flex">
-                                <img src="/static/images/dollar-circle.png" />
+                                <img src="/static/images/dollar-circle.png"  alt=''/>
                                 <TypographySize14 className="flex items-center">Price:</TypographySize14>
                             </Box>
                             <Box className="flex items-center" style={{ marginTop: "4%" }}>
@@ -172,8 +160,8 @@ function List(props) {
                             </Box>
                         </Box>
                         <Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-                            <a className="flex justify-center btn pulse1 w-full" onClick={handleChangeOpen}>Change Price</a>
-                            <a className="flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleOpen}>Cancel Sale</a>
+                            <div className="flex justify-center btn pulse1 w-full" onClick={handleChangeOpen}>Change Price</div>
+                            <div className="flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleOpen}>Cancel Sale</div>
                         </Box>
                     </ListContent>
                 </ListContainer>

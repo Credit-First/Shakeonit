@@ -1,5 +1,5 @@
 import { Box, Grid } from "@mui/material";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
 import styled from 'styled-components';
@@ -25,6 +25,7 @@ import NftContext from '../../context/nftContext';
 import Config from '../../config/app';
 import BuyerChat from './chat';
 import { Toaster } from 'react-hot-toast';
+import TokenContext from '../../context/tokenContext';
 
 const Container = styled.div`
     width: 70%;
@@ -116,8 +117,9 @@ const ListContent = Styled(Box)({
 
 const username = localStorage.getItem("username");
 
-function Buyer(Id) {
+function Buyer() {
     const nftCtx = useContext(NftContext);
+    const tokenCtx = useContext(TokenContext);
     const { account } = useWeb3React();
     const { address, tokenId } = useParams();
     const [nftDetail, setNftDetail] = useState({});
@@ -153,12 +155,11 @@ function Buyer(Id) {
     // Get the Accounts current Balance and convert to Wei and ETH
     React.useEffect(() => {
         handleGetBalance()
-    }, [])
+    }, [tokenCtx])
     
     
     React.useEffect(() => {
         if (nftCtx.nfts.length > 0) getNft();
-        else loadData();
     }, [nftCtx, address, tokenId, account]);
 
     const getNft = () => {
@@ -166,27 +167,50 @@ function Buyer(Id) {
         setNftDetail(nft);
     }
 
-    const loadData = () => {
-        nftCtx.getNfts(Config.template_address);
-    }
+    const handleGetBalance = () => {
+        // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        // const account = accounts[0];
 
-    const handleGetBalance = async () => {
+        // const balance = await window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
 
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const account = accounts[0];
-
-        const balance = await window.ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
-
-        // // Returns a hex value of Wei
-        const wei = parseInt(balance, 16)
-        const gwei = (wei / Math.pow(10, 9)) // parse to Gwei
-        const eth = Math.round((wei / Math.pow(10, 18))*10000)// parse to ETH
-        const ceth = parseFloat(eth/10000);
-        const obj = {'id':1, 'name':"ETH", 'balance':ceth};
-        setMyBalances([...myBalances, obj]);
+        // const wei = parseInt(balance, 16)
+        // const gwei = (wei / Math.pow(10, 9)) // parse to Gwei
+        // const eth = Math.round((wei / Math.pow(10, 18))*10000)// parse to ETH
+        // const ceth = parseFloat(eth/10000);
+        // const obj = {'id':1, 'name':"ETH", 'balance':ceth};
+        // setMyBalances([...myBalances, obj]);
         // setEthBalance({ wei, gwei, eth })
         // setShowBalanceModal(true)
+        if(tokenCtx.native.balance) {
+            const wei = parseInt(tokenCtx.native.balance || 0, 10)
+            const gwei = (wei / Math.pow(10, 9)) // parse to Gwei
+            const eth = Math.round((wei / Math.pow(10, 18))*10000)// parse to ETH
+            const ceth = parseFloat(eth/10000);
+            const obj = {
+                id: 0,
+                balance: ceth,
+                decimals: 18,
+                symbol: "Ethereum mainnet",
+                name: "ETH",
+                contractAddress: 0x165cd37b4c644c2921454429e7f9358d18a45e14,
+                chain: 0x1
+            }
+            setMyBalances(myBalances => ([...myBalances, obj]));
+        }
+            
 
+        tokenCtx.custom.map((_token, index) => {
+            const obj = {
+                id: index + 1,
+                balance: _token.value,
+                decimals: _token.token.decimals,
+                symbol: _token.token.name,
+                name: _token.token.symbol,
+                contractAddress: _token.token.contractAddress,
+                chain: _token.token.chain
+            }
+            setMyBalances(myBalances => ([...myBalances, obj]));
+        })
     }
     const re = /^[0-9.\b]+$/;
     const handleChange = (event, name) => {
@@ -262,7 +286,8 @@ function Buyer(Id) {
         getMybalanceCoinPrice();
         getCoinType();
     }, [myBalances])
-    const getMybalanceCoinPrice = () => {
+
+    const getMybalanceCoinPrice = useCallback(() => {
         myBalances.forEach((item, index) => {
             // fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
             fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
@@ -277,35 +302,38 @@ function Buyer(Id) {
                     }
                 })
         })
-    }
+    }, [myBalances])
 
 
     //CoinType
 
     const [CoinTypesPrice, setCoinTypesPrice] = useState(Array(myBalances).fill(0))
-    const getCoinType = () => {
-        myBalances.forEach((item, index) => {
-            // fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
-            fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
-                .then(res => res.json())
-                .then(res => {
-                    if (res.price) {
-                        setCoinTypesPrice((prev) => {
-                            const tempPrice = [...prev]
-                            tempPrice[index] = res.price
-                            return tempPrice
-                        })
-                    }
-                })
-        })
-    }
+    const getCoinType = useCallback(
+        () => {
+            myBalances.forEach((item, index) => {
+                // fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
+                fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.price) {
+                            setCoinTypesPrice((prev) => {
+                                const tempPrice = [...prev]
+                                tempPrice[index] = res.price
+                                return tempPrice
+                            })
+                        }
+                    })
+            })
+        },
+        [myBalances],
+    )
 
     //validation CoinType
 
     React.useEffect(() => {
         getCoinPrice()
     }, [])
-    const getCoinPrice = () => {
+    const getCoinPrice = useCallback(() => {
         validatedTokens.forEach((item, index) => {
             // fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
             fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
@@ -320,7 +348,7 @@ function Buyer(Id) {
                     }
                 })
         })
-    }
+    }, [validatedTokens])
 
     //validation balance
     const [total, setPreTotal] = useState(0);
@@ -334,7 +362,7 @@ function Buyer(Id) {
             if (validatedTokens.find((item) => item.name == myBalance.name)) {
                 currentPrice = currentcoinType[0].balance;
                 // setPreTotal(parseInt(pretotal) + parseInt(myBalance.balance));
-                var id = parseInt(myBalance.id) - 1;
+                var id = parseInt(myBalance.id);
                 pretotal += (parseFloat(myBalance.balance) * parseInt(myBalancePrice[id]));
             }
         })
@@ -492,7 +520,6 @@ function Buyer(Id) {
         validatedCoinType: validatedCoinType
     }
 
-
     return (
         <Box className="bg-list relative">
             <ActiveContainer>
@@ -554,7 +581,7 @@ function Buyer(Id) {
                                 sm={12}
                                 xs={12}
                             >
-                                {myBalances.map((myBalance) => {
+                                {myBalances.map((myBalance, index) => {
                                     const id = myBalance.id;
                                     var offerdata = finalOfferdatas.find(item => item.id == id);
                                     var validatedToken = validatedTokens.find(item => item.name == myBalance.name);
@@ -563,7 +590,7 @@ function Buyer(Id) {
                                         <AssetCard
                                             draggable
                                             onDragStart={(e) => onDragStart(e, myBalance.name)}
-                                            key={myBalance.id}
+                                            key={index}
                                             className={className}
                                         >
                                             {!offerdata ?
@@ -628,8 +655,8 @@ function Buyer(Id) {
                                     </Select>
                                 </CounterCard>
                             </div>
-                            {finalOfferdatas.map((offerdata) =>
-                                <CounterCard key={offerdata.id} style={{ justifyContent: "space-between" }}>
+                            {finalOfferdatas.map((offerdata, index) =>
+                                <CounterCard key={index} style={{ justifyContent: "space-between" }}>
                                     <div>
                                         <TypographySize20>
                                             <input className="mx-2 py-2" style={{ width: "220px" }} name={offerdata.name} onChange={(e) => handleChange(e, offerdata.name)}

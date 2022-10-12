@@ -1,16 +1,8 @@
 import React from "react";
 import { Box } from "@mui/material";
-import BoxCenter from "../../components/Box/BoxCenter";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-import Styled from "@mui/material/styles/styled";
 import { TypographySize40, TypographySize20, TypographySize14 } from "../../components/Typography/TypographySize";
 import { LastUpdate, HowCollect, HowUse, Updates, GeneralInformation, Sharing } from "../../content/content";
 
-// const ContentBox = Styled(Box)({
-//     marginTop : "0.75rem",
-//     marginBottom : "0.75rem"
-// });
 function PrivacyPolicy() {
     return (
         <>
@@ -45,7 +37,7 @@ function PrivacyPolicy() {
                     </Box>
 
                     <Box className="absolute">
-                        <img src="static/images/Vector-1.png" className="p-v-bg1" />
+                        <img src="static/images/Vector-1.png" className="p-v-bg1" alt='' />
                         {/* <img src="static/images/Vector.png" className="p-v-bg2" /> */}
                     </Box>
                 </Box>

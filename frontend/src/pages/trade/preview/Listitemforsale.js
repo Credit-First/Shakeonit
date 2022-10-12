@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
 import WestIcon from '@mui/icons-material/West';
 import Card from "@material-ui/core/Card";
 import TextField from "@material-ui/core/TextField";
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import { GradientButton } from '../../../components/Button/Button'
 import Select from '@mui/material/Select';
 import { TypographySize121, TypographySize14, TypographySize18 } from '../../../components/Typography/TypographySize';
 import { coinTypes } from '../../../content/config'
-import { contract, web3 } from '../../../content/contractMethods'
-import { BigNumber, ethers } from 'ethers'
 
 function Listitemforsale(props) {
     const { handleshowFlag, priceValue, setPriceValue, coinPrice, coin, setCoinType } = props
@@ -26,7 +21,6 @@ function Listitemforsale(props) {
             setError(false);
         }
         else {
-            // console.log("This is else.");
             setError(true);
 
         }
@@ -63,9 +57,7 @@ function Listitemforsale(props) {
                     </Box>
                     <Box>
                         <Box>
-                            <a href="#">
-                                <TypographySize18>List item for sale</TypographySize18>
-                            </a>
+                            <TypographySize18>List item for sale</TypographySize18>
                         </Box>
                         <Box>
                             <TypographySize14 className='py-2'>Out Your NFT On The Market</TypographySize14>
@@ -148,7 +140,7 @@ function Listitemforsale(props) {
                     </Box>
                 </Box>
                 <Box className='flex justify-center' style={{ width: "100%", position: "absolute", bottom: "2rem" }}>
-                    <a className='flex justify-center btn tex-btn pulse' style={{ width: "86%" }} onClick={(e) => handleshowFlag()}>Next</a>
+                    <div className='flex justify-center btn tex-btn pulse' style={{ width: "86%" }} onClick={(e) => handleshowFlag()}>Next</div>
                 </Box>
             </Card>
         </Box>

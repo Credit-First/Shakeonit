@@ -9,6 +9,7 @@ const defaultState = {
 
 const getGenericImageUrl = (_url) => {
 	_url = _url.replace('ipfs://', 'https://ipfs.io/ipfs/')
+	if(!_url.includes('/')) _url = 'https://ipfs.io/ipfs/' + _url;
 	return _url
 }
 

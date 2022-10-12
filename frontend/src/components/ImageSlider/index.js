@@ -5,7 +5,6 @@ import CarouselBlueImg from "../../assets/slider-images/Frame1.png";
 import CarouselBlackImg from "../../assets/slider-images/Frame3.png";
 import CarouselBlImg from "../../assets/slider-images/Frame4.png";
 
-import { Grid } from "@material-ui/core";
 import { Box } from "@mui/material";
 
 function Banner(props) {

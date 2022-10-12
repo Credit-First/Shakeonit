@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useParams } from 'react-router';
 import Box from "@material-ui/core/Box";
 import BoxCenter from '../../../components/Box/BoxCenter';
@@ -9,7 +9,6 @@ import { TypographySize20 } from '../../../components/Typography/TypographySize'
 import { coinTypes } from '../../../content/config';
 import { useWeb3React } from "@web3-react/core";
 import NftContext from '../../../context/nftContext';
-import Config from '../../../config/app';
 
 const Preview = () => {
     const nftCtx = useContext(NftContext);
@@ -28,7 +27,6 @@ const Preview = () => {
         const element = document.getElementById("content");
         if(element){
             const width = element.offsetWidth;
-            const height = parseInt(width*1.9) + "px";
             element.style.height = parseInt(width * 1.9) + "px";
         }
     }
@@ -40,19 +38,16 @@ const Preview = () => {
         setShowFlag(false);
     };
 
-    const getNft = () => {
-        const nft = nftCtx.nfts.find(nft => (nft.contract_address === address && nft.tokenId === tokenId));
-        setNftDetail(nft);
-    }
-
-    const loadData = () => {
-        nftCtx.getNfts(Config.template_address);
-    }
+    const getNft = useCallback(() => {
+            const nft = nftCtx.nfts.find(nft => (nft.contract_address === address && nft.tokenId === tokenId));
+            setNftDetail(nft);
+        },
+        [nftCtx, address, tokenId],
+    )
 
     useEffect(() => {
         if (nftCtx.nfts.length > 0) getNft();
-        else loadData();
-    }, [nftCtx, address, tokenId, account]);
+    }, [nftCtx, address, tokenId, account, getNft]);
     
     useEffect(() => {
         const element = document.getElementById("content");
@@ -91,7 +86,7 @@ const Preview = () => {
                 <Box className='totalbox'>
                     <BoxCenter className="imagebox">
                         <Box className='image'>
-                            <a onClick={handlePreview} className="hidden md:block"><TypographySize20>Preview</TypographySize20></a>
+                            <div onClick={handlePreview} className="hidden md:block"><TypographySize20>Preview</TypographySize20></div>
                             <PreviewCard image={nftDetail.image} name={nftDetail.name} value={(priceValue * coinPrice[coin])} />
                         </Box>
                     </BoxCenter>

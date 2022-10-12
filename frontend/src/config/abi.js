@@ -9,4 +9,6 @@ export default {
     DeadFellaz: require("./abi/NFT/DeadFellaz.json"),
     Moonbirds: require("./abi/NFT/Moonbirds.json"),
     BoredApeKennel: require("./abi/NFT/BoredApeKennel.json"),
+    Shakeonit: require("./abi/shakeonit.json"),
+    TokenMagic: require("./abi/tokenmagic.json"),
 }

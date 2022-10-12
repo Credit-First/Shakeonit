@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useCallback} from 'react';
 import { Grid, Hidden } from "@mui/material";
 import Styled from "@mui/material/styles/styled";
 import Box from "@material-ui/core/Box";
@@ -21,26 +21,21 @@ const CollectionItems = () => {
     const {account} = useWeb3React();
     const nftCtx = useContext(NftContext);
     const [nfts, setNfts] = useState([]);
-    
-    const loadData = () => {
-        nftCtx.getNfts('0x645d2B4bfB047566ff60e2E7112373885935EAc4');
-    }
 
-    const getNfts = () => {
+    const getNfts = useCallback(() => {
         const nfts = nftCtx.nfts.filter(nft => nft.contract_address === address);
         setNfts(nfts);
-    }
+    },[nftCtx, address])
     
     useEffect(() => {
         if (nftCtx.nfts.length > 0) getNfts();
-        else loadData();
-    }, [nftCtx, address, account]);
+    }, [nftCtx, address, account, getNfts]);
 
     return (
         <CollectionBg>
             <BoxCenter className="relative hidden mt-10">
                 <Hidden xlDown>
-                    <img src="../static/images/cards/Frame 2 (2).png" />
+                    <img src="../static/images/cards/Frame 2 (2).png" alt='' />
                     <TypographySize14 className="modal py-6 px-12">List your assets for sale, share with friends and chat with potential buyers</TypographySize14>
                 </Hidden>
             </BoxCenter>
@@ -53,11 +48,11 @@ const CollectionItems = () => {
 
             <div className="w-fit mt-10 ml-20 mb-10 gradient pulse flex justify-center items-center">
                 <div className="bg-white gradient-child flex justify-center items-center">
-                    <a 
+                    <div 
                     style={{ textAlign: "center" }} onClick={() => navigate(-1)} 
                     className="flex items-center connect-btn px-4 py-3">
                         Back to collections
-                    </a> 
+                    </div> 
                 </div>
             </div>
 

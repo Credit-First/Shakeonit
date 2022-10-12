@@ -2,17 +2,10 @@ import { Dialog } from "@material-ui/core";
 import React, { useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { ethers } from 'ethers'
-import { contract, contractAddress, contractAbi } from '../../content/contractMethods'
+import { contractAddress, contractAbi } from '../../content/contractMethods'
 
 function CancelSale({ open, onClose, image }) {
-    const [isOpened, setOpened] = useState(false);
-    const handleClose = () => {
-        setOpened(false);
-    }
-    const handleOpen = () => {
-        onClose();
-        setOpened(true);
-    }
+
     const cancelOrder = async () => {
         // ETHERS SETUP
         const ethereum = window.ethereum;
@@ -38,7 +31,6 @@ function CancelSale({ open, onClose, image }) {
         )
     }
 
-    const account = "Connect Wallet";
     return (
         <>
             <Dialog

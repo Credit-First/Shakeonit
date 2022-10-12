@@ -8,9 +8,8 @@ import BoxCenter from "../../components/Box/BoxCenter";
 import { TypographySize14 } from "../../components/Typography/TypographySize";
 import CollectionBg from "../../components/Background/collectionbg";
 import CollectionCard from "../../components/Card/CollectionCard";
-import NftContext from '../../context/nftContext';
 import { useWeb3React } from "@web3-react/core";
-import Config from '../../config/app';
+import NftContext from '../../context/nftContext';
 
 const CollectionContainer = Styled(Box)({
     paddingLeft: "7%",
@@ -23,14 +22,6 @@ function Collections() {
     const {account} = useWeb3React();
     const [collections, setCollections] = useState([]);
 
-    const loadData = () => {
-        nftCtx.getNfts(Config.template_address);
-    }
-
-    const handleSearch = () => {
-        loadData();
-    }
-
     const handleSelectCollection = (address) => {
         navigate(`/collectionItems/${address}`)
     }
@@ -41,16 +32,12 @@ function Collections() {
         }
     }, [nftCtx]);
 
-    useEffect(() => {
-        account && loadData();
-    }, [account]);
-
     return (
         <Box style={{ backgroundColor: "#f5fafe" }}>
             <CollectionBg>
                 <BoxCenter className="relative hidden mt-10">
                     <Hidden xlDown>
-                        <img src="../static/images/cards/Frame 2 (2).png" />
+                        <img src="../static/images/cards/Frame 2 (2).png" alt="" />
                         <TypographySize14 className="modal py-6 px-12">List your assets for sale, share with friends and chat with potential buyers</TypographySize14>
                     </Hidden>
                 </BoxCenter>

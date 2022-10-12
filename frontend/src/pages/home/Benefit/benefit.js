@@ -1,6 +1,5 @@
 import React from "react";
 import { Box } from "@mui/material";
-import BoxCenter from "../../../components/Box/BoxCenter";
 import { TypographySize40, TypographySize242 } from "../../../components/Typography/TypographySize";
 
 function OurBenefit() {

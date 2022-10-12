@@ -4,9 +4,6 @@ import { Box } from "@mui/material";
 import BoxCenter from "../../components/Box/BoxCenter";
 import Grid from "@mui/material/Grid";
 import { TypographySize40, TypographySize14, TypographySize16 } from "../../components/Typography/TypographySize";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
-
 
 const companies = [
     { id: "1", avatar: "L", name: "Lorem Ipsum", describe: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Turpis cras volutpat et lorem lobortis tortor." },
@@ -40,13 +37,13 @@ function Company() {
 
                 <Box className="px-4 md:px-32 lg:px-72 lg:px-32 grid grid-cols-1 xl:grid-cols-3 my-5">
                     <BoxCenter>
-                        <img src="static/images/Vector 32.png" />
+                        <img src="static/images/Vector 32.png" alt='' />
                     </BoxCenter>
                     <BoxCenter>
-                        <img src="static/images/Vector 32.png" />
+                        <img src="static/images/Vector 32.png" alt='' />
                     </BoxCenter>
                     <BoxCenter>
-                        <img src="static/images/Vector 32.png" />
+                        <img src="static/images/Vector 32.png" alt='' />
                     </BoxCenter>
                 </Box>
                 <BoxCenter className="px-4 md:px-32 lg:px-72 lg:px-32">

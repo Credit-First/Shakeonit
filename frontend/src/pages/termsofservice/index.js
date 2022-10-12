@@ -1,8 +1,5 @@
-import { Typography } from "@material-ui/core";
 import { TypographySize40, TypographySize20 } from "../../components/Typography/TypographySize";
 import React from "react";
-import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 
 function Service() {
     return (

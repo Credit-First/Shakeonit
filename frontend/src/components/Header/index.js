@@ -6,7 +6,6 @@ import Link from "@mui/material/Link";
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import Wallet from "../Modal/wallet";
 import Sign from "../Modal/sign";
 import { useEffect } from "react";
 import WalletModal from "../Modal/wallet";
@@ -30,26 +29,16 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
         if(window.location.href.includes("/preview") || window.location.href.includes("/list/") || window.location.href.includes("/buyer")) {
             setFlag(true);
         }
-    });
+    }, []);
 
-    const [account, setAcccount] = useState("Connect Wallet");
     function getAddress(accountValue) {
-        setAcccount(accountValue);
         window.localStorage.setItem('account', accountValue);
     }
     const [navbar, setNavbar] = useState(false);
     const location = useLocation();
-    const handleDisconnect = () => {
-        setOpen(true);
-    }
-    const handleClose = () => {
-        setOpened(false);
-    }
+
     const handleSignClose = () => {
         setOpen(false);
-    }
-    function ellipseAddress(address = "", width = 5) {
-        return `${address.slice(0, width)}...${address.slice(-width)}`;
     }
 
     return (
@@ -84,7 +73,7 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                                     if (location.pathname === item.url)
                                         activeClass = "active"
                                     return <StyleMenuItem className={`text-header hover:text-indigo-200 ${activeClass}`} key={_i}>
-                                        <a style={{cursor: "default", pointerEvents: "none" }}>{item.name}</a>
+                                        <a href="#" style={{cursor: "default", pointerEvents: "none" }}>{item.name}</a>
                                     </StyleMenuItem>
                                 })
                             }
@@ -99,7 +88,7 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                 </Hidden>
                 <Hidden lgUp>
                     <Box className="flex items-center">
-                        <a onClick={() => setNavbar(!navbar)}>
+                        <a href='#' onClick={() => setNavbar(!navbar)}>
                             {!navbar ?
                                 <MenuIcon className="text-black-900" /> :
                                 <CloseIcon className="text-black-900" />
@@ -116,7 +105,7 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                         {
                             menuTypes.map((item, _i) => {
                                 let activeClass = ""
-                                if (location.pathname == item.url)
+                                if (location.pathname === item.url)
                                     activeClass = "active"
                                 return <StyleMenuItem className={`text-header hover:text-indigo-200 ${activeClass}`} key={_i}>
                                     <Box className="flex justify-between">

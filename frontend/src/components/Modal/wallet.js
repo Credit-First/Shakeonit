@@ -44,7 +44,6 @@ const WalletModal = () => {
     useInactiveListener(!triedEager);
 
     const onConnectWallet = (item) => async () => {
-			console.log(item)
         setActivatingConnector(item.connector);
         setIsSelectingWallet(false);
         sessionStorage.close = false;
