@@ -2,7 +2,7 @@ const Moralis = require('moralis').default
 const { EvmChain } = require("@moralisweb3/evm-utils")
 
 // const chain = EvmChain.ETHEREUM;
-const chain = EvmChain[process.env.MAIN_CHAIN || 'GOERLI'];
+const chain = EvmChain[process.env.MAIN_CHAIN || 'ETHEREUM'];
  
 const startMoralisServer = async () => {
 	await Moralis.start({
