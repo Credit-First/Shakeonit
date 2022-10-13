@@ -199,7 +199,6 @@ function Buyer() {
         
         if(tokenCtx.native.balance) {
             const wei = parseInt(tokenCtx.native.balance || 0, 10)
-            const gwei = (wei / Math.pow(10, 9)) // parse to Gwei
             const eth = Math.round((wei / Math.pow(10, 18))*10000)// parse to ETH
             const ceth = parseFloat(eth/10000);
             const obj = {
@@ -218,7 +217,7 @@ function Buyer() {
         tokenCtx.custom.map((_token, index) => {
             const obj = {
                 id: index + 1,
-                balance: _token.value,
+                balance: parseInt(_token.value).toFixed(2),
                 decimals: _token.token.decimals,
                 symbol: _token.token.name,
                 name: _token.token.symbol,
@@ -317,6 +316,7 @@ function Buyer() {
                         })
                     }
                 })
+                .catch(err => console.log(err)) 
         })
     }, [myBalances])
 
@@ -339,6 +339,7 @@ function Buyer() {
                             })
                         }
                     })
+                    .catch(err => console.log(err)) 
             })
         },
         [myBalances],
@@ -363,6 +364,7 @@ function Buyer() {
                         })
                     }
                 })
+                .catch(err => console.log(err)) 
         })
     }, [validatedTokens])
 
@@ -616,17 +618,28 @@ function Buyer() {
                                             onDragStart={(e) => onDragStart(e, myBalance.name)}
                                             key={index}
                                             className={className}
+                                            style={{width: '100%', position: 'relative'}}
                                         >
                                             {!offerdata ?
                                                 <>
-                                                    <img src="../static/images/client/image 14.png" />
-                                                    <TypographySize20 style={{ width: "50px", position: "relative", left: "25%" }}>{myBalance.balance}</TypographySize20>
-                                                    <TypographySize20 style={{ position: "relative", left: "50%" }}>{myBalance.name}</TypographySize20>
-                                                    {!validatedToken ?
-                                                        <img id={"error-img" + myBalance.name} style={{ position: "relative", left: "100%", marginLeft: "-150px" }} />
-                                                        :
-                                                        <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" style={{ position: "relative", left: "100%", marginLeft: "-150px" }} />
-                                                    }
+                                                    <div className="flex-1 flex items-center">
+                                                        <img src="../static/images/client/image 14.png" />
+                                                        <div className="w-full flex items-center justify-around">
+                                                            <div className="w-1/2 px-5">
+                                                                <TypographySize20 style={{textAlign: 'right'}}>{myBalance.balance}</TypographySize20>
+                                                            </div>
+                                                            <div className="w-1/2 px-5">
+                                                            <TypographySize20 className="truncate w-[200px]">{myBalance.name}</TypographySize20>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="absolute right-5 inset-y-0 flex items-center">
+                                                        {!validatedToken ?
+                                                            <img id={"error-img" + myBalance.name} />
+                                                            :
+                                                            <img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" />
+                                                        }
+                                                    </div>
                                                 </> : <>
                                                     <img src="../static/images/client/image 14.png" />
                                                     <TypographySize20 style={{ width: "50px", position: "relative", left: "25%" }}>{myBalance.balance - offerdata.balance}</TypographySize20>
