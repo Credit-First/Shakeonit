@@ -11,7 +11,7 @@ export default {
     rpc_url: 'https://mainnet.infura.io/v3/eaf5b124b2cc4797beb8fcabe2c50825',
     test_rpc_url: 'https://goerli.infura.io/v3/eaf5b124b2cc4797beb8fcabe2c50825',
     socket_url: url,
-    server_url: 'http://' + url,
+    server_url: 'https://shakeonit-backend.herokuapp.com/',
     template_address: '0x645d2B4bfB047566ff60e2E7112373885935EAc4',
     token_magic: {
         address: '0xA397Ff8927f06FF9AbbD883ef546a13f88E82e3D',
