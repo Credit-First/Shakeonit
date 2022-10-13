@@ -21,17 +21,25 @@ function Collections() {
     const nftCtx = useContext(NftContext);
     const {account} = useWeb3React();
     const [collections, setCollections] = useState([]);
-
+    const [searchAddress, setSearchAddress] = useState('');
+    
     const handleSelectCollection = (address) => {
         navigate(`/collectionItems/${address}`)
     }
 
-    useEffect(() => {
-        if (nftCtx.collections?.length > 0) {
-            setCollections(nftCtx.collections);
+    const handleSearch = () => {
+        if(searchAddress.length == 42 && searchAddress.includes('0x')) {
+            nftCtx.getNfts(searchAddress);
         }
+    }
+    useEffect(() => {
+        setCollections(nftCtx.collections);
     }, [nftCtx]);
 
+    useEffect(() => {
+        account && setSearchAddress(account);
+    }, [account]);
+    
     return (
         <Box style={{ backgroundColor: "#f5fafe" }}>
             <CollectionBg>
@@ -51,6 +59,22 @@ function Collections() {
                 {
                     !account && <div className="flex items-center justify-center mt-10">
                         <span className="text-2xl">Please check your wallet connection</span>
+                    </div>
+                }
+
+                <div className="flex items-center justify-center mt-10">
+                    <div className="flex">
+                        <input className="w-[400px] border border-gray-800 rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none" 
+                        value={searchAddress}
+                        onChange={(e) => setSearchAddress(e.target.value)}/>
+                        <a className='btn px-6 py-3 pulse rounded-l-none text-xl' onClick={handleSearch}>Search</a>
+                    </div>
+                </div>
+
+                {
+                    collections.length === 0 && 
+                    <div className="flex items-center justify-center mt-10">
+                        <div className="">No collections</div>
                     </div>
                 }
 

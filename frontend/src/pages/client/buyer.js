@@ -139,6 +139,8 @@ function Buyer() {
     const [totalprice, setTotalPrice] = useState(0);
     const [content, setContent] = useState("");
     const [isOpen, setOpen] = useState(false);
+
+    
     const handleClose = () => {
         setOpen(false);
     }
@@ -146,19 +148,31 @@ function Buyer() {
     const [validatedCoinType, setValidtedCoinType] = useState(Array(validatedTokens).fill(0));
     const [validatedcoinPrice, setValidatedCoinPrice] = useState(Array(validatedTokens).fill(0))
     const [isflag, setFlag] = useState(false);
+    const [searchAddress, setSearchAddress] = useState('');
+
     const handlevalidatedCoinType = (event) => {
         setValidtedCoinType(event.target.value);
     }
 
     const [myBalances, setMyBalances] = useState([]);
     
+    const handleSearch = () => {
+        if(searchAddress.length == 42 && searchAddress.includes('0x')) {
+            tokenCtx.getTokens(searchAddress);
+        }
+    }
+
+    useEffect(() => {
+        account && setSearchAddress(account);
+    }, [account]);
+
     // Get the Accounts current Balance and convert to Wei and ETH
-    React.useEffect(() => {
+    useEffect(() => {
         handleGetBalance()
     }, [tokenCtx])
     
     
-    React.useEffect(() => {
+    useEffect(() => {
         if (nftCtx.nfts.length > 0) getNft();
     }, [nftCtx, address, tokenId, account]);
 
@@ -181,6 +195,8 @@ function Buyer() {
         // setMyBalances([...myBalances, obj]);
         // setEthBalance({ wei, gwei, eth })
         // setShowBalanceModal(true)
+        setMyBalances([]);
+        
         if(tokenCtx.native.balance) {
             const wei = parseInt(tokenCtx.native.balance || 0, 10)
             const gwei = (wei / Math.pow(10, 9)) // parse to Gwei
@@ -569,6 +585,14 @@ function Buyer() {
                 </ListContainer>
                 <ListContainer id="counteroffer" style={{ display: "none" }}>
                     <TypographySize20>Your assets</TypographySize20>
+                    <div className="flex items-center justify-start">
+                        <div className="flex">
+                            <input className="w-[400px] border border-gray-800 rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none" 
+                            value={searchAddress}
+                            onChange={(e) => setSearchAddress(e.target.value)}/>
+                            <a className='btn px-6 py-3 pulse rounded-l-none text-xl' onClick={handleSearch}>Search</a>
+                        </div>
+                    </div>
                     <Container>
                         <Grid
                             container
