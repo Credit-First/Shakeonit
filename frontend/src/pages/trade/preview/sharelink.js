@@ -12,10 +12,9 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { TypographySize14, TypographySize18 } from '../../../components/Typography/TypographySize';
 import { useState } from 'react';
-// import { ethers } from 'ethers'
+import { ethers } from 'ethers'
 import SendPost from './facebooksdk/sendpost';
-
-// import { contractAddress, contractAbi  } from '../../../content/contractMethods';
+import Config from '../../../config/app';
 
 
 function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
@@ -27,6 +26,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
     }
     const [value, setValue] = useState("");
     const [linkFlag, setLinkFlag] = useState(false);
+    const [loadingState, setLoadingState] = useState(0);
     const handleLinkaddress = () => {
         setValue(window.location.href);
         setLinkFlag(true);
@@ -37,31 +37,36 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 
 
     const createOrder = (c_address, tokenId) => async () => {
-        return
-        // ETHERS SETUP
-        // const ethereum = window.ethereum;
+        const ethereum = window.ethereum;
 
-        // const accounts = await ethereum.request({
-        //     method: "eth_requestAccounts",
-        // });
-        // const walletAddress = accounts[0]    // first account in MetaMask
-        // const provider = new ethers.providers.Web3Provider(ethereum)
-        // const signer = provider.getSigner(walletAddress)
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner(walletAddress)
 
-        // const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
+        const nftContract = new ethers.Contract(c_address, Config.nftContract.abi, signer)
+        const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 
-        // let get = '0x0000000000000000000000000000000000000000'
-        // let give = c_address // Ropsten WETH Collection
-        // let amountGive = tokenId // (wei for 0.0001 WETH) SHOULD BE THE NFT @ AMOUNT OF 1
-        // let amountGet = ethers.utils.parseUnits(pricedata.priceValue) // Should pull in price data value from the input in Listitemforsale File
-        // let buyer = '0x0000000000000000000000000000000000000000' // 0x0 address so anyone can buy
+        let get = '0x0000000000000000000000000000000000000000'
+        let give = c_address // Ropsten WETH Collection
+        let amountGive = tokenId // (wei for 0.0001 WETH) SHOULD BE THE NFT @ AMOUNT OF 1
+        let amountGet = ethers.utils.parseUnits(pricedata.priceValue).toNumber() // Should pull in price data value from the input in Listitemforsale File
+        let buyer = '0x0000000000000000000000000000000000000000' // 0x0 address so anyone can buy
 
-        // await shakeContract.makeOrder(give, get, amountGive, amountGet, buyer, {
-        //     value: 0, 
-        //     gasLimit: 275000
-        // }).then(res => {
-        //     console.log(res)
-        // })
+        nftContract.approve(Config.shakeonit.address, amountGive);
+        setLoadingState(1);
+        nftContract.on("Approval", (owner, approved, tokenId) => {
+            if(tokenId.toString() === amountGive) {
+                setLoadingState(2);
+                shakeContract.makeOrder(give, get, amountGive, amountGet, buyer)
+            }
+        });
+
+        shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
+            setLoadingState(0);
+        })
     }
 
     // console.log(id, "=====");
@@ -133,14 +138,16 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
                         underline="none"
                         color="inherit"
                         className="btn tex-btn pulse flex justify-center"
-                        to={{
-                            pathname: `/buyer/${contract_address}/${tokenId}`,
-                        }}
+                        // to={{
+                        //     pathname: `/buyer/${contract_address}/${tokenId}`,
+                        // }}
                         state={pricedata}
                         style={{ width: "86%" }}
                         onClick={createOrder(contract_address, tokenId)}
                     >
-                        Done
+                        {
+                            loadingState === 1 ? 'Approving...' : (loadingState === 2 ? 'Listing...' : 'Done')
+                        }
                     </Link>
                 </Box>
             </Card>

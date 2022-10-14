@@ -10,8 +10,8 @@ const defaultState = {
 const TokenProvider = (props) => {
 	const [state, setState] = useState(defaultState);
 
-	const getTokensHandler = (address) => {
-		getTokens(address)
+	const getTokensHandler = (chainId, address) => {
+		getTokens(chainId, address)
 			.then((res) => {
 				const native = res.native;
 				const custom = res.custom;

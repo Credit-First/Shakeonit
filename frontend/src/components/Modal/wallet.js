@@ -121,9 +121,9 @@ const WalletModal = () => {
 
     return (
         <>
-            <div className="gradient pulse flex justify-center items-center" style={{ width: "100%", height: "100%" }}>
+            <div className="gradient pulse flex justify-center items-center" style={{ width: "100%", height: "100%" }} onClick={() => setOpen(true)} >
                 <div className="bg-white gradient-child flex justify-center items-center" style={{ width: "100%", height: "100%" }}>
-                    <a style={{ textAlign: "center" }} onClick={() => setOpen(true)} className="flex items-center connect-btn">
+                    <a style={{ textAlign: "center" }} className="flex items-center connect-btn">
                         {active ? (
                                     <div>
                                             {account.substring(0, 8)} ... ${account.substring(account.length - 4)}

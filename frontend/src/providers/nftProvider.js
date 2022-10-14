@@ -16,8 +16,8 @@ const getGenericImageUrl = (_url) => {
 const NftProvider = (props) => {
 	const [state, setState] = useState(defaultState);
 
-	const getNftsHandler = (address) => {
-		getNfts(address)
+	const getNftsHandler = (chainId, address) => {
+		getNfts(chainId, address)
 			.then((res) => {
 				let nfts = [];
 				for (let i = 0; i < res.nfts.length; i++) {

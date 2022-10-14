@@ -19,7 +19,7 @@ const CollectionContainer = Styled(Box)({
 function Collections() {
     const navigate = useNavigate();
     const nftCtx = useContext(NftContext);
-    const {account} = useWeb3React();
+    const {account, chainId} = useWeb3React();
     const [collections, setCollections] = useState([]);
     const [searchAddress, setSearchAddress] = useState('');
     
@@ -29,7 +29,7 @@ function Collections() {
 
     const handleSearch = () => {
         if(searchAddress.length == 42 && searchAddress.includes('0x')) {
-            nftCtx.getNfts(searchAddress);
+            nftCtx.getNfts(chainId, searchAddress);
         }
     }
     useEffect(() => {

@@ -7,7 +7,7 @@ function PreviewCard({ image, name, value }) {
         <>
             <div id="elementwidth">
                 <div className="previewcard">
-                    <img src={image} className="img" alt="" />
+                    <img src={image} className="img rounded-xl" alt="" />
                     <Box className="block md:flex justify-between mt-4 pl-3 md:pl-6 lg:pl-16 xl:px-2 text-24" style={{ height: "10%" }}>
                         <p>{name}</p>
                         <p >USD &nbsp;&nbsp; {value}</p>
