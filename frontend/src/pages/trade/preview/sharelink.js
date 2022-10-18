@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Link } from '@mui/material';
 import Box from "@material-ui/core/Box";
 import BoxCenter from '../../../components/Box/BoxCenter';
@@ -18,6 +18,7 @@ import Config from '../../../config/app';
 
 
 function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
+    const navigate = useNavigate();
     const pricedata = {
         coin : coin,
         coinPrice : coinPrice,
@@ -66,6 +67,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 
         shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
             setLoadingState(0);
+            navigate(`/buyer/${give}/${amountGive}`);
         })
     }
 
@@ -138,12 +140,12 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
                         underline="none"
                         color="inherit"
                         className="btn tex-btn pulse flex justify-center"
-                        // to={{
-                        //     pathname: `/buyer/${contract_address}/${tokenId}`,
-                        // }}
+                        to={{
+                            pathname: `/buyer/${contract_address}/${tokenId}`,
+                        }}
                         state={pricedata}
                         style={{ width: "86%" }}
-                        onClick={createOrder(contract_address, tokenId)}
+                        // onClick={createOrder(contract_address, tokenId)}
                     >
                         {
                             loadingState === 1 ? 'Approving...' : (loadingState === 2 ? 'Listing...' : 'Done')

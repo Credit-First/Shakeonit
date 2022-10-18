@@ -53,6 +53,7 @@ function CollectionCard({ address, image, name, balance = 0, onSelect }) {
                         <div className="text-2xl font-bold truncate">
                             {name}
                         </div>
+                        <div className="text-base font-bold ml-1">( {balance} )</div>
                     </div>
                 </Card>
             </div>

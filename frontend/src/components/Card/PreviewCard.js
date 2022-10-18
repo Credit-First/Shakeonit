@@ -8,9 +8,12 @@ function PreviewCard({ image, name, value }) {
             <div id="elementwidth">
                 <div className="previewcard">
                     <img src={image} className="img rounded-xl" alt="" />
-                    <Box className="block md:flex justify-between mt-4 pl-3 md:pl-6 lg:pl-16 xl:px-2 text-24" style={{ height: "10%" }}>
-                        <p>{name}</p>
-                        <p >USD &nbsp;&nbsp; {value}</p>
+                    <Box className="overflow-auto mt-4 pl-3 md:pl-6 lg:pl-16 xl:px-2 text-24" style={{ height: "10%" }}>
+                        <div className="float-left">{name}</div>
+                        <div className="float-right clear-left text-lg font-bold flex items-end">
+                            <span className="mr-2">USD</span>
+                            <span className="text-2xl">{value}</span>
+                        </div>
                     </Box>
                 </div>
             </div>

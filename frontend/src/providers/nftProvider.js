@@ -20,8 +20,17 @@ const NftProvider = (props) => {
 		getNfts(chainId, address)
 			.then((res) => {
 				let nfts = [];
+				let collections = [];
+				let exist_flag = false;
 				for (let i = 0; i < res.nfts.length; i++) {
+					exist_flag = false;
 					const nft = res.nfts[i];
+					const collection = {
+						address: nft.contract_address,
+						name: nft.contract_name,
+						image: getGenericImageUrl(nft.metadata.image || nft.metadata.animation_url),
+						balance: 0
+					};
 					
 					if( nft.metadata && !!(nft.metadata.image || nft.metadata.animation_url)) {
 						nfts.push( {
@@ -32,27 +41,15 @@ const NftProvider = (props) => {
 							image: getGenericImageUrl(nft.metadata.image || nft.metadata.animation_url)
 						})
 					}
-				}
-				
-				let collections = [];
-				let exist_flag = false;
-				for (let i = 0; i < nfts.length; i++) {
-					exist_flag = false;
-	
-					const collection = {
-						address: nfts[i].contract_address,
-						name: nfts[i].contract_name,
-						image: nfts[i].image
-					};
-					
+
 					for (let i = 0; i < collections.length; i++) {
 						const _collection = collections[i];
 						if(_collection.address === collection.address) {
 							exist_flag = true;
+							_collection.balance++;
 							break;
 						}
 					}
-	
 					if(!exist_flag) {
 						collections.push(collection);
 					}

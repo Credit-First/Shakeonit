@@ -50,7 +50,7 @@ const AssetCard = styled.a`
 `
 const CounterCard = styled.div`
     display : flex;
-    width : 80%;
+    width : 30%;
     height : 50px;
     margin-right : 10px;
     margin-top : 10px;
@@ -136,12 +136,8 @@ function Buyer() {
 
     const [OtherAction, setOtherAction] = useState("");
     const [isOpenedChat, setOpenedChat] = useState(false);
-    const [offerdatas, setOfferData] = useState({
-			tokens: [], nfts: []
-		});
-    const [finalOfferdatas, setFinalOfferdatas] = useState({
-			tokens: [], nfts: []
-		});
+    const [offerdatas, setOfferData] = useState([]);
+    const [finalOfferdatas, setFinalOfferdatas] = useState([]);
     const [totalprice, setTotalPrice] = useState(0);
     const [content, setContent] = useState("");
     const [isOpen, setOpen] = useState(false);
@@ -181,7 +177,7 @@ function Buyer() {
     useEffect(() => {
         if (nftCtx.nfts.length > 0) {
 					getNft();
-					getCollections();
+					// getCollections();
         }
     }, [nftCtx, address, tokenId, account]);
 
@@ -190,14 +186,11 @@ function Buyer() {
         setNftDetail(nft);
     }
 
-		const getCollections = useCallback(
-			() => {
-				setCollections(nftCtx.collections);
-			},
-			[nftCtx.collections]
-		)		
+		const getCollections = () => {
+			setCollections(nftCtx.collections);
+		}
 
-		const handleViewCollaction = (collection_address) => {
+		const handleViewCollaction = (collection_address) => () => {
 			const nfts = nftCtx.nfts.filter(nft => nft.contract_address === collection_address);
 			
 			setSelectedCollectionAddress(collection_address);
@@ -216,7 +209,7 @@ function Buyer() {
                 decimals: 18,
                 symbol: "Ethereum mainnet",
                 name: "ETH",
-                contract_address: 0x165cd37b4c644c2921454429e7f9358d18a45e14,
+                contractAddress: 0x165cd37b4c644c2921454429e7f9358d18a45e14,
                 chain: 0x1
             }
             setMyBalances(myBalances => ([...myBalances, obj]));
@@ -226,11 +219,11 @@ function Buyer() {
         tokenCtx.custom.map((_token, index) => {
             const obj = {
                 id: index + 1,
-                balance: parseInt(_token.value),
+                balance: parseInt(_token.value).toFixed(2),
                 decimals: _token.token.decimals,
                 symbol: _token.token.name,
                 name: _token.token.symbol,
-                contract_address: _token.token.contractAddress,
+                contractAddress: _token.token.contractAddress,
                 chain: _token.token.chain
             }
             setMyBalances(myBalances => ([...myBalances, obj]));
@@ -239,16 +232,15 @@ function Buyer() {
     const re = /^[0-9.\b]+$/;
     const handleChange = (event, name) => {
         if (re.test(event.target.value) && (parseInt(event.target.value) <= parseInt(myBalances.filter((item) => item.name == name)[0].balance))) {
-            setFinalOfferdatas(state => ({ 
-							...state, 
-							tokens: finalOfferdatas.tokens.map((item) =>
-													item.name === event.target.name
-															? { ...item, balance: event.target.value }
-															: { ...item }
-											)
-						}))
-					}
-					else if (!re.test(event.target.value)) {
+            setFinalOfferdatas(
+                finalOfferdatas.map((item) =>
+                    item.name === event.target.name
+                        ? { ...item, balance: event.target.value }
+                        : { ...item }
+                )
+            );
+        }
+        else if (!re.test(event.target.value)) {
             setOpen(true);
             setContent("Please input only number!");
         }
@@ -280,33 +272,16 @@ function Buyer() {
     useEffect(() => {
         setTotalPrice(0);
         let total = 0;
-        finalOfferdatas.tokens.map((finalofferdata) => {
+        finalOfferdatas.map((finalofferdata) => {
             const coinType = coinTypes.find((item) => item.name == finalofferdata.name);
-            total += parseFloat(finalofferdata.balance * (CoinTypesPrice[coinType.id - 1] || 0));
+            total += parseFloat(finalofferdata.balance * CoinTypesPrice[coinType.id - 1]).toFixed(2);
         });
         setTotalPrice(total);
-    }, [finalOfferdatas.tokens])
+    }, [finalOfferdatas])
 
-    const handleRemoveOffer = (type = 'token', id, address) => {
-			if(type === 'token') {
-        setOfferData(state => ({
-					...state, 
-					tokens: offerdatas.tokens.filter(item => item.id !== id)
-				}));
-        setFinalOfferdatas(state => ({
-					...state, 
-					tokens: finalOfferdatas.tokens.filter(item => item.id !== id)
-				}));
-			} else {
-        setOfferData(state => ({
-					...state, 
-					nfts: offerdatas.nfts.filter(item => !(item.tokenId === id && item.contract_address === address))
-				}));
-        setFinalOfferdatas(state => ({
-					...state, 
-					nfts: finalOfferdatas.nfts.filter(item => !(item.tokenId === id && item.contract_address === address))
-				}));
-			}
+    const handleRemoveOffer = (id) => {
+        setOfferData(offerdatas.filter(item => item.id !== id));
+        setFinalOfferdatas(finalOfferdatas.filter(item => item.id !== id));
     }
 
     const closechat = () => {
@@ -352,7 +327,7 @@ function Buyer() {
     const [CoinTypesPrice, setCoinTypesPrice] = useState(Array(myBalances).fill(0))
     const getCoinType = useCallback(
         () => {
-            coinTypes.forEach((item, index) => {
+            myBalances.forEach((item, index) => {
                 // fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
                 fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
                     .then(res => res.json())
@@ -436,7 +411,6 @@ function Buyer() {
     const validatedTotalprice = (e) => {
         var price = 0;
         price = e.target.value * validatedcoinPrice[validatedCoinType];
-				console.log(e.target.value);
         if (re.test(e.target.value) && parseInt(price) <= parseInt(initialpriceValue * coinPrice)) {
             setFlag(true);
             setValidatedPrice(e.target.value);
@@ -454,10 +428,8 @@ function Buyer() {
 
     //drag and drop
 
-    const onDragStart = (ev, type = 'token', id, address = '') => {
+    const onDragStart = (ev, id) => {
         ev.dataTransfer.setData("id", id);
-        ev.dataTransfer.setData("type", type);
-        ev.dataTransfer.setData("address", address);
     }
 
     const onDragOver = (ev) => {
@@ -466,27 +438,13 @@ function Buyer() {
 
     const onDrop = (ev) => {
         let id = ev.dataTransfer.getData("id");
-        let type = ev.dataTransfer.getData("type");
-        let address = ev.dataTransfer.getData("address");
-				if(type === 'token') {
-					const myBalance = myBalances.filter((item) => item.name == id);
-					const newOfferData = [...offerdatas.tokens, myBalance];
-					setOfferData(state => ({...state, tokens: newOfferData}));
-					if (validatedTokens.find((item) => item.name == id)) {
-							if (!finalOfferdatas.tokens.find(item => item.name == id)) {
-								const newFinalOfferData = [...finalOfferdatas.tokens, ...myBalance];
-									setFinalOfferdatas(state => ({...state, tokens: newFinalOfferData}));
-							}
-					}
-				} else {
-					const myNft = nftCtx.nfts.filter(nft => nft.tokenId === id && nft.contract_address === address);
-					const newOfferData = [...offerdatas.nfts, myNft];
-					setOfferData(state => ({...state, nfts: newOfferData}));
-					if (!finalOfferdatas.nfts.find(nft => nft.tokenId == id && nft.contract_address === address)) {
-						const newFinalOfferData = [...finalOfferdatas.nfts, ...myNft];
-							setFinalOfferdatas(state => ({...state, nfts: newFinalOfferData}));
-					}
-				}
+        const myBalance = myBalances.filter((item) => item.name == id);
+        setOfferData([...offerdatas, myBalance]);
+        if (validatedTokens.find((item) => item.name == id)) {
+            if (!finalOfferdatas.find(item => item.name == id)) {
+                setFinalOfferdatas([...finalOfferdatas, ...myBalance]);
+            }
+        }
     }
 
     // ETHERS SETUP
@@ -513,7 +471,7 @@ function Buyer() {
         let givesTokenAddress = []
         let amountOrTokenIds = []
 
-        finalOfferdatas.tokens.map(function (i) {
+        finalOfferdatas.map(function (i) {
             filterCoinTypes.push(coinTypes.filter((el) => el.name == i.name))
             amountOrTokenIds.push(i.balance)
         })
@@ -642,35 +600,48 @@ function Buyer() {
 												<div className="flex flex-col gap-y-2">
 															{myBalances.map((myBalance, index) => {
 																	const id = myBalance.id;
-																	var offerdata = finalOfferdatas.tokens.find(item => item.id == id);
+																	var offerdata = finalOfferdatas.find(item => item.id == id);
 																	var validatedToken = validatedTokens.find(item => item.name == myBalance.name);
 																	var className = !disableflag ? "asset" : "asset-disable";
 																	return (
 																			<AssetCard
 																					draggable
-																					onDragStart={(e) => onDragStart(e, 'token', myBalance.name)}
+																					onDragStart={(e) => onDragStart(e, myBalance.name)}
 																					key={index}
 																					className={className}
 																					style={{width: '100%', position: 'relative'}}
 																			>
-																				<div className="flex-1 flex items-center">
-																						<img src="../static/images/client/image 14.png" />
-																						<div className="w-full flex items-center justify-around">
-																								<div className="w-1/2 px-5">
-																										<TypographySize20 style={{textAlign: 'right'}}>{parseFloat(!offerdata ? myBalance.balance : (myBalance.balance - offerdata.balance)).toFixed(2)}</TypographySize20>
-																								</div>
-																								<div className="w-1/2 px-5">
-																								<TypographySize20 className="truncate w-[200px]">{myBalance.name}</TypographySize20>
-																								</div>
-																						</div>
-																				</div>
-																				<div className="absolute right-5 inset-y-0 flex items-center">
-																						{!validatedToken ?
-																								<img id={"error-img" + myBalance.name} />
-																								:
-																								<img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" />
-																						}
-																				</div>
+																					{!offerdata ?
+																							<>
+																									<div className="flex-1 flex items-center">
+																											<img src="../static/images/client/image 14.png" />
+																											<div className="w-full flex items-center justify-around">
+																													<div className="w-1/2 px-5">
+																															<TypographySize20 style={{textAlign: 'right'}}>{myBalance.balance}</TypographySize20>
+																													</div>
+																													<div className="w-1/2 px-5">
+																													<TypographySize20 className="truncate w-[200px]">{myBalance.name}</TypographySize20>
+																													</div>
+																											</div>
+																									</div>
+																									<div className="absolute right-5 inset-y-0 flex items-center">
+																											{!validatedToken ?
+																													<img id={"error-img" + myBalance.name} />
+																													:
+																													<img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" />
+																											}
+																									</div>
+																							</> : <>
+																									<img src="../static/images/client/image 14.png" />
+																									<TypographySize20 style={{ width: "50px", position: "relative", left: "25%" }}>{myBalance.balance - offerdata.balance}</TypographySize20>
+																									<TypographySize20 style={{ position: "relative", left: "50%" }}>{myBalance.name}</TypographySize20>
+																									{!validatedToken ?
+																											<img id={"error-img" + myBalance.name} style={{ position: "relative", left: "100%", marginLeft: "-150px" }} />
+																											:
+																											<img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" style={{ position: "relative", left: "100%", marginLeft: "-150px" }} />
+																									}
+																							</>
+																					}
 																			</AssetCard>
 																	)
 															})}
@@ -678,12 +649,11 @@ function Buyer() {
 												<div className="flex flex-col gap-y-2">
 													{
 														collections.map((collection, index) => (
-															<AssetCard key={index} className="asset" style={{...(collection.address === selectedCollectionAddress) && { backgroundColor: 'grey'}}}
-																onClick={() => handleViewCollaction(collection.address)}>
+															<AssetCard key={index} className="asset" style={{...(collection.address === selectedCollectionAddress) && { backgroundColor: 'grey'}}}>
 																	{/* <img src="../static/images/client/image 14.png" /> */}
 																	<img className="ml-4" src={collection.image} style={{ height: "100%", width: "auto" }} />
 																	<TypographySize20 className="px-4 flex-1">{collection.name}</TypographySize20>
-																	<div>
+																	<div onClick={handleViewCollaction(collection.address)}>
 																		<svg className="z-10 cursor-pointer mr-4 hover:fill-blue-700" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"> <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/> <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/> </svg>
 																	</div>
 															</AssetCard>
@@ -697,12 +667,7 @@ function Buyer() {
 													}
 													{
 														collectionItems.map((nft, index) => (
-															<AssetCard
-																draggable
-																onDragStart={(e) => onDragStart(e, 'nft', nft.tokenId, nft.contract_address)} 
-																key={index} 
-																className="asset"
-															>
+															<AssetCard key={index} className="asset">
 																	<img src="../static/images/client/image 14.png" />
 																	<img className="ml-4" src={nft.image} style={{ height: "100%", width: "auto" }} />
 																	<TypographySize20 className="px-4 flex-1">{nft.name}</TypographySize20>
@@ -734,33 +699,18 @@ function Buyer() {
                                     </Select>
                                 </CounterCard>
                             </div>
-														<div className="flex items-start w-full h-full">
-															<div className="w-full h-full overflow-y-auto custom-scrollbar">
-																{finalOfferdatas.tokens.map((offerdata, index) =>
-																		<CounterCard key={index} style={{ justifyContent: "space-between" }}>
-																				<div>
-																						<TypographySize20>
-																								<input className="mx-2 py-2" style={{ width: "220px" }} name={offerdata.name} onChange={(e) => handleChange(e, offerdata.name)}
-																										value={offerdata.balance} />
-																						</TypographySize20>
-																				</div>
-																				<TypographySize20 className="truncate">{offerdata.name}</TypographySize20>
-																				<CloseIcon className='mr-2' onClick={(e) => handleRemoveOffer('token', offerdata.id, offerdata.contract_address)} />
-																		</CounterCard>
-																)}
-															</div>
-															<div className="w-full h-full overflow-y-auto custom-scrollbar">
-																{finalOfferdatas.nfts.map((offerdata, index) =>
-																		<CounterCard key={index} className="asset">
-																			<img className="ml-4" src={offerdata.image} style={{ height: "100%", width: "auto" }} />
-																			<TypographySize20 className="px-4 flex-1">{offerdata.name}</TypographySize20>
-																			<div>
-																				<CloseIcon className='mr-2' onClick={(e) => handleRemoveOffer('nft', offerdata.tokenId, offerdata.contract_address)} />
-																			</div>
-																	</CounterCard>
-																)}
-															</div>
-														</div>
+                            {finalOfferdatas.map((offerdata, index) =>
+                                <CounterCard key={index} style={{ justifyContent: "space-between" }}>
+                                    <div>
+                                        <TypographySize20>
+                                            <input className="mx-2 py-2" style={{ width: "220px" }} name={offerdata.name} onChange={(e) => handleChange(e, offerdata.name)}
+                                                value={offerdata.balance} />
+                                        </TypographySize20>
+                                    </div>
+                                    <TypographySize20>{offerdata.name}</TypographySize20>
+                                    <CloseIcon onClick={(e) => handleRemoveOffer(offerdata.id)} />
+                                </CounterCard>
+                            )}
                         </Border>
                     </div>
                     <div className="block md:flex justify-between my-12">

@@ -140,7 +140,7 @@ function Listitemforsale(props) {
                     </Box>
                 </Box>
                 <Box className='flex justify-center' style={{ width: "100%", position: "absolute", bottom: "2rem" }}>
-                    <div className='flex justify-center btn tex-btn pulse' style={{ width: "86%" }} onClick={(e) => handleshowFlag()}>Next</div>
+                    <div className='cursor-pointer flex justify-center btn tex-btn pulse' style={{ width: "86%" }} onClick={(e) => handleshowFlag()}>Next</div>
                 </Box>
             </Card>
         </Box>
