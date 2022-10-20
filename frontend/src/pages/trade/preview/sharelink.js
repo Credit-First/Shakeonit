@@ -67,7 +67,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 
         shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
             setLoadingState(0);
-            navigate(`/buyer/${give}/${amountGive}`);
+            navigate(`/buyer/${nonce}`);
         })
     }
 

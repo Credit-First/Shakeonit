@@ -26,6 +26,7 @@ import Config from '../../config/app';
 import BuyerChat from './chat';
 import { Toaster } from 'react-hot-toast';
 import TokenContext from '../../context/tokenContext';
+import { httpGet } from "../../utils/http.utils";
 
 const Container = styled.div`
     width: 100%;
@@ -185,9 +186,39 @@ function Buyer() {
         }
     }, [nftCtx, address, tokenId, account]);
 
-    const getNft = () => {
-        const nft = nftCtx.nfts.find(nft => (nft.contract_address === address && nft.tokenId === tokenId));
-        setNftDetail(nft);
+    const getGenericImageUrl = (_url) => {
+        _url = _url.replace('ipfs://', 'https://ipfs.io/ipfs/')
+        if(!_url.includes('/')) _url = 'https://ipfs.io/ipfs/' + _url;
+        return _url
+    }
+
+    const getNft = async () => {
+        const ethereum = window.ethereum;
+
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner(walletAddress)
+
+        const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
+        
+        const shakeItem = await shakeContract.getFromActiveOrderSet(nonce);
+        const nftContract = new ethers.Contract(shakeItem.address, Config.nftContract.abi, signer)
+
+        const tokenURI = await nftContract.tokenURI(shakeItem.tokenId);
+        const ownerOfToken = await nftContract.ownerOf(shakeItem.tokenId);
+        
+        const {image, name} = await httpGet(getGenericImageUrl(tokenURI));
+
+
+        setNftDetail({
+            contract_address: shakeItem.address,
+            tokenId: shakeItem.tokenId,
+            name: shakeItem.name,
+            image: shakeItem.image
+        });
     }
 
 		const getCollections = useCallback(
