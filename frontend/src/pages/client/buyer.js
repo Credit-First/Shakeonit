@@ -121,7 +121,7 @@ function Buyer() {
     const nftCtx = useContext(NftContext);
     const tokenCtx = useContext(TokenContext);
     const { account } = useWeb3React();
-    const { address, tokenId } = useParams();
+    const { nonce } = useParams();
     const [nftDetail, setNftDetail] = useState({});
 		const [collections, setCollections] = useState([]);
 		const [selectedCollectionAddress, setSelectedCollectionAddress] = useState('');
@@ -184,7 +184,7 @@ function Buyer() {
 					getNft();
 					getCollections();
         }
-    }, [nftCtx, address, tokenId, account]);
+    }, [nftCtx, nonce, account]);
 
     const getGenericImageUrl = (_url) => {
         _url = _url.replace('ipfs://', 'https://ipfs.io/ipfs/')
@@ -216,8 +216,8 @@ function Buyer() {
         setNftDetail({
             contract_address: shakeItem.address,
             tokenId: shakeItem.tokenId,
-            name: shakeItem.name,
-            image: shakeItem.image
+            name: name,
+            image: image
         });
     }
 
@@ -302,7 +302,7 @@ function Buyer() {
                 openchat();
                 break;
             case "initiatecall":
-                window.open(`/#/jitsi/room${address}/${username}`);
+                window.open(`/#/jitsi/room${nftDetail.contract_address}/${username}`);
                 break;
 
         }
@@ -811,7 +811,7 @@ function Buyer() {
 
                                     // }}
                                     to={{
-                                        pathname: `/list/${address}/${tokenId}`,
+                                        pathname: `/list/${nftDetail.address}/${nftDetail.tokenId}`,
 
                                     }}
                                     state={pricedata}
@@ -826,7 +826,7 @@ function Buyer() {
                 </ListContainer>
             </div>
             <div style={{ position: "absolute", bottom: "70px", right: '10px', display: 'none'}} id="openchat">
-                <BuyerChat roomname={"room" + address} username={username} closechat={closechat} openchat={openchat} isOpenedChat={isOpenedChat} role="buyer"/>
+                <BuyerChat roomname={"room" + nftDetail.contract_address} username={username} closechat={closechat} openchat={openchat} isOpenedChat={isOpenedChat} role="buyer"/>
             </div>
             <Toaster position="bottom-right" />
             <Modal open={isOpen} onClose={handleClose} img={nftDetail.image} content={content} />
