@@ -29,7 +29,7 @@ const NftProvider = (props) => {
 						address: nft.contract_address,
 						name: nft.contract_name,
 						image: getGenericImageUrl(nft.metadata.image || nft.metadata.animation_url),
-						balance: 0
+						balance: 1
 					};
 					
 					if( nft.metadata && !!(nft.metadata.image || nft.metadata.animation_url)) {

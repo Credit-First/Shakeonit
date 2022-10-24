@@ -190,8 +190,10 @@ contract ShakeOnIt is Ownable, ReentrancyGuard, IERC721Receiver {
         address from,
         uint256 tokenId,
         bytes calldata data
-    ) external pure returns (bytes4) {
+    ) external view returns (bytes4) {
         return this.onERC721Received.selector;
+        // bytes4  empty;
+        // return supportedTokens[operator] == 2 ? this.onERC721Received.selector : empty;
     }
 
     /// @notice Library function
@@ -518,7 +520,7 @@ contract ShakeOnIt is Ownable, ReentrancyGuard, IERC721Receiver {
     /// @param tokens Token Addresses (fungible and non-fungible)
     /// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
     function mint(address[] calldata tokens, uint[] memory amountOrTokenIds) external payable nonReentrant {
-        uint changeable_msg_value = _mint(tokens, amountOrTokenIds, msg.value, msg.sender);
+        uint changeable_msg_value = _mint(tokens, amountOrTokenIds, msg.value, msg.sender, msg.sender);
         _refundIfNeeded(msg.sender, changeable_msg_value);
     }
 
@@ -526,14 +528,15 @@ contract ShakeOnIt is Ownable, ReentrancyGuard, IERC721Receiver {
     /// @dev ShakeOnIt DAO
     /// @param tokens Token Addresses (fungible and non-fungible)
     /// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
+    /// @param sender How is sender
     /// @param receiver Holder of coins
-    function _mint(address[] calldata tokens, uint[] memory amountOrTokenIds, uint changeable_msg_value, address receiver) private returns (uint) {
+    function _mint(address[] calldata tokens, uint[] memory amountOrTokenIds, uint changeable_msg_value, address sender, address receiver) private returns (uint) {
          
         uint length = tokens.length;
 
         for (uint i=0; i < length;) {
             
-            (uint diff, uint change_msg_value2) = _receiveAsset(changeable_msg_value, receiver, tokens[i], amountOrTokenIds[i]);
+            (uint diff, uint change_msg_value2) = _receiveAsset(changeable_msg_value, sender, tokens[i], amountOrTokenIds[i]);
             amountOrTokenIds[i] -= diff;
             changeable_msg_value = change_msg_value2;
             _adjustDebt(tokens[i], false, amountOrTokenIds[i]);
@@ -562,9 +565,9 @@ contract ShakeOnIt is Ownable, ReentrancyGuard, IERC721Receiver {
         if (refNonce == 0) revert OutOfIndex();
         Order memory refOrder = getFromActiveOrderSet(refNonce);
         if (refOrder.owner != msg.sender) revert WrongOwner(refOrder.owner, msg.sender);
-        //forget about previous order
-        removeFromActiveOrderSet(refNonce);
+        // //forget about previous order
         _buyOrder(msg.value, msg.sender, false, nonce);
+        removeFromActiveOrderSet(refNonce);
 
     }
 
@@ -581,14 +584,14 @@ contract ShakeOnIt is Ownable, ReentrancyGuard, IERC721Receiver {
         address give;
 
         uint amountOrTokenId;
-        uint changable_msg_value;
+        uint changable_msg_value = msg.value;
 
         if (gives.length == 1) {
             give = gives[0];
             amountOrTokenId = amountOrTokenIds[0];
         }
         else {
-            changable_msg_value = _mint(gives, amountOrTokenIds, msg.value, address(this));
+            changable_msg_value = _mint(gives, amountOrTokenIds, changable_msg_value, msg.sender, address(this));
             give = address(nft);
             composites[compositeNonce - 1].temporary = true;
             composites[compositeNonce - 1].refNonce = refNonce;

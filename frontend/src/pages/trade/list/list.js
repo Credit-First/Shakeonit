@@ -64,14 +64,14 @@ function List() {
     const [isOpened, setOpened] = useState(false);
     const [isOpen, setOpen] = useState(false);
 
-    React.useEffect(() => {
-        if (nftCtx.nfts.length > 0) getNft();
-    }, [nftCtx, address, tokenId, getNft]);
-
     const getNft = useCallback(() => {
         const nft = nftCtx.nfts.find(nft => (nft.contract_address === address && nft.tokenId === tokenId));
         setNftDetail(nft);
     }, [nftCtx, address, tokenId])
+
+    React.useEffect(() => {
+        if (nftCtx.nfts.length > 0) getNft();
+    }, [nftCtx, address, tokenId, getNft]);
 
     const handleFlag = () => {
         setFlag(true);
@@ -80,6 +80,7 @@ function List() {
         setFlag(false);
     }
     const handleChangeOpen = () => {
+        
         setOpen(!isOpen);
     }
     const handleChangeClose = () => {
@@ -165,7 +166,7 @@ function List() {
                         </Box>
                     </ListContent>
                 </ListContainer>
-                <RecentActivity finalOfferdatas = {finalOfferdatas} isflag = {isflag} valiatedprice = {valiatedprice} validatedCoinType = {validatedCoinType} address={address} />
+                {/* <RecentActivity finalOfferdatas = {finalOfferdatas} isflag = {isflag} valiatedprice = {valiatedprice} validatedCoinType = {validatedCoinType} address={address} /> */}
                 <CancelSale open={isOpened} onClose={handleClose} image={nftDetail.image} />
                 <ChangePrice open={isOpen} onClose={handleChangeClose} image={nftDetail.image} setPrice={setPrice} price={price} setPriceValue={setPriceValue} coinPrice={coinPrice} handleFlag={handleFlag} handleChangeFlag={handleChangeFlag} />
             </div>

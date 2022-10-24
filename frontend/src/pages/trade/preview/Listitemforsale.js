@@ -136,7 +136,7 @@ function Listitemforsale(props) {
                     </Box>
                     <Box className="block xl:flex xl:justify-between" style={{marginTop : "10%"}}>
                         <p className='text-price mb-3'>Total Price:</p>
-                        <p className='text-blue-usd mb-3'>USD &nbsp;&nbsp; {(priceValue * coinPrice[coin])}</p>
+                        <p className='text-blue-usd mb-3'>USD &nbsp;&nbsp; {(priceValue * coinPrice[coin]).toFixed(2)}</p>
                     </Box>
                 </Box>
                 <Box className='flex justify-center' style={{ width: "100%", position: "absolute", bottom: "2rem" }}>

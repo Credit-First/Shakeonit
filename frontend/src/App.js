@@ -53,7 +53,7 @@ function App() {
                 <Route path='/privacypolicy' element={<PrivacyPolicy />} />
                 <Route path='/resources' element={<Resources />} />
                 <Route path='/service' element={<Service />} />
-                <Route path='/buyer/:address/:tokenId' element={<Buyer />} />
+                <Route path='/buyer/:nonce' element={<Buyer />} />
               </Routes>
               <Footer isOpen={isOpen} isOpened = {isOpened} setOpen = {setOpen} setOpened = {setOpened} />
             </Layout>

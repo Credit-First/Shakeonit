@@ -19,10 +19,13 @@ export default {
         abi: abi.TokenMagic
     },
     shakeonit: {
-        address: '0xC875dB731Af820F2Cf7B27cA5022D02ab72e1438',
+        address: '0xfAC8f257f758bF8513C53eccf3e3391C6f86eC16',
         abi: abi.Shakeonit
     },
     nftContract: {
         abi: abi.ERC721
+    },
+    tokenContract: {
+        abi: abi.ERC20
     }
 }
