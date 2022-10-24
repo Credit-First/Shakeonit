@@ -27,6 +27,8 @@ import BuyerChat from './chat';
 import { Toaster } from 'react-hot-toast';
 import TokenContext from '../../context/tokenContext';
 import { httpGet } from "../../utils/http.utils";
+import CancelSale from "../../components/Modal/cancelsale";
+import ChangePrice from "../../components/Modal/changeprice";
 
 const Container = styled.div`
     width: 100%;
@@ -128,10 +130,10 @@ function Buyer() {
 	const [collectionItems, setCollectionItems] = useState([]);
 
 	const location = useLocation();
-	const initialpriceValue = location.state.priceValue;
-	const coin = location.state.coin;
-	const coinPrice = location.state.coinPrice;
-	const coinType = location.state.coinType;
+	const [initialpriceValue, setInitialpriceValue] = useState(0);
+	const [coin, setCoin] = useState(0);
+	const [coinType, setCoinType] = useState(0);
+	const [coinPrice, setCoinPrice] = useState(0);
 
 	let uniqueId = "";
 
@@ -147,9 +149,53 @@ function Buyer() {
 	const [content, setContent] = useState("");
 	const [isOpen, setOpen] = useState(false);
 
-
 	const handleClose = () => {
 		setOpen(false);
+	}
+
+	const initialPrice = initialpriceValue * coinPrice;
+	const [modalPrice, setModalPrice] = useState(initialPrice);
+	const [modalPriceValue, setModalPriceValue] = useState(initialpriceValue);
+	const [modalflag, setModalFlag] = useState(false);
+	const [isModalOpened, setModalOpened] = useState(false);
+	const [isModalOpen, setModalOpen] = useState(false);
+
+	const handleModalFlag = () => {
+		setModalFlag(true);
+	}
+	const handleChangeFlag = async () => {
+		setModalFlag(false);
+
+		const ethereum = window.ethereum;
+        const provider = new ethers.providers.Web3Provider(ethereum)
+
+        const accounts = await ethereum.request({
+            method: "eth_requestAccounts",
+        });
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const signer = provider.getSigner(walletAddress)
+
+        // ethers contract instantiation
+        const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
+        // getActiveOrderLength 
+
+        await shakeContract.updateOrder(nonce, '0x0000000000000000000000000000000000000000', '1000000000000', {
+            gasLimit: 250000
+        }).then(res => {
+            console.log(res)
+        })
+	}
+	const handleModalChangeOpen = () => {
+		setModalOpen(!isModalOpen);
+	}
+	const handleModalChangeClose = () => {
+		setModalOpen(!isModalOpen);
+	}
+	const handleModalOpen = () => {
+		setModalOpened(!isModalOpened);
+	}
+	const handleModalClose = () => {
+		setModalOpened(!isModalOpened);
 	}
 
 	const [validatedCoinType, setValidtedCoinType] = useState(Array(validatedTokens).fill(0));
@@ -386,19 +432,19 @@ function Buyer() {
 					return tempPrice
 				})
 			} else {
-			// fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
-			fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
-				.then(res => res.json())
-				.then(res => {
-					if (res.price) {
-						setMyBalancePrice((prev) => {
-							const tempPrice = [...prev]
-							tempPrice[index] = res.price
-							return tempPrice
-						})
-					}
-				})
-				.catch(err => console.log(err))
+				// fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
+				fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
+					.then(res => res.json())
+					.then(res => {
+						if (res.price) {
+							setMyBalancePrice((prev) => {
+								const tempPrice = [...prev]
+								tempPrice[index] = res.price
+								return tempPrice
+							})
+						}
+					})
+					.catch(err => console.log(err))
 			}
 		})
 	}, [myBalances])
@@ -417,19 +463,19 @@ function Buyer() {
 						return tempPrice
 					})
 				} else {
-				// fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
-				fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
-					.then(res => res.json())
-					.then(res => {
-						if (res.price) {
-							setCoinTypesPrice((prev) => {
-								const tempPrice = [...prev]
-								tempPrice[index] = res.price
-								return tempPrice
-							})
-						}
-					})
-					.catch(err => console.log(err))
+					// fetch(`https://api.pancakeswap.info/api/v2/tokens/${item.address}`)
+					fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${item.name}USDT`)
+						.then(res => res.json())
+						.then(res => {
+							if (res.price) {
+								setCoinTypesPrice((prev) => {
+									const tempPrice = [...prev]
+									tempPrice[index] = res.price
+									return tempPrice
+								})
+							}
+						})
+						.catch(err => console.log(err))
 				}
 			})
 		},
@@ -596,7 +642,7 @@ function Buyer() {
 		filterCoinTypes.map(function (e) {
 			givesTokenAddress.push(e[0].address)
 		})
-		
+
 		finalOfferdatas.nfts.map(function (i) {
 			amountOrTokenIds.push(i.tokenId)
 			givesTokenAddress.push(i.contract_address)
@@ -609,7 +655,7 @@ function Buyer() {
 		/// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
 
 		const processCallback = () => {
-			if(flag < givesTokenAddress.length) return
+			if (flag < givesTokenAddress.length) return
 			shakeContract.makeOfferFromOrder(1, givesTokenAddress, amountOrTokenIds, {
 				value: Number(nftDetail.amountGetOrTokenID),
 				gasLimit: 300000,
@@ -620,29 +666,29 @@ function Buyer() {
 
 		for (let i = 0; i < givesTokenAddress.length; i++) {
 			const address = givesTokenAddress[i];
-			if(addressTypes[i] === 'token') {
+			if (addressTypes[i] === 'token') {
 				const tokenContract = new ethers.Contract(address, Config.tokenContract.abi, signer)
 				await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i]);
-				
-					tokenContract.on('Approval', (owner, spender, value) => {
-						if(owner === account && value === amountOrTokenIds[i]) {
-							flag++;
-							processCallback();
-						}
-					})
+
+				tokenContract.on('Approval', (owner, spender, value) => {
+					if (owner === account && value === amountOrTokenIds[i]) {
+						flag++;
+						processCallback();
+					}
+				})
 			} else {
 				const nftContract = new ethers.Contract(address, Config.nftContract.abi, signer)
 				await nftContract.approve(Config.shakeonit.address, amountOrTokenIds[i]);
-				
-					nftContract.on('Approval', (owner, approved, tokenId) => {
-						if(owner === account && tokenId === amountOrTokenIds[i]) {
-							flag++;
-							processCallback();
-						}
-					})
+
+				nftContract.on('Approval', (owner, approved, tokenId) => {
+					if (owner === account && tokenId === amountOrTokenIds[i]) {
+						flag++;
+						processCallback();
+					}
+				})
 			}
-						
-			
+
+
 		}
 
 	}
@@ -725,17 +771,45 @@ function Buyer() {
 								<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
 							</Box>
 						</Box>
-						<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-							<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>Buy</a>
-							<Box className="outlined-btn px-3">
-								<select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
-									<option value="otheractions" >Other Actions</option>
-									<option value="counteroffer">Counter Offer</option>
-									<option value="openchat">Open a chat</option>
-									<option value="initiatecall">Initiate a Call</option>
-								</select>
-							</Box>
-						</Box>
+						{
+							nftDetail.owner === account ?
+								<>
+									<Box>
+										<Box className="flex">
+											<img src="/static/images/dollar-circle.png" alt='' />
+											<TypographySize14 className="flex items-center">Price:</TypographySize14>
+										</Box>
+										<Box className="flex items-center" style={{ marginTop: "4%" }}>
+											{!modalflag ?
+												<TypographySize32>{modalPrice}</TypographySize32>
+												:
+												<TypographySize32>{initialPrice}</TypographySize32>
+											}
+											{!modalflag ?
+												<TypographySize14 className="pl-6">/ {modalPriceValue}</TypographySize14>
+												:
+												<TypographySize14 className="pl-6">/ {initialpriceValue}</TypographySize14>
+											}
+										</Box>
+									</Box>
+									<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
+										<div className="cursor-pointer flex justify-center btn pulse1 w-full" onClick={handleModalChangeOpen}>Change Price</div>
+										<div className="cursor-pointer flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleModalOpen}>Cancel Sale</div>
+									</Box>
+								</>
+								:
+								<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
+									<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>Buy</a>
+									<Box className="outlined-btn px-3">
+										<select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
+											<option value="otheractions" >Other Actions</option>
+											<option value="counteroffer">Counter Offer</option>
+											<option value="openchat">Open a chat</option>
+											<option value="initiatecall">Initiate a Call</option>
+										</select>
+									</Box>
+								</Box>
+						}
 					</ListContent>
 				</ListContainer>
 				<ListContainer id="counteroffer" style={{ display: "none" }}>
@@ -907,7 +981,10 @@ function Buyer() {
 			</div>
 			<Toaster position="bottom-right" />
 			<Modal open={isOpen} onClose={handleClose} img={nftDetail.image} content={content} />
-		</Box>
+
+			<CancelSale open={isModalOpened} onClose={handleModalClose} image={nftDetail.image} nonce={nonce}/>
+			<ChangePrice open={isModalOpen} onClose={handleModalChangeClose} image={nftDetail.image} setPrice={setModalPrice} price={modalPrice} setPriceValue={setModalPriceValue} coinPrice={coinPrice} handleFlag={handleModalFlag} handleChangeFlag={handleChangeFlag} />
+		</Box >
 	);
 }
 

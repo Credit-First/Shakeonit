@@ -40,7 +40,6 @@ const ListContent = Styled(Box)({
 const coinTypes = ["ETH", "BNB", "SOL"]
 
 function List() {
-    const [flag, setFlag] = useState(false);
     const location = useLocation();
     const initialpriceValue = location.state.priceValue;
     const coin = location.state.coin;
@@ -55,14 +54,15 @@ function List() {
 
 
     const initialPrice = initialpriceValue * coinPrice;
-    const [price, setPrice] = useState(initialPrice);
-    const [priceValue, setPriceValue] = useState(initialpriceValue);
+    const [modalPrice, setModalPrice] = useState(initialPrice);
+    const [modalPriceValue, setModalPriceValue] = useState(initialpriceValue);
 
     const nftCtx = useContext(NftContext);
     const { address, tokenId } = useParams();
     const [nftDetail, setNftDetail] = useState({});
-    const [isOpened, setOpened] = useState(false);
-    const [isOpen, setOpen] = useState(false);
+    const [modalflag, setModalFlag] = useState(false);
+    const [isModalOpened, setModalOpened] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
 
     const getNft = useCallback(() => {
         const nft = nftCtx.nfts.find(nft => (nft.contract_address === address && nft.tokenId === tokenId));
@@ -73,24 +73,23 @@ function List() {
         if (nftCtx.nfts.length > 0) getNft();
     }, [nftCtx, address, tokenId, getNft]);
 
-    const handleFlag = () => {
-        setFlag(true);
+    const handleModalFlag = () => {
+        setModalFlag(true);
     }
     const handleChangeFlag = () => {
-        setFlag(false);
+        setModalFlag(false);
     }
-    const handleChangeOpen = () => {
-        
-        setOpen(!isOpen);
+    const handleModalChangeOpen = () => {
+        setModalOpen(!isModalOpen);
     }
-    const handleChangeClose = () => {
-        setOpen(!isOpen);
+    const handleModalChangeClose = () => {
+        setModalOpen(!isModalOpen);
     }
-    const handleOpen = () => {
-        setOpened(!isOpened);
+    const handleModalOpen = () => {
+        setModalOpened(!isModalOpened);
     }
-    const handleClose = () => {
-        setOpened(!isOpened);
+    const handleModalClose = () => {
+        setModalOpened(!isModalOpened);
     }
 
     // ETHERS SETUP
@@ -148,27 +147,27 @@ function List() {
                                 <TypographySize14 className="flex items-center">Price:</TypographySize14>
                             </Box>
                             <Box className="flex items-center" style={{ marginTop: "4%" }}>
-                                {!flag ?
-                                    <TypographySize32>{price}</TypographySize32>
+                                {!modalflag ?
+                                    <TypographySize32>{modalPrice}</TypographySize32>
                                     :
                                     <TypographySize32>{initialPrice}</TypographySize32>
                                 }
-                                {!flag ?
-                                <TypographySize14 className="pl-6">/ {priceValue} {coinTypes[coin]}</TypographySize14>
+                                {!modalflag ?
+                                <TypographySize14 className="pl-6">/ {modalPriceValue} {coinTypes[coin]}</TypographySize14>
                                  : 
                                 <TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin]}</TypographySize14>
                                  }
                             </Box>
                         </Box>
                         <Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-                            <div className="flex justify-center btn pulse1 w-full" onClick={handleChangeOpen}>Change Price</div>
-                            <div className="flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleOpen}>Cancel Sale</div>
+                            <div className="flex justify-center btn pulse1 w-full" onClick={handleModalChangeOpen}>Change Price</div>
+                            <div className="flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleModalOpen}>Cancel Sale</div>
                         </Box>
                     </ListContent>
                 </ListContainer>
                 {/* <RecentActivity finalOfferdatas = {finalOfferdatas} isflag = {isflag} valiatedprice = {valiatedprice} validatedCoinType = {validatedCoinType} address={address} /> */}
-                <CancelSale open={isOpened} onClose={handleClose} image={nftDetail.image} />
-                <ChangePrice open={isOpen} onClose={handleChangeClose} image={nftDetail.image} setPrice={setPrice} price={price} setPriceValue={setPriceValue} coinPrice={coinPrice} handleFlag={handleFlag} handleChangeFlag={handleChangeFlag} />
+                <CancelSale open={isModalOpened} onClose={handleModalClose} image={nftDetail.image} />
+                <ChangePrice open={isModalOpen} onClose={handleModalChangeClose} image={nftDetail.image} setPrice={setModalPrice} price={modalPrice} setPriceValue={setModalPriceValue} coinPrice={coinPrice} handleFlag={handleModalFlag} handleChangeFlag={handleChangeFlag} />
             </div>
         </Box>
     );

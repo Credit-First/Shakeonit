@@ -1,11 +1,12 @@
 import { Dialog } from "@material-ui/core";
+import { useNavigate } from "react-router";
 import React, { useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { ethers } from 'ethers'
-import { contractAddress, contractAbi } from '../../content/contractMethods'
+import Config from '../../config/app';
 
-function CancelSale({ open, onClose, image }) {
-
+function CancelSale({ open, onClose, image, nonce }) {
+    const navigate = useNavigate();
     const cancelOrder = async () => {
         // ETHERS SETUP
         const ethereum = window.ethereum;
@@ -17,18 +18,18 @@ function CancelSale({ open, onClose, image }) {
         const walletAddress = accounts[0]    // first account in MetaMask
         const signer = provider.getSigner(walletAddress)
 
-
         // ethers contract instantiation
-        const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
+        const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
         // getActiveOrderLength 
-        const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
+        const orderActiveSet = await shakeContract.getFromActiveOrderSet(nonce)
 
-        await shakeContract.cancelOrderByAdmin([...orderActiveSet], {
+        console.log(nonce, orderActiveSet)
+        await shakeContract.cancelOrderByAdmin(nonce, {
             gasLimit: 250000
         }).then(res => {
+            navigate("/#/collections");
             console.log(res)
-        }
-        )
+        })
     }
 
     return (
@@ -52,11 +53,11 @@ function CancelSale({ open, onClose, image }) {
                         <p className="wallet-md" style={{ textAlign: "center", lineHeight: "1.3" }}>Please click the cancel button if you want to cancel sale.</p>
                     </div>
                     <div className="flex justify-center mx-6 border-2 border-gray-200 mb-5 mt-3 pulse">
-                        <a className="welcome-btn1 py-3" onClick={() => {
+                        <div className="welcome-btn1 py-3" onClick={() => {
                             cancelOrder();
                             onClose();
                             window.localStorage.clear();
-                        }} href="/#/collections">Cancel</a>
+                        }}>Cancel</div>
                     </div>
                 </div>
             </Dialog>
