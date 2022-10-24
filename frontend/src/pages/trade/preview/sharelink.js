@@ -15,10 +15,12 @@ import { useState } from 'react';
 import { ethers } from 'ethers'
 import SendPost from './facebooksdk/sendpost';
 import Config from '../../../config/app';
-
+import { coinTypes } from '../../../content/config';
+import { useWeb3React } from "@web3-react/core";
 
 function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
 	const navigate = useNavigate();
+	const { account } = useWeb3React();
 	const pricedata = {
 		coin: coin,
 		coinPrice: coinPrice,
@@ -37,7 +39,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 	let twitterShareUrl = 'https://twitter.com/share?ref_src=twsrc%5Etfw'
 
 
-	const createOrder = (c_address, tokenId) => async () => {
+	const createOrder = () => async () => {
 		const ethereum = window.ethereum;
 
 		const accounts = await ethereum.request({
@@ -47,24 +49,51 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		const provider = new ethers.providers.Web3Provider(ethereum)
 		const signer = provider.getSigner(walletAddress)
 
-		const nftContract = new ethers.Contract(c_address, Config.nftContract.abi, signer)
-		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
-
-		let get = '0x0000000000000000000000000000000000000000'
-		let give = c_address
+		let get = coin ? coinTypes[coin].address : '0x0000000000000000000000000000000000000000'
+		let give = contract_address
 		let amountGive = tokenId // (wei for 0.0001 WETH) SHOULD BE THE NFT @ AMOUNT OF 1
 		let amountGet = ethers.utils.parseUnits(pricedata.priceValue).toNumber() // Should pull in price data value from the input in Listitemforsale File
 		let buyer = '0x0000000000000000000000000000000000000000' // 0x0 address so anyone can buy
+		
+		const nftContract = new ethers.Contract(contract_address, Config.nftContract.abi, signer)
+		const tokenContract = new ethers.Contract(get, Config.nftContract.abi, signer)
+		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 
 		console.log(give, get, amountGive, amountGet, buyer)
+		tokenContract.approve(Config.shakeonit.address, amountGet);
+
 		nftContract.approve(Config.shakeonit.address, amountGive);
 		setLoadingState(1);
+
+		const flags = {
+			nft: false,
+			token: false,
+		}
+
+		const processCallback = () => {
+			if (!flags.nft || !flags.token) return;
+			// TODO: process
+			setLoadingState(2);
+			shakeContract.makeOrder(give, get, amountGive, amountGet, buyer, {
+				gasLimit: 300000
+			})
+		}
+
+		tokenContract.on("Approval", (owner, spender, value) => {
+			flags.token = true;
+			console.log('approval token')
+			if (owner === account) {
+				console.log('approval token owner')
+				processCallback();
+			}
+		});
+		
 		nftContract.on("Approval", (owner, approved, tokenId) => {
-			if (tokenId.toString() === amountGive) {
-				setLoadingState(2);
-				shakeContract.makeOrder(give, get, amountGive, amountGet, buyer, {
-					gasLimit: 300000
-				})
+			flags.nft = true;
+			console.log('approval nft')
+			if (owner === account) {
+				console.log('approval nft owner')
+				processCallback();
 			}
 		});
 
@@ -143,12 +172,12 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 						underline="none"
 						color="inherit"
 						className="btn tex-btn pulse flex justify-center"
-						to={{
-						    pathname: `/buyer/1`,
-						}}
+						// to={{
+						//     pathname: `/buyer/1`,
+						// }}
 						state={pricedata}
 						style={{ width: "86%" }}
-						// onClick={createOrder(contract_address, tokenId)}
+						onClick={createOrder()}
 					>
 						{
 							loadingState === 1 ? 'Approving...' : (loadingState === 2 ? 'Listing...' : 'Done')

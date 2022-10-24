@@ -584,38 +584,65 @@ function Buyer() {
 		let filterCoinTypes = []
 		let givesTokenAddress = []
 		let amountOrTokenIds = []
+		let addressTypes = [];
+		let flags = 0;
 
 		finalOfferdatas.tokens.map(function (i) {
 			filterCoinTypes.push(coinTypes.filter((el) => el.name == i.name))
 			amountOrTokenIds.push(i.balance)
+			addressTypes.push('token')
 		})
 
 		filterCoinTypes.map(function (e) {
 			givesTokenAddress.push(e[0].address)
 		})
-
+		
+		finalOfferdatas.nfts.map(function (i) {
+			amountOrTokenIds.push(i.tokenId)
+			givesTokenAddress.push(i.contract_address)
+			addressTypes.push('nft')
+		})
 		/// @notice Make a counter offer and transfor the array of tokens into internal nft (if needed)
 		/// @dev ShakeOnIt DAO
 		/// @param refNonce Order ID
 		/// @param gives Token Addresses (fungible and non-fungible)
 		/// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
 
+		const processCallback = () => {
+			if(flag < givesTokenAddress.length) return
+			shakeContract.makeOfferFromOrder(1, givesTokenAddress, amountOrTokenIds, {
+				value: Number(nftDetail.amountGetOrTokenID),
+				gasLimit: 300000,
+			}).then(res => {
+				console.log(res)
+			})
+		}
+
 		for (let i = 0; i < givesTokenAddress.length; i++) {
-			const token_address = givesTokenAddress[i];
-			const tokenContract = new ethers.Contract(token_address, Config.tokenContract.abi, signer)
-			await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i]);
-			if(i === givesTokenAddress.length - 1) {
-				tokenContract.on('Approval', (owner, spender, value) => {
-					if(owner === account) {
-						shakeContract.makeOfferFromOrder(1, givesTokenAddress, amountOrTokenIds, {
-							value: Number(nftDetail.amountGetOrTokenID),
-							gasLimit: 300000,
-						}).then(res => {
-							console.log(res)
-						})
-					}
-				})
+			const address = givesTokenAddress[i];
+			if(addressTypes[i] === 'token') {
+				const tokenContract = new ethers.Contract(address, Config.tokenContract.abi, signer)
+				await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i]);
+				
+					tokenContract.on('Approval', (owner, spender, value) => {
+						if(owner === account && value === amountOrTokenIds[i]) {
+							flag++;
+							processCallback();
+						}
+					})
+			} else {
+				const nftContract = new ethers.Contract(address, Config.nftContract.abi, signer)
+				await nftContract.approve(Config.shakeonit.address, amountOrTokenIds[i]);
+				
+					nftContract.on('Approval', (owner, approved, tokenId) => {
+						if(owner === account && tokenId === amountOrTokenIds[i]) {
+							flag++;
+							processCallback();
+						}
+					})
 			}
+						
+			
 		}
 
 	}
