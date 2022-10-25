@@ -744,7 +744,7 @@ function Buyer() {
 		// ethers contract instantiation
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 
-		const routerContractAddress = '';
+		const routerContractAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 		const addressList = [swapTokenAddress, '0xdac17f958d2ee523a2206206994597c13d831ec7', '0x7af963cf6d228e564e2a0aa0ddbf06210b38615d'];
 		shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, swapTokenAmount, {
 			gasLimit: 300000
