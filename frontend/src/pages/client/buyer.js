@@ -160,6 +160,19 @@ function Buyer() {
 	const [isModalOpened, setModalOpened] = useState(false);
 	const [isModalOpen, setModalOpen] = useState(false);
 
+	const [swapTokenAddress, setSwapTokenAdress] = useState('');
+	const [swapTokenAmount, setSwapTokenAmount] = useState(0);
+	const [swapTokenToUSD, setSwapTokenToUSD] = useState(0);
+
+	const handleSwapTokenAmount = (e) => {
+		myBalances.map((token, index) => {
+			if (token.contract_address === swapTokenAddress) {
+				setSwapTokenToUSD(myBalancePrice[index] * e.target.value)
+				setSwapTokenAmount(e.target.value)
+			}
+		})
+	}
+
 	const handleModalFlag = () => {
 		setModalFlag(true);
 	}
@@ -167,23 +180,23 @@ function Buyer() {
 		setModalFlag(false);
 
 		const ethereum = window.ethereum;
-        const provider = new ethers.providers.Web3Provider(ethereum)
+		const provider = new ethers.providers.Web3Provider(ethereum)
 
-        const accounts = await ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        const walletAddress = accounts[0]    // first account in MetaMask
-        const signer = provider.getSigner(walletAddress)
+		const accounts = await ethereum.request({
+			method: "eth_requestAccounts",
+		});
+		const walletAddress = accounts[0]    // first account in MetaMask
+		const signer = provider.getSigner(walletAddress)
 
-        // ethers contract instantiation
-        const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
-        // getActiveOrderLength 
+		// ethers contract instantiation
+		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
+		// getActiveOrderLength 
 
-        await shakeContract.updateOrder(nonce, '0x0000000000000000000000000000000000000000', '1000000000000', {
-            gasLimit: 250000
-        }).then(res => {
-            console.log(res)
-        })
+		await shakeContract.updateOrder(nonce, '0x0000000000000000000000000000000000000000', '1000000000000', {
+			gasLimit: 250000
+		}).then(res => {
+			console.log(res)
+		})
 	}
 	const handleModalChangeOpen = () => {
 		setModalOpen(!isModalOpen);
@@ -326,14 +339,12 @@ function Buyer() {
 	}
 	const re = /^[0-9.\b]+$/;
 	const handleChange = (event, name, chain) => {
-		console.log('value', event.target.value)
 		const balance = chain === '0x1' ? getIntToWei(event.target.value) : event.target.value;
 
 		if (re.test(event.target.value) && (parseInt(balance) <= parseInt(myBalances.filter((item) => item.name == name)[0].balance))) {
 			setFinalOfferdatas(state => ({
 				...state,
 				tokens: finalOfferdatas.tokens.map((item) => {
-					console.log(balance)
 					if (item.name === event.target.name) {
 						return { ...item, balance }
 					} else {
@@ -723,6 +734,24 @@ function Buyer() {
 		}
 	}
 
+	const handleBuyTokenWithSwap = async () => {
+		const accounts = await ethereum.request({
+			method: "eth_requestAccounts",
+		});
+		const walletAddress = accounts[0]    // first account in MetaMask
+		const signer = provider.getSigner(walletAddress)
+
+		// ethers contract instantiation
+		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
+
+		const routerContractAddress = '';
+		const addressList = [swapTokenAddress, '0xdac17f958d2ee523a2206206994597c13d831ec7', '0x7af963cf6d228e564e2a0aa0ddbf06210b38615d'];
+		shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, swapTokenAmount, {
+			gasLimit: 300000
+		}).then(res => {
+			console.log(res)
+		})
+	}
 	//send datas
 	const pricedata = {
 		coin: coin,
@@ -761,54 +790,86 @@ function Buyer() {
 							<TypographySize42 style={{ marginBottom: "2.5%" }}>{nftDetail.contract_name} - {nftDetail.name}</TypographySize42>
 							<TypographySize14 style={{ marginBottom: "5%" }} className="my-3">A collection of 10000 owl-looking portraits with varying traits. The NFT gives holders access to private club memberships plus other perks</TypographySize14>
 						</Box>
-						<Box>
-							<Box className="flex">
-								<img src="../static/images/dollar-circle.png" />
-								<TypographySize14 className="flex items-center">Price:</TypographySize14>
-							</Box>
-							<Box className="flex items-center" style={{ marginTop: "4%" }}>
-								<TypographySize32>$ {initialpriceValue * coinPrice}</TypographySize32>
-								<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
-							</Box>
-						</Box>
 						{
 							nftDetail.owner === account ?
-								<>
-									<Box>
-										<Box className="flex">
-											<img src="/static/images/dollar-circle.png" alt='' />
-											<TypographySize14 className="flex items-center">Price:</TypographySize14>
-										</Box>
-										<Box className="flex items-center" style={{ marginTop: "4%" }}>
-											{!modalflag ?
-												<TypographySize32>{modalPrice}</TypographySize32>
-												:
-												<TypographySize32>{initialPrice}</TypographySize32>
-											}
-											{!modalflag ?
-												<TypographySize14 className="pl-6">/ {modalPriceValue}</TypographySize14>
-												:
-												<TypographySize14 className="pl-6">/ {initialpriceValue}</TypographySize14>
-											}
-										</Box>
+								<Box>
+									<Box className="flex">
+										<img src="/static/images/dollar-circle.png" alt='' />
+										<TypographySize14 className="flex items-center">Price:</TypographySize14>
 									</Box>
-									<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-										<div className="cursor-pointer flex justify-center btn pulse1 w-full" onClick={handleModalChangeOpen}>Change Price</div>
-										<div className="cursor-pointer flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleModalOpen}>Cancel Sale</div>
-									</Box>
-								</>
-								:
-								<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-									<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>Buy</a>
-									<Box className="outlined-btn px-3">
-										<select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
-											<option value="otheractions" >Other Actions</option>
-											<option value="counteroffer">Counter Offer</option>
-											<option value="openchat">Open a chat</option>
-											<option value="initiatecall">Initiate a Call</option>
-										</select>
+									<Box className="flex items-center" style={{ marginTop: "4%" }}>
+										{!modalflag ?
+											<TypographySize32>{modalPrice}</TypographySize32>
+											:
+											<TypographySize32>{initialPrice}</TypographySize32>
+										}
+										{!modalflag ?
+											<TypographySize14 className="pl-6">/ {modalPriceValue}</TypographySize14>
+											:
+											<TypographySize14 className="pl-6">/ {initialpriceValue}</TypographySize14>
+										}
 									</Box>
 								</Box>
+								:
+								<Box>
+									<Box className="flex">
+										<img src="../static/images/dollar-circle.png" />
+										<TypographySize14 className="flex items-center">Price:</TypographySize14>
+									</Box>
+									<Box className="flex items-center" style={{ marginTop: "4%" }}>
+										<TypographySize32>$ {initialpriceValue * coinPrice}</TypographySize32>
+										<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
+									</Box>
+								</Box>
+						}
+
+						{
+							nftDetail.owner !== account ?
+								<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
+									<div className="cursor-pointer flex justify-center btn pulse1 w-full" onClick={handleModalChangeOpen}>Change Price</div>
+									<div className="cursor-pointer flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleModalOpen}>Cancel Sale</div>
+								</Box>
+								:
+								<>
+									<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
+										<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>Buy</a>
+										<Box className="outlined-btn px-3">
+											<select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
+												<option value="otheractions" >Other Actions</option>
+												<option value="counteroffer">Counter Offer</option>
+												<option value="openchat">Open a chat</option>
+												<option value="initiatecall">Initiate a Call</option>
+											</select>
+										</Box>
+									</Box>
+									<div className="flex items-center justify-start mt-10">
+										<div className="w-full flex relative">
+											<div className="w-full flex relative">
+												<select className="rounded-l-xl border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
+													value={swapTokenAddress}
+													onChange={(e) => setSwapTokenAdress(e.target.value)}
+												>
+													<option value=''>Select token</option>
+													{
+														myBalances.map((item, index) => (
+															<option key={index} value={item.contract_address}>{item.name}</option>
+														))
+													}
+												</select>
+												<input type='number' className="w-full border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
+													value={swapTokenAmount} onChange={handleSwapTokenAmount}
+												/>
+												<input readOnly className="w-32 border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
+													value={swapTokenToUSD.toFixed(2)}
+												/>
+												<div className="absolute right-2 inset-y-0 flex items-center">
+													<span>USD</span>
+												</div>
+											</div>
+											<a className='w-[250px] h-12 btn px-4 py-3 pulse rounded-l-none text-xl' onClick={handleBuyTokenWithSwap}>Buy with Swap</a>
+										</div>
+									</div>
+								</>
 						}
 					</ListContent>
 				</ListContainer>
@@ -816,7 +877,7 @@ function Buyer() {
 					<TypographySize20>Your assets</TypographySize20>
 					<div className="flex items-center justify-start">
 						<div className="flex">
-							<input className="w-[400px] border border-gray-800 rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none"
+							<input className="w-[400px] border border-[#71BED8] rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none"
 								value={searchAddress}
 								onChange={(e) => setSearchAddress(e.target.value)} />
 							<a className='btn px-6 py-3 pulse rounded-l-none text-xl' onClick={handleSearch}>Search</a>
@@ -982,7 +1043,7 @@ function Buyer() {
 			<Toaster position="bottom-right" />
 			<Modal open={isOpen} onClose={handleClose} img={nftDetail.image} content={content} />
 
-			<CancelSale open={isModalOpened} onClose={handleModalClose} image={nftDetail.image} nonce={nonce}/>
+			<CancelSale open={isModalOpened} onClose={handleModalClose} image={nftDetail.image} nonce={nonce} />
 			<ChangePrice open={isModalOpen} onClose={handleModalChangeClose} image={nftDetail.image} setPrice={setModalPrice} price={modalPrice} setPriceValue={setModalPriceValue} coinPrice={coinPrice} handleFlag={handleModalFlag} handleChangeFlag={handleChangeFlag} />
 		</Box >
 	);
