@@ -25,7 +25,6 @@
     "mongoose": "^5.9.1",
     "moralis": "^2.6.3",
     "node-cron": "^3.0.0",
-    "node-fetch": "^2.0.0",
     "socket.io": "^4.5.2"
   },
   "devDependencies": {
