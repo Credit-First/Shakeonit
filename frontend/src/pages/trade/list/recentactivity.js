@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { TypographySize18, TypographySize20 } from "../../../components/Typography/TypographySize";
-import { Container, Box, Avatar } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import styled from 'styled-components';
-import { contract, web3, contractAbi, contractAddress } from '../../../content/contractMethods'
+import { contractAbi, contractAddress } from '../../../content/contractMethods'
 import { ethers, BigNumber } from 'ethers'
 import BuyerChat from '../../client/chat'
 import { Toaster } from 'react-hot-toast';
+import { Box } from "@mui/material";
 
 const AssetCard = styled.div`
     display: flex;
@@ -50,8 +50,6 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
 
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(contractAddress, contractAbi, signer)
-        // getActiveOrderLength 
-        const getActiveOrderLength = shakeContract.getActiveOrderLength()
         const orderActiveSet = shakeContract.getFromActiveOrderSet([1])
 
         shakeContract.acceptOffer(BigNumber.from(orderActiveSet), {
@@ -70,12 +68,12 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
                     <Box className="block lg:flex">
                         <Box className="w-full">
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                {isflag ?
+                                {/* {isflag ?
                                     <div style={{ width: "35%" }}>
                                         <AssetCard style={{ justifyContent: "space-between" }} className="px-1">
                                             <TypographySize20>{valiatedprice}</TypographySize20>
                                             <TypographySize20>{validatedCoinType}</TypographySize20>
-                                            <img src="../static/images/client/image 20.png" />
+                                            <img src="../static/images/client/image 20.png" alt='' />
                                         </AssetCard>
                                     </div>
                                     :
@@ -85,12 +83,12 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
                                                 <AssetCard style={{ justifyContent: "space-between" }} className="px-2">
                                                     <TypographySize20>{offerdata.balance}</TypographySize20>
                                                     <TypographySize20>{offerdata.name}</TypographySize20>
-                                                    <img src="../static/images/client/image 20.png" />
+                                                    <img src="../static/images/client/image 20.png" alt='' />
                                                 </AssetCard>
                                             </div>
                                         )}
                                     </>
-                                }
+                                } */}
                                 <div style={{ width: "25%" }}>
                                     <AssetCard style={{ justifyContent: "center" }} className="px-1">
                                         <SearchIcon style={{ color: "white" }} />
@@ -126,7 +124,7 @@ function RecentActivity({ finalOfferdatas, isflag, valiatedprice, validatedCoinT
             </div>
             <Toaster position="bottom-right" />
             <div style={{ position: "absolute", bottom: "22px", right: '10px', display: 'none'}} id="openchat">
-                <BuyerChat roomname={"room" + address} username={username} closechat={closechat} openchat={openchat} isOpenedChat={isOpenedChat} role="seller"/>
+                <BuyerChat roomname={"room" + address} username={username} collectionID={address} closechat={closechat} openchat={openchat} isOpenedChat={isOpenedChat} role="seller"/>
             </div>
         </>
     );

@@ -3,8 +3,8 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const cors = require("cors");
 const cron = require('node-cron');
-const connectDB = require('../config/db');
-const {startMoralisServer} = require('../config/moralis');
+const connectDB = require('./config/db');
+const {startMoralisServer} = require('./config/moralis');
 
 dotenv.config();
 
@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 
 routesV1(app);
 
-// connectDB();
+connectDB();
 
 startMoralisServer();
 

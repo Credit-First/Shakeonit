@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -6,7 +6,6 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import Styled from '@mui/material/styles/styled';
 import { Link } from "@mui/material";
 import Box from "@mui/material/Box";
-import Wallet from "../Modal/wallet";
 import Sign from "../Modal/sign";
 import BoxCenter from "../Box/BoxCenter";
 import { TypographySize141 } from "../Typography/TypographySize";
@@ -21,29 +20,21 @@ const BoxIcon = Styled(Box)({
     paddingLeft: "1rem"
 })
 
-
 export default function Footer({isOpen, isOpened, setOpen, setOpened}) {
     
-    const [account, setAcccount] = useState("Connect Wallet");
     function getAddress(accountValue) {
-        setAcccount(accountValue);
         window.localStorage.setItem('account', accountValue);
     }
     const handleDisconnect = () => {
         setOpen(true);
     }
-    const handleClose = () => {
-        setOpened(false);
-    }
+    
     const handleSignClose = () => {
         setOpen(false);
     }
-    // function ellipseAddress(address = "", width = 6) {
-    //     return `${address.slice(0, width)}...${address.slice(-width)}`;
-    // }
+
     useEffect(() => {
         window.localStorage.getItem('isOpened');
-        // console.log("12");
     })
     // console.log(window.localStorage.getItem('isOpened'), "8888888888");
     return (

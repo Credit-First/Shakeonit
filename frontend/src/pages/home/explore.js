@@ -1,5 +1,4 @@
 import React from "react";
-import { Container } from "@mui/material";
 import { TypographySize40, TypographySize242, TypographySize14 } from "../../components/Typography/TypographySize";
 
 function Explore() {

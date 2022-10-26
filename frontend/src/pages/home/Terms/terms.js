@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { TypographySize481, TypographySize24 } from "../../../components/Typography/TypographySize";
 import "../../../assets/scss/customize.scss";
-import { Button } from "@mui/material";
 
 const Contain = styled.div`
     width : 40%;

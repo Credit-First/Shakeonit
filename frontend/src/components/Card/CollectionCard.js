@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import Card from "@material-ui/core/Card";
 import CardMedia from '@mui/material/CardMedia';
 import clsx from "clsx";
+
 const useStyles = makeStyles({
     root: {
         transition: "transform 0.15s ease-in-out",
@@ -52,6 +53,7 @@ function CollectionCard({ address, image, name, balance = 0, onSelect }) {
                         <div className="text-2xl font-bold truncate">
                             {name}
                         </div>
+                        <div className="text-base font-bold ml-1">( {balance} )</div>
                     </div>
                 </Card>
             </div>

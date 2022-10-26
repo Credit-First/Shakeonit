@@ -8,9 +8,8 @@ import BoxCenter from "../../components/Box/BoxCenter";
 import { TypographySize14 } from "../../components/Typography/TypographySize";
 import CollectionBg from "../../components/Background/collectionbg";
 import CollectionCard from "../../components/Card/CollectionCard";
-import NftContext from '../../context/nftContext';
 import { useWeb3React } from "@web3-react/core";
-import Config from '../../config/app';
+import NftContext from '../../context/nftContext';
 
 const CollectionContainer = Styled(Box)({
     paddingLeft: "7%",
@@ -20,37 +19,33 @@ const CollectionContainer = Styled(Box)({
 function Collections() {
     const navigate = useNavigate();
     const nftCtx = useContext(NftContext);
-    const {account} = useWeb3React();
+    const {account, chainId} = useWeb3React();
     const [collections, setCollections] = useState([]);
-
-    const loadData = () => {
-        nftCtx.getNfts(Config.template_address);
-    }
-
-    const handleSearch = () => {
-        loadData();
-    }
-
+    const [searchAddress, setSearchAddress] = useState('');
+    
     const handleSelectCollection = (address) => {
         navigate(`/collectionItems/${address}`)
     }
 
-    useEffect(() => {
-        if (nftCtx.collections?.length > 0) {
-            setCollections(nftCtx.collections);
+    const handleSearch = () => {
+        if(searchAddress.length == 42 && searchAddress.includes('0x')) {
+            nftCtx.getNfts(chainId, searchAddress);
         }
+    }
+    useEffect(() => {
+        setCollections(nftCtx.collections);
     }, [nftCtx]);
 
     useEffect(() => {
-        account && loadData();
+        account && setSearchAddress(account);
     }, [account]);
-
+    
     return (
         <Box style={{ backgroundColor: "#f5fafe" }}>
             <CollectionBg>
                 <BoxCenter className="relative hidden mt-10">
                     <Hidden xlDown>
-                        <img src="../static/images/cards/Frame 2 (2).png" />
+                        <img src="../static/images/cards/Frame 2 (2).png" alt="" />
                         <TypographySize14 className="modal py-6 px-12">List your assets for sale, share with friends and chat with potential buyers</TypographySize14>
                     </Hidden>
                 </BoxCenter>
@@ -64,6 +59,22 @@ function Collections() {
                 {
                     !account && <div className="flex items-center justify-center mt-10">
                         <span className="text-2xl">Please check your wallet connection</span>
+                    </div>
+                }
+
+                <div className="flex items-center justify-center mt-10">
+                    <div className="flex">
+                        <input className="w-[400px] border border-gray-800 rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none" 
+                        value={searchAddress}
+                        onChange={(e) => setSearchAddress(e.target.value)}/>
+                        <a className='btn px-6 py-3 pulse rounded-l-none text-xl' onClick={handleSearch}>Search</a>
+                    </div>
+                </div>
+
+                {
+                    collections.length === 0 && 
+                    <div className="flex items-center justify-center mt-10">
+                        <div className="">No collections</div>
                     </div>
                 }
 

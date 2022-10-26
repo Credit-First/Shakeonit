@@ -1,9 +1,9 @@
 import axios from '../../@axios';
 
-export const getNfts = (chainId, address) => {
+export const getTokens = (chainId, address) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`/api/v1/get_nfts/${chainId}/${address}`)
+			.get(`/api/v1/get_tokens/${chainId}/${address}`)
 			.then((response) => {
 				const response_data = response.data;
 				if (response.status === 200) {

@@ -111,10 +111,31 @@ interface IRouter {
 
 }
 
+interface IERC721Receiver {
+    /**
+     * @dev Whenever an {IERC721} `tokenId` token is transferred to this contract via {IERC721-safeTransferFrom}
+     * by `operator` from `from`, this function is called.
+     *
+     * It must return its Solidity selector to confirm the token transfer.
+     * If any other value is returned or the interface is not implemented by the recipient, the transfer will be reverted.
+     *
+     * The selector can be obtained in Solidity with `IERC721Receiver.onERC721Received.selector`.
+     */
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4);
+}
+
+
+
+
 /// @title ShakeOnIt Protocol
 /// @author ShakeOnIt DAO
 /// @notice You can make P2P swap of ERC20 and ERC721, transfer tokens safely
-contract ShakeOnIt is Ownable, ReentrancyGuard {
+contract ShakeOnIt is Ownable, ReentrancyGuard, IERC721Receiver {
 
     using SafeERC20 for IERC20;
 
@@ -162,6 +183,17 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     /// @notice Library function
     function getActiveOrderLength() public view returns (uint) {
         return orders.list.length;
+    }
+
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external view returns (bytes4) {
+        return this.onERC721Received.selector;
+        // bytes4  empty;
+        // return supportedTokens[operator] == 2 ? this.onERC721Received.selector : empty;
     }
 
     /// @notice Library function
@@ -245,15 +277,28 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
 
     error WrongToken(address requested, address actual);
 
+    error UnsupportedToken(address token);
+
+    mapping(address => uint8) supportedTokens;
+
+    /// @notice Add supported tokens by admin
+    /// @dev ShakeOnIt DAO
+    /// @param _token Token Address
+    /// @param _tokenType 0 when not supported, 1 when erc20, 2 when erc721
+    function adjustSupportedToken(address _token, uint8 _tokenType) external onlyOwner {
+        supportedTokens[_token] = _tokenType;
+    }
+
     /// *******************************************
     /// Admin actions
     /// *******************************************
 
     Token public nft; 
+    TokenFactory public factory;
+    
 
     constructor(address _tokenFactory) {
-
-        TokenFactory factory = TokenFactory(_tokenFactory);
+        factory = TokenFactory(_tokenFactory);
         // Create NFT Contract from existing factory owned by this contract
         nft = Token(factory.create(1, "ShakeOnIt", "CNFT"));
         nft.setBaseURI(string(abi.encodePacked("0x",address(this), "/composites")));
@@ -263,6 +308,10 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         Order memory _order;
         orders.list.push(_order);
         orders.nonce = 1; //start nonce
+        supportedTokens[address(nft)] = 2;
+        supportedTokens[address(0)] = 3;
+
+        
     }
  
     /// @notice Change Fee (only owner can call)
@@ -301,7 +350,7 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         
         _sendAsset(order.give, order.owner, order.amountGiveOrTokenID);
         _adjustDebt(order.give, true, order.amountGiveOrTokenID);
-        _unwrapIfNeeded(order);
+        _unwrapIfNeeded(msg.sender, order);
         removeFromActiveOrderSet(order.nonce);
 
         emit CancelOrder(nonce);
@@ -315,19 +364,18 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     /// @notice Check native token or not and perform the appropriate send
     /// @dev ShakeOnIt DAO
     /// @param _token Specify withdrawable token
-    /// @param _recepient Target address
+    /// @param _recipient Target address
     /// @param _amount Target amount
-    function _sendAsset(address _token, address _recepient, uint _amount) private {
+    function _sendAsset(address _token, address _recipient, uint _amount) private {
         if (isERC721(_token)) {
-            IERC721(_token).safeTransferFrom(address(this), _recepient, _amount);
-        }
-
-        if (_amount > 0) {
+            //IERC721(_token).approve(_recepient, _amount);
+            IERC721(_token).safeTransferFrom(address(this), _recipient, _amount);
+        } else if (_amount > 0) {
             if (_token == address(0x0)) {
-                _safeTransfer(_recepient, _amount);
+                _safeTransfer(_recipient, _amount);
             }
             else {
-                IERC20(_token).safeTransfer(_recepient, _amount);
+                IERC20(_token).safeTransfer(_recipient, _amount);
             }
         }
     }
@@ -340,10 +388,10 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         return isERC721(token) ? 0 : (amount * order.percentFee / 10000);
     }
 
-    function _unwrapIfNeeded(Order memory order) private {
+    function _unwrapIfNeeded(address msg_sender, Order memory order) private {
         if (order.give == address(nft) && composites[order.amountGiveOrTokenID].temporary == true) {
             // unwrap composite nft to real tokens
-            _burn(order.amountGiveOrTokenID);
+            _burn(msg_sender, order.amountGiveOrTokenID);
         }
     }
 
@@ -360,7 +408,7 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         _sendAsset(order.give, order.owner, order.amountGiveOrTokenID);
         _adjustDebt(order.give, true, order.amountGiveOrTokenID);
 
-        _unwrapIfNeeded(order);
+        _unwrapIfNeeded(msg.sender, order);
 
         removeFromActiveOrderSet(order.nonce);
         emit CancelOrder(nonce);
@@ -389,11 +437,11 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     /// @notice Make a transfer and check real sent value diff
     /// @dev ShakeOnIt DAO
     /// @param token IERC20 token
+    /// @param from Who spends token
     /// @param amountOrTokenID Transfer Amount 
     /// @return (diff, changed_msg_value)
-    function _receiveAsset(uint changable_msg_value, address token, uint amountOrTokenID) private returns (uint, uint) {
+    function _receiveAsset(uint changable_msg_value, address from , address token, uint amountOrTokenID) private returns (uint, uint) {
         address to = address(this);
-        address from = msg.sender;
         if (token == address(0)) {
             if (changable_msg_value < amountOrTokenID) revert WrongChangedMsgValue(changable_msg_value, amountOrTokenID);
             changable_msg_value -= amountOrTokenID;
@@ -405,13 +453,13 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
                 //composites[amountOrTokenID].temporary = false; // remove the record
             } else
                 IERC721(token).safeTransferFrom(from, to, amountOrTokenID);
-            return (0, 0);
+            return (0, changable_msg_value);
         }
         else {
             uint balanceBefore = IERC20(token).balanceOf(address(this));
             IERC20(token).safeTransferFrom(from, to, amountOrTokenID);
             uint balanceAfter = IERC20(token).balanceOf(address(this));
-            return (amountOrTokenID - (balanceAfter - balanceBefore), 0);
+            return (amountOrTokenID - (balanceAfter - balanceBefore), changable_msg_value);
         }
     }
 
@@ -419,20 +467,20 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     /// @dev ShakeOnIt DAO
     /// @param nonce NFT id
     function burn(uint nonce) external nonReentrant {
-        _burn(nonce);
+        _burn(msg.sender, nonce);
     }
 
 
     /// @notice Burn Composite NFT
     /// @dev ShakeOnIt DAO
     /// @param nonce NFT id
-    function _burn(uint nonce) private {
+    function _burn(address msg_sender, uint nonce) private {
         
         Composite memory composite = composites[nonce];
         
         address owner = nft.ownerOf(nonce);
 
-        if (msg.sender != owner && msg.sender != address(this)) revert WrongOwner(owner, msg.sender);
+        if (msg_sender != owner && msg_sender != address(this)) revert WrongOwner(owner, msg_sender);
         
         uint length = composite.give.length;
         
@@ -472,23 +520,23 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     /// @param tokens Token Addresses (fungible and non-fungible)
     /// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
     function mint(address[] calldata tokens, uint[] memory amountOrTokenIds) external payable nonReentrant {
-        _mint(tokens, amountOrTokenIds, msg.sender);
+        uint changeable_msg_value = _mint(tokens, amountOrTokenIds, msg.value, msg.sender, msg.sender);
+        _refundIfNeeded(msg.sender, changeable_msg_value);
     }
 
     /// @notice Mint Composite NFT
     /// @dev ShakeOnIt DAO
     /// @param tokens Token Addresses (fungible and non-fungible)
     /// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
+    /// @param sender How is sender
     /// @param receiver Holder of coins
-    function _mint(address[] calldata tokens, uint[] memory amountOrTokenIds, address receiver) private {
+    function _mint(address[] calldata tokens, uint[] memory amountOrTokenIds, uint changeable_msg_value, address sender, address receiver) private returns (uint) {
          
         uint length = tokens.length;
 
-        uint changeable_msg_value = msg.value;
-
         for (uint i=0; i < length;) {
             
-            (uint diff, uint change_msg_value2) = _receiveAsset(changeable_msg_value, tokens[i], amountOrTokenIds[i]);
+            (uint diff, uint change_msg_value2) = _receiveAsset(changeable_msg_value, sender, tokens[i], amountOrTokenIds[i]);
             amountOrTokenIds[i] -= diff;
             changeable_msg_value = change_msg_value2;
             _adjustDebt(tokens[i], false, amountOrTokenIds[i]);
@@ -498,13 +546,13 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
             }
         }
 
-        _refundIfNeeded(changeable_msg_value);
-
         composites[compositeNonce] = Composite(tokens, amountOrTokenIds, 0, false);
     
         nft.mint(receiver, compositeNonce);
     
         compositeNonce++;
+
+        return changeable_msg_value;
     }
 
     // @notice accept counter offer and cancel the previous order
@@ -517,9 +565,9 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         if (refNonce == 0) revert OutOfIndex();
         Order memory refOrder = getFromActiveOrderSet(refNonce);
         if (refOrder.owner != msg.sender) revert WrongOwner(refOrder.owner, msg.sender);
-        //forget about previous order
+        // //forget about previous order
+        _buyOrder(msg.value, msg.sender, false, nonce);
         removeFromActiveOrderSet(refNonce);
-        _buyOrder(msg.value, false, nonce);
 
     }
 
@@ -536,20 +584,21 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         address give;
 
         uint amountOrTokenId;
+        uint changable_msg_value = msg.value;
 
         if (gives.length == 1) {
             give = gives[0];
             amountOrTokenId = amountOrTokenIds[0];
         }
         else {
-            _mint(gives, amountOrTokenIds, address(this));
+            changable_msg_value = _mint(gives, amountOrTokenIds, changable_msg_value, msg.sender, address(this));
             give = address(nft);
             composites[compositeNonce - 1].temporary = true;
             composites[compositeNonce - 1].refNonce = refNonce;
             amountOrTokenId = compositeNonce - 1;
         }
         
-        _makeOrder(give, order.give, amountOrTokenId, order.amountGiveOrTokenID, order.owner);
+        _makeOrder(give, order.give, changable_msg_value, msg.sender, amountOrTokenId, order.amountGiveOrTokenID, order.owner);
 
     }
 
@@ -561,30 +610,32 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     /// @param amountGet - Taker Amount
     /// @param buyer - Who can buy. 0x0 address when anyone can buy
     function makeOrder(address give, address get, uint amountGive, uint amountGet, address buyer) external payable nonReentrant {
-        _makeOrder(give, get, amountGive, amountGet, buyer);
+        _makeOrder(give, get, msg.value, msg.sender, amountGive, amountGet, buyer);
     } 
 
     /// @notice Make an new order
     /// @dev ShakeOnIt DAO
     /// @param give - token address or 0x address. if 0x address then it's native coin
     /// @param get - token address or 0x address. if 0x address then it's native coin
+    /// @param msg_sender - who spends token
     /// @param amountGive - Maker amount
     /// @param amountGet - Taker Amount
     /// @param buyer - Who can buy. 0x0 address when anyone can buy
-    function _makeOrder(address give, address get, uint amountGive, uint amountGet, address buyer) private {
+    function _makeOrder(address give, address get, uint msg_value, address msg_sender, uint amountGive, uint amountGet, address buyer) private {
         
+        if (supportedTokens[give] == 0) revert UnsupportedToken(give);
+        if (supportedTokens[get] == 0) revert UnsupportedToken(get);
 
-
-        (uint diff, uint changeable_msg_value) = _receiveAsset(msg.value, give, amountGive);
+        (uint diff, uint changeable_msg_value) = _receiveAsset(msg_value, msg_sender, give, amountGive);
 
         if (diff > 0) revert WrongAmount(amountGive, amountGive - diff);
     
-        _refundIfNeeded(changeable_msg_value);
+        _refundIfNeeded(msg_sender, changeable_msg_value);
 
         _adjustDebt(give, false, amountGive);
         
         // it becomes publicly visible for users and then they can execute the order
-        addToActiveOrderSet(Order(give, get, msg.sender, buyer, percentFee, amountGive, amountGet, orders.nonce, block.timestamp));
+        addToActiveOrderSet(Order(give, get, msg_sender, buyer, percentFee, amountGive, amountGet, orders.nonce, block.timestamp));
 
         emit PlaceOrder(give, get, amountGive, amountGet, orders.nonce - 1);
     }
@@ -596,10 +647,10 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     /// @param path Conversion Path
     function buyTokenWithSwap(uint256 nonce, IRouter router, address[] memory path, uint amount) external payable nonReentrant {
         
-        (uint diff, uint changeable_msg_value) = _receiveAsset(msg.value, path[0], amount);
+        (uint diff, uint changeable_msg_value) = _receiveAsset(msg.value, msg.sender, path[0], amount);
         amount -= diff;
 
-        _refundIfNeeded(changeable_msg_value);
+        _refundIfNeeded(msg.sender, changeable_msg_value);
 
         Order memory order = getFromActiveOrderSet(nonce);
 
@@ -659,15 +710,23 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         
     }
 
-    function _refundIfNeeded(uint msg_value) private {
+    function _refundIfNeeded(address msg_sender, uint msg_value) private {
         if (msg_value >0)
-            _safeTransfer(msg.sender, msg_value);
+            _safeTransfer(msg_sender, msg_value);
     }
-    
+
+    // @notice Buy Few Orders at once. Anyone can execute this action
+    /// @dev If at lesat one order is possible then transaction will be successful
+    /// @param nonce  - Unique identifier of the order (always incremental)
+    function buyOrder(uint nonce) external payable nonReentrant {
+        _refundIfNeeded(msg.sender, _buyOrder(msg.value, msg.sender, true, nonce));
+    }
+
     /// @notice Buy Few Orders at once. Anyone can execute this action
     /// @dev If at lesat one order is possible then transaction will be successful
     /// @param nonce - Array - Unique identifier of the order (always incremental)
     function buyOrders(uint[] calldata nonce) external payable nonReentrant {
+        
         
         uint length = nonce.length;
         uint msg_value = msg.value;
@@ -690,14 +749,16 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
                 continue;
             }
                 
-            msg_value = _buyOrder(msg_value, true, nonce[i - 1]);
+            msg_value = _buyOrder(msg_value, msg.sender, true, nonce[i - 1]);
 
         }
 
         //refund
-        _refundIfNeeded(msg_value);
+        _refundIfNeeded(msg.sender, msg_value);
 
         if (skipped == length) revert NothingToExecute();
+        
+        
     }
 
     /// @notice Send from this smart contract to user
@@ -710,10 +771,10 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     }
 
     function isERC721(address token) public returns (bool) {
+        
         if (token == address(nft))
             return true;
-        (bool success, ) = token.call(abi.encodeWithSignature("ownerOf(uint256)", 0));
-        return success;
+        return supportedTokens[token] == 2;
     }
 
     function getStaticFee(address token) public view returns (uint) {
@@ -723,13 +784,14 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
     /// @notice Internal buy order. Trust to valid changeable_msg_value
     /// @dev ShakeOnIt DAO
     /// @param changeable_msg_value - Mutable msg.value
+    /// @param msg_sender - who spends token
     /// @param chargeGet Should we get tokens from the user or he put it before
     /// @param nonce - Unique identifier of the order (always incremental)
-    function _buyOrder(uint changeable_msg_value, bool chargeGet, uint nonce) private returns (uint) {
+    function _buyOrder(uint changeable_msg_value, address msg_sender, bool chargeGet, uint nonce) private returns (uint) {
         
         Order memory order = getFromActiveOrderSet(nonce);
 
-        if ( order.buyer != address(0) && order.buyer != msg.sender) revert WrongOwner(order.buyer, msg.sender);
+        if ( order.buyer != address(0) && order.buyer != msg_sender) revert WrongOwner(order.buyer, msg_sender);
         
         uint actualAmountGetFee =  getFee(order.get, order, order.amountGetOrTokenID);
 
@@ -740,9 +802,10 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         
             // balance before and after because we do not trust transfer function
 
-            (uint diff, uint changeable_msg_value2) = _receiveAsset(changeable_msg_value, order.get, order.amountGetOrTokenID);
+            (uint diff, uint changeable_msg_value2) = _receiveAsset(changeable_msg_value, msg_sender, order.get, order.amountGetOrTokenID);
             
-            if (diff > 0 ) revert WrongAmount(order.amountGetOrTokenID, order.amountGetOrTokenID - diff);
+            //if (diff > 0 ) revert WrongAmount(order.amountGetOrTokenID, order.amountGetOrTokenID - diff);
+            if (diff > 0 ) revert WrongAmount(order.amountGetOrTokenID, diff);
             changeable_msg_value = changeable_msg_value2;
             
         }
@@ -753,33 +816,34 @@ contract ShakeOnIt is Ownable, ReentrancyGuard {
         uint actualAmountGiveFee =  getFee(order.give, order, order.amountGiveOrTokenID);
         uint actualAmountGive = order.amountGiveOrTokenID - actualAmountGiveFee;
 
-        _sendAsset(order.give, msg.sender, actualAmountGive);
+        _sendAsset(order.give, msg_sender, actualAmountGive);
         _adjustDebt(order.give, true, actualAmountGive);
 
         
-        //composites[order.amountGiveOrTokenID].temporary = true;
-        _unwrapIfNeeded(order);
+        _unwrapIfNeeded(msg_sender, order);
         
 
-        //if (actualAmountGet > 0)
         _sendAsset(order.get, order.owner, actualAmountGet);
 
+    
         // pay static fee
         if (actualAmountGetFee + actualAmountGiveFee == 0) {
 
             uint fee = getStaticFee(order.get);
 
             if (changeable_msg_value < fee) revert WrongChangedMsgValue(changeable_msg_value, fee);
-                changeable_msg_value -= fee;
+            changeable_msg_value -= fee;
             feeEarned[address(0)] += fee;
         } else {
             feeEarned[order.get] += actualAmountGetFee;
             feeEarned[order.give] += actualAmountGiveFee;
         }
-        
+       
+
         emit BuyOrder(order.nonce);
 
         removeFromActiveOrderSet(order.nonce);
+       
 
         return changeable_msg_value;
         

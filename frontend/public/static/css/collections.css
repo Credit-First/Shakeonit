@@ -23,7 +23,7 @@ nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px !important;
+    border-radius: 10px;
     /* border-color: transparent; */
 }
 
@@ -69,6 +69,7 @@ nav {
     padding: 2px;
     background: linear-gradient(265.83deg, #98F7FF -23.13%, #10B0C7 21.83%, #14365C 93.42%);
 }
+
 .gradient-child {
     border-radius: 10px;
 }
@@ -155,9 +156,26 @@ nav {
 } */
 
 .message {
-    width: 320px;
+    width: 560px;
     right: 30px;
     top: 50% !important;
+}
+
+.message-inbox {
+    width: 240px;
+    height: 370px;
+    overflow-y: auto;
+    border-right: 1px solid #DEDEDE;
+}
+
+.message-contact {
+    height: 72px;
+    border-bottom: 1px solid #DEDEDE;
+    cursor: pointer;
+}
+
+.message-contact-selected {
+    background-color: #F7FFEF;
 }
 
 .user-bg {
@@ -652,6 +670,7 @@ background: rgba(46, 57, 81, 1);
     padding-right: 1.5rem;
     padding-left: 1.5rem;
 }
+
 @media only screen and (min-width : 851px) and (max-width : 1023px) {
     .listImage {
         display: flex;
@@ -698,7 +717,7 @@ background: rgba(46, 57, 81, 1);
 }
 
 .MuiOutlinedInput-root .MuiOutlinedInput-input {
-    padding : 14px 14px !important;
+    padding: 14px 14px !important;
 }
 
 .MuiOutlinedInput-multiline {
