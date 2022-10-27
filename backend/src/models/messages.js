@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const messageSchema = new Schema({
   from_addr: { type: String, required: true },
   to_addr: { type: String, required: true },
-  collection_id: { type: String, required: true },
+  token_id: { type: String, required: true },
   content: { type: String, required: true },
 });
 

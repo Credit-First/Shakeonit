@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { to_Decrypt, to_Encrypt } from "./aes";
 import { Avatar } from "@mui/material";
 import Picker from '@emoji-mart/react'
@@ -21,8 +21,8 @@ const contacts = [
 ]
 
 const BuyerChat = (props) => {
-    const { active } = useWeb3React();
-    const { collectionID, username, isOpenedChat, openchat, closechat, role } = props;
+    const { active, account } = useWeb3React();
+    const { contractAddress, tokenId, username, isOpenedChat, openchat, closechat, role } = props;
     const [text, setText] = useState("");
     const [showEmoji, setShowEmoji] = useState(false);
     const [messages, setMessages] = useState([]);
@@ -37,12 +37,14 @@ const BuyerChat = (props) => {
     }
 
     const showEmojiPicker = () => {
-        setShowEmoji(!showEmoji);
-        document.getElementById("buyerchat_input").focus();
+        if(role == "seller" && acceptFlag || role == "buyer"){
+            setShowEmoji(!showEmoji);
+            document.getElementById("buyerchat_input").focus();
+        }
     }
 
     const opencall = () => {
-        window.open(`/#/jitsi/${collectionID}/${username}`);
+        window.open(`/#/jitsi/${contractAddress}/${tokenId}`);
     }
 
     const openchatdialog = () => {
@@ -57,10 +59,10 @@ const BuyerChat = (props) => {
     }
 
     useEffect(() => {
-        if (username !== undefined && username !== '')
-            socket.emit("joinRoom", { username, collectionID, role });
-        sessionStorage.setItem("username", username);
-    }, [username])
+        if (account !== undefined && account !== '')
+            socket.emit("joinRoom", { contractAddress, tokenId });
+        sessionStorage.setItem("account", account);
+    }, [account])
 
     useEffect(() => {
         if (active === false)
@@ -71,38 +73,40 @@ const BuyerChat = (props) => {
     useEffect(() => {
         sessionStorage.setItem("open_chat", isOpenedChat);
 
-        const allChats = getAllChattingHistories(username, '0x81c200...$000C', collectionID);
+        const allChats = getAllChattingHistories(account, contractAddress, tokenId);
         console.log(allChats);
         // setHistories([...allChats]);
 
-        const acceptStatus = getAcceptStatus(username, '0x81c200...$000C', collectionID);
+        const acceptStatus = getAcceptStatus(contractAddress, tokenId);
         acceptStatus.then((v) => {
             if(role == "seller"){
                 if (v == true) {
                     console.log("seller true");
                     setAcceptFlag(true);
+                    document.getElementById("buyerchat_input").disabled = false;
                 } else {
                     console.log("seller false");
                     setAcceptFlag(false);
+                    document.getElementById("buyerchat_input").disabled = true;
                 }
             }else{
                 console.log("buyer");
                 setAcceptFlag(true);
+                document.getElementById("buyerchat_input").disabled = false;
             }
         });       
     }, [isOpenedChat])
     
     const handler = (data) => {
         //decypt
-        const ans = to_Decrypt(data.text, data.username);
+        const ans = to_Decrypt(data.text, data.account);
         const open_chat = sessionStorage.getItem("open_chat");
-        const username = sessionStorage.getItem("username");
+        const account = sessionStorage.getItem("account");
         console.log(data);
 
-        if (data.role === role && data.username !== username) return;
-        if (username === undefined || username === '') return;
+        if (account === undefined || account === '') return;
 
-        if (data.username !== username && open_chat !== "true") {
+        if (data.account !== account && open_chat !== "true") {
             toast.custom((t) => (
                 <div
                 className={`${
@@ -118,7 +122,7 @@ const BuyerChat = (props) => {
                     </div>
                     <div className="ml-3 flex-1">
                         <p className="text-sm font-medium text-gray-900">
-                        {data.username}
+                        {data.account}
                         </p>
                         <p className="mt-1 text-sm text-gray-500">
                         {ans}
@@ -140,7 +144,7 @@ const BuyerChat = (props) => {
         let temp = messages;
         temp.push({
             userId: data.userId,
-            username: data.username,
+            fromAddress: data.fromAddress,
             text: ans,
         });
 
@@ -153,18 +157,22 @@ const BuyerChat = (props) => {
     }, [socket]);
     
     const setAcceptAllow = () => {
-        setAcceptStatusAllow(username, '0x81c200...$000C', collectionID);
+        setAcceptStatusAllow(contractAddress, tokenId);
         setAcceptFlag(true);
+        document.getElementById("buyerchat_input").disabled = false;
     }
 
     const sendData = () => {
-        if (text !== "") {
-          //encrypt here
-          const ans = to_Encrypt(text);
-          socket.emit("chat", {ans, toAddress: '0x81c200...$000C', collectionID: collectionID});
-          setText("");
+        if(role == "seller" && acceptFlag || role == "buyer"){
+            if (text !== "") {
+              //encrypt here
+              const ans = to_Encrypt(text);
+              socket.emit("chat", {ans, fromAddress: account, toAddress: contractAddress, tokenId: tokenId, role: role});
+              setText("");
+            }
         }
-      };
+    };
+
     const messagesEndRef = useRef(null);
     const scrollToBottom = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -220,7 +228,7 @@ const BuyerChat = (props) => {
                         }
                     })()}
                     {messages.map((i, key) => {
-                        if (i.username === username) {
+                        if (i.fromAddress === account) {
                         return (
                             <Box className="sms-y my-3 grid" key={key}>
                                 <p className="rounded-xl m-you px-4 py-2 text-white">{i.text}</p>
@@ -229,7 +237,7 @@ const BuyerChat = (props) => {
                         } else {
                         return (
                             <Box className="sms-o my-3 grid" key={key}>
-                                <p className="text-gray-600 text-xs">{i.username}</p>
+                                <p className="text-gray-600 text-xs">{i.account}</p>
                                 <p className="rounded-xl m-other px-4 py-2">{i.text}</p>
                             </Box>
                         );
@@ -238,99 +246,30 @@ const BuyerChat = (props) => {
                     <div ref={messagesEndRef} />
                 </Box>
                 <Box className="flex justify-between px-4 rounded-xl bg-white py-3" >
-                    {(() => {
-                        if (role === "seller") {
-                            if(!acceptFlag){
-                                return (
-                                    <div className="chat_input">
-                                        <Box>
-                                            <input
-                                            id="buyerchat_input"
-                                            style={{outline: 'none', width: 220}}
-                                            placeholder={"Please accept first!"}
-                                            value={text}
-                                            onChange={(e) => setText(e.target.value)}
-                                            onKeyPress={(e) => {
-                                            if (e.key === "Enter") {
-                                                sendData();
-                                            }
-                                            }}
-                                            disabled = "disabled"
-                                        ></input>
-                                        </Box>                        
-                                        <Box className="block md:flex" onClick={showEmojiPicker} disabled = "disabled" >
-                                            <Box>
-                                                <SentimentSatisfiedOutlinedIcon style={{ fill: '#999999' }} />
-                                            </Box>
-                                        </Box>
-                                        <Box className="block md:flex" onClick={sendData} disabled = "disabled" >
-                                            <Box>
-                                                <img src="/static/images/send-2.png" style={{cursor: 'pointer'}} />
-                                            </Box>
-                                        </Box>
-                                    </div>                                    
-                                )
-                            }else{
-                                return (
-                                    <div className="chat_input">
-                                        <Box>
-                                            <input
-                                            id="buyerchat_input"
-                                            style={{outline: 'none', width: 220}}
-                                            placeholder={"Text here!"}
-                                            value={text}
-                                            onChange={(e) => setText(e.target.value)}
-                                            onKeyPress={(e) => {
-                                            if (e.key === "Enter") {
-                                                sendData();
-                                            }
-                                            }}
-                                        ></input>
-                                        </Box>                        
-                                        <Box className="block md:flex" onClick={showEmojiPicker} >
-                                            <Box>
-                                                <SentimentSatisfiedOutlinedIcon style={{ fill: '#999999' }} />
-                                            </Box>
-                                        </Box>
-                                        <Box className="block md:flex" onClick={sendData} >
-                                            <Box>
-                                                <img src="/static/images/send-2.png" style={{cursor: 'pointer'}} />
-                                            </Box>
-                                        </Box>
-                                    </div>
-                                )
-                            }
-                        }else{
-                            return (
-                                <div className="chat_input">
-                                    <Box>
-                                        <input
-                                        id="buyerchat_input"
-                                        style={{outline: 'none', width: 220}}
-                                        placeholder={"Text here!"}
-                                        value={text}
-                                        onChange={(e) => setText(e.target.value)}
-                                        onKeyPress={(e) => {
-                                        if (e.key === "Enter") {
-                                            sendData();
-                                        }
-                                        }}
-                                    ></input>
-                                    </Box>                        
-                                    <Box className="block md:flex" onClick={showEmojiPicker} >
-                                        <Box>
-                                            <SentimentSatisfiedOutlinedIcon style={{ fill: '#999999' }} />
-                                        </Box>
-                                    </Box>
-                                    <Box className="block md:flex" onClick={sendData} >
-                                        <Box>
-                                            <img src="/static/images/send-2.png" style={{cursor: 'pointer'}} />
-                                        </Box>
-                                    </Box>
-                                </div>
-                            )
-                        }
-                    })()}
+                    <Box>
+                        <input
+                            id="buyerchat_input"
+                            style={{outline: 'none', width: 220}}
+                            placeholder={(!acceptFlag && role == "seller") ? "Please accept first!" : "Text here!"}
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                    sendData();
+                                }
+                            }}
+                        ></input>
+                    </Box>  
+                    <Box className="block md:flex" onClick={showEmojiPicker} >
+                        <Box>
+                            <SentimentSatisfiedOutlinedIcon style={{ fill: '#999999' }} />
+                        </Box>
+                    </Box>
+                    <Box className="block md:flex" onClick={sendData} >
+                        <Box>
+                            <img src="/static/images/send-2.png" style={{cursor: 'pointer'}} />
+                        </Box>
+                    </Box>
                 </Box>
             </Box>
         </Box>

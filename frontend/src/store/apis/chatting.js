@@ -1,12 +1,12 @@
 import { copyFileSync } from 'fs';
 import axios from '../../@axios';
 
-export const getAllChattingHistories = (from_addr, to_addr, collection_id) => {
+export const getAllChattingHistories = (from_addr, to_addr, token_id) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`api/v1/get_histories/${from_addr}/${to_addr}/${collection_id}`)
+			.get(`api/v1/get_histories/${from_addr}/${to_addr}/${token_id}`)
 			.then((response) => {
-				if (response.status == 200) {
+				if (response.status === 200) {
 					resolve(response.data);
 				} else {
 					reject(response.data);
@@ -18,12 +18,11 @@ export const getAllChattingHistories = (from_addr, to_addr, collection_id) => {
 	});
 };
 
-export const getAcceptStatus = (from_addr, to_addr, collection_id) => {
+export const getAcceptStatus = (contract_address, token_id) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`api/v1/get_accepts/${from_addr}/${to_addr}/${collection_id}`)
+			.get(`api/v1/get_accepts/${contract_address}/${token_id}`)
 			.then((response) => {
-				const response_data = response.data;
 				if (response.status === 200) {
 					resolve(response.data.flag);
 				} else {
@@ -37,10 +36,28 @@ export const getAcceptStatus = (from_addr, to_addr, collection_id) => {
 	});
 };
 
-export const setAcceptStatusAllow = (from_addr, to_addr, collection_id) => {
+export const getAllRequests = (contractAddress) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`api/v1/set_accepts/${from_addr}/${to_addr}/${collection_id}`)
+			.get(`api/v1/get_all_requests/${contractAddress}`)
+			.then((response) => {
+				if (response) {
+					resolve(response.data.length);
+				} else {
+					reject(response.data.length);
+				}
+			})
+			.catch((err) => {
+				console.log("reject");
+				reject(err);
+			});
+	});
+};
+
+export const setAcceptStatusAllow = (contract_address, token_id) => {
+	return new Promise((resolve, reject) => {
+		axios
+			.get(`api/v1/set_accepts/${contract_address}/${token_id}`)
 			.then((response) => {
 				const response_data = response.data;
 				if (response.status === 200) {

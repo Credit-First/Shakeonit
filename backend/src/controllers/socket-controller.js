@@ -12,10 +12,10 @@ function user_Disconnect(id) {
   }
 }
 
-function join_User(id, username, room, role) {
+function join_User(id, contractAddress, tokenId) {
     user_Disconnect(id);
 
-    const p_user = { id, username, room, role };
+    const p_user = { id, contractAddress, tokenId };
     c_users.push(p_user);
   
     return p_user;
@@ -35,9 +35,9 @@ const init = function (http) {
 
     io.on("connection", (socket) => {
         //for a new user joining the room
-        socket.on("joinRoom", ({ username, roomname, role }) => {
+        socket.on("joinRoom", ({ contractAddress, tokenId }) => {
           // create user
-          const p_user = join_User(socket.id, username, roomname, role);
+          const p_user = join_User(socket.id, contractAddress, tokenId);
           if (p_user != null) {
             socket.join(p_user.room);
           }
@@ -48,11 +48,12 @@ const init = function (http) {
           //gets the room user and the message sent
           const p_user = get_Current_User(socket.id);
           if (p_user != null) {
-            messageController.insert(p_user.username, data.toAddress, data.collectionID, data.ans);
+            messageController.insert(data.fromAddress, data.toAddress, data.tokenId, data.ans, data.role);
             io.to(p_user.room).emit("message", {
               userId: p_user.id,
-              username: p_user.username,
-              role: p_user.role,
+              fromAddress: data.fromAddress,
+              contractAddress: p_user.contractAddress,
+              tokenId: p_user.tokenId,
               text: data.ans,
             });
           }

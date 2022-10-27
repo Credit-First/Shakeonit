@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
@@ -125,7 +125,7 @@ function Buyer() {
 	const tokenCtx = useContext(TokenContext);
 	const { account } = useWeb3React();
 	const { nonce } = useParams();
-	const { address, tokenId } = useParams();
+	const { contractAddress, tokenId } = useParams();
 	const [nftDetail, setNftDetail] = useState({});
 	const [collections, setCollections] = useState([]);
 	const [selectedCollectionAddress, setSelectedCollectionAddress] = useState('');
@@ -367,7 +367,7 @@ function Buyer() {
 				openchat();
 				break;
 			case "initiatecall":
-				window.open(`/#/jitsi/room${nftDetail.give}/${username}`);
+				window.open(`/#/jitsi/room${nftDetail.give}/${tokenId}`);
 				break;
 
 		}
@@ -384,7 +384,7 @@ function Buyer() {
 		setTotalPrice(total.toFixed(4));
 	}, [finalOfferdatas.tokens])
 
-	const handleRemoveOffer = (type = 'token', id, address) => {
+	const handleRemoveOffer = (type = 'token', id, contractAddress) => {
 		if (type === 'token') {
 			setOfferData(state => ({
 				...state,
@@ -397,11 +397,11 @@ function Buyer() {
 		} else {
 			setOfferData(state => ({
 				...state,
-				nfts: offerdatas.nfts.filter(item => !(item.tokenId === id && item.contract_address === address))
+				nfts: offerdatas.nfts.filter(item => !(item.tokenId === id && item.contract_address === contractAddress))
 			}));
 			setFinalOfferdatas(state => ({
 				...state,
-				nfts: finalOfferdatas.nfts.filter(item => !(item.tokenId === id && item.contract_address === address))
+				nfts: finalOfferdatas.nfts.filter(item => !(item.tokenId === id && item.contract_address === contractAddress))
 			}));
 		}
 	}
@@ -967,7 +967,7 @@ function Buyer() {
 									color="inherit"
 									className="flex justify-center px-6"
 									to={{
-										pathname: `/list/${address}/${tokenId}`,
+										pathname: `/list/${contractAddress}/${tokenId}`,
 									}}
 									state={pricedata}
 									style={{ width: "86%" }}
@@ -981,7 +981,7 @@ function Buyer() {
 				</ListContainer>
 			</div>
 			<div style={{ position: "absolute", bottom: "70px", right: '10px', display: 'none' }} id="openchat">
-				<BuyerChat roomname={"room" + nftDetail.give} username={username} collectionID={address} closechat={closechat} openchat={openchat} isOpenedChat={isOpenedChat} role="buyer" />
+				<BuyerChat username={username} contractAddress={contractAddress} tokenId={tokenId} closechat={closechat} openchat={openchat} isOpenedChat={isOpenedChat} role="buyer" />
 			</div>
 			<Toaster position="bottom-right" />
 			<Modal open={isOpen} onClose={handleClose} img={nftDetail.image} content={content} />

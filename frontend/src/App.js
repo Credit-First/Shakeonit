@@ -48,13 +48,13 @@ function App() {
                 <Route path='/collections' element={<Collections />} />
                 <Route path='/collectionItems/:address' element={<CollectionItems />} />
                 <Route path='/preview/:address/:tokenId' element={<Preview />} />
-                <Route path='/list/:address/:tokenId' element={<List />} />
+                <Route path='/list/:contractAddress/:tokenId' element={<List />} />
                 <Route path='/company' element={<Company />} />
                 <Route path='/privacypolicy' element={<PrivacyPolicy />} />
                 <Route path='/resources' element={<Resources />} />
                 <Route path='/service' element={<Service />} />
                 {/* <Route path='/buyer/:nonce' element={<Buyer />} /> */}
-                <Route path='/buyer/:address/:tokenId' element={<Buyer />} />
+                <Route path='/buyer/:contractAddress/:tokenId' element={<Buyer />} />
               </Routes>
               <Footer isOpen={isOpen} isOpened = {isOpened} setOpen = {setOpen} setOpened = {setOpened} />
             </Layout>
