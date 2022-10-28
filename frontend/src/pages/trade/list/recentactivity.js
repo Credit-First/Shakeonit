@@ -132,10 +132,7 @@ function RecentActivity() {
                                 <p className="listinput text-gray-400">Somebody wants to buy your NFT</p>
                             </Box>
                             <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center">
-                                <Box onClick={() => openchat()} className="outlined-btn1 text-list-accept pulse">Accept Chat</Box>
-                                { request_flag ? 
-                                    <Box><img src="../static/images/chat_noti.png" className="img rounded-xl" alt="" /><RequestCad>{requests}</RequestCad></Box>: ""
-                                }
+                                <Box onClick={() => openchat()} className="outlined-btn1 text-list-accept pulse"><span style={{'fontSize':` ${request_flag ? '23px' : ''}`, 'fontWeight':` ${request_flag ? 'bold' : ''}`}}>Accept Chat</span>{request_flag ? '(' + requests + ')': ''}</Box>
                             </Box>
                         </Box>
                     </Box>
