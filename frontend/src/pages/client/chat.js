@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Box } from "@mui/material";
 import { to_Decrypt, to_Encrypt } from "./aes";
-import { Avatar } from "@mui/material";
+import { Avatar, IconButton } from "@mui/material";
+import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
+import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import Picker from '@emoji-mart/react'
 import toast from 'react-hot-toast';
 import { useWeb3React } from "@web3-react/core";
@@ -9,26 +11,46 @@ import { useWeb3React } from "@web3-react/core";
 import './chat.css';
 
 import {socket} from '../global';
-import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
-import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import Contact from './contact';
 
-import { getAllChattingHistories, getAcceptStatus, setAcceptStatusAllow } from '../../store/apis';
+import { getAllChattingHistories, getAcceptStatus, getContactsForBuyer, getMessages, getLastMessage, setAcceptStatusAllow } from '../../store/apis';
 
-const contacts = [
-    {address: '0x81c200 ... $000C', unread: 1, lastmsg: '@mui/icons-material/Sent'},
-    {address: '0x313444 ... $5cC0', unread: 0, lastmsg: '@mui/icons-material/Sen'},
-]
+// const contacts = [
+//     {address: '0x81c200 ... $000C', unread: 1, lastmsg: '@mui/icons-material/Sent'},
+//     {address: '0x313444 ... $5cC0', unread: 0, lastmsg: '@mui/icons-material/Sen'},
+// ]
 
 const BuyerChat = (props) => {
     const { active, account } = useWeb3React();
     const { contractAddress, tokenId, username, isOpenedChat, openchat, closechat, role } = props;
+    const [contacts, setContacts] = useState([{address: contractAddress, unread: 0}])
     const [text, setText] = useState("");
     const [showEmoji, setShowEmoji] = useState(false);
     const [messages, setMessages] = useState([]);
-    const [curAddr, setCurAddr] = useState("");
+    const [curAddr, setCurAddr] = useState(contractAddress);
     const [histories, setHistories] = useState([]);
     const [acceptFlag, setAcceptFlag] = useState(false);
+    const [lastMessage, setLastMessage] = useState({});
+
+    useEffect(()=>{
+        getLastMessage()
+            .then(setLastMessage)
+        getContactsForBuyer()
+            .then(res=>{
+                const contactArr = res.map(item=>({address: item.contract_address, unread: 0, lastmsg: ''}))
+                setContacts(prev=>[...getFilteredArrayByUnique([...prev, ...contactArr], 'address')])
+            })
+    }, [])
+
+    const getFilteredArrayByUnique = (arr, field) => {
+        var result = arr.reduce((unique, o) => {
+          if(!unique.some(obj => obj[field] === o[field])) {
+            unique.push(o);
+          }
+          return unique;
+        }, []);
+        return result
+    }
 
     const addEmoji = (emoji) => {
         setShowEmoji(false);
@@ -74,29 +96,31 @@ const BuyerChat = (props) => {
         sessionStorage.setItem("open_chat", isOpenedChat);
 
         const allChats = getAllChattingHistories(account, contractAddress, tokenId);
-        console.log(allChats);
-        // setHistories([...allChats]);
-
-        const acceptStatus = getAcceptStatus(contractAddress, tokenId);
-        acceptStatus.then((v) => {
-            if(role == "seller"){
-                if (v == true) {
-                    console.log("seller true");
-                    setAcceptFlag(true);
-                    document.getElementById("buyerchat_input").disabled = false;
-                } else {
-                    console.log("seller false");
-                    setAcceptFlag(false);
-                    document.getElementById("buyerchat_input").disabled = true;
-                }
-            }else{
-                console.log("buyer");
-                setAcceptFlag(true);
-                document.getElementById("buyerchat_input").disabled = false;
-            }
-        });       
+        // console.log(allChats);
+        // setHistories([...allChats]);   
     }, [isOpenedChat])
-    
+
+    useEffect(() => {
+        getMessages(curAddr)
+            .then(res=>{
+                const formatData = res.map(item=>({text: to_Decrypt(item.content, username), fromAddress: item.from_addr}))
+                setMessages(formatData)
+            })
+            .catch(err=>{
+                console.log(err)
+            })
+        getAcceptStatus(curAddr)
+            .then((accept) => {
+                if(role == "seller"){
+                    console.log("seller", accept);
+                    setAcceptFlag(accept);
+                }else{
+                    console.log("buyer");
+                    setAcceptFlag(true);
+                }
+            });       
+    }, [curAddr])
+
     const handler = (data) => {
         //decypt
         const ans = to_Decrypt(data.text, data.account);
@@ -141,14 +165,14 @@ const BuyerChat = (props) => {
                 </div>
             ))
         }
-        let temp = messages;
-        temp.push({
+        const newMsg = {
             userId: data.userId,
             fromAddress: data.fromAddress,
             text: ans,
+        }
+        setMessages(prev=>{
+            return [...prev, newMsg]
         });
-
-        setMessages([...temp]);
     }
 
     useEffect(() => {
@@ -159,7 +183,6 @@ const BuyerChat = (props) => {
     const setAcceptAllow = () => {
         setAcceptStatusAllow(contractAddress, tokenId);
         setAcceptFlag(true);
-        document.getElementById("buyerchat_input").disabled = false;
     }
 
     const sendData = () => {
@@ -167,7 +190,7 @@ const BuyerChat = (props) => {
             if (text !== "") {
               //encrypt here
               const ans = to_Encrypt(text);
-              socket.emit("chat", {ans, fromAddress: account, toAddress: contractAddress, tokenId: tokenId, role: role});
+              socket.emit("chat", {ans, fromAddress: account, toAddress: curAddr, tokenId: tokenId, role: role});
               setText("");
             }
         }
@@ -198,9 +221,9 @@ const BuyerChat = (props) => {
         </Box>
         <Box className="flex">
             <Box className="message-inbox">
-                {contacts.map((i, key) => {
+                {contacts.map((contact, key) => {
                     return (
-                        <Contact data={i} key={key} selected={i.address === curAddr} openaddress={openaddress} />
+                        <Contact data={contact} key={key} selected={contact.address === curAddr} openaddress={openaddress} lastMessage={lastMessage[contact.address] || ""}/>
                     );
                 })}
             </Box>
@@ -245,7 +268,7 @@ const BuyerChat = (props) => {
                     })}
                     <div ref={messagesEndRef} />
                 </Box>
-                <Box className="flex justify-between px-4 rounded-xl bg-white py-3" >
+                <Box className="flex px-4 rounded-xl bg-white py-3" sx={{alignItems: 'center'}}>
                     <Box>
                         <input
                             id="buyerchat_input"
@@ -258,18 +281,15 @@ const BuyerChat = (props) => {
                                     sendData();
                                 }
                             }}
+                            disabled={(!acceptFlag && role == "seller")}
                         ></input>
                     </Box>  
-                    <Box className="block md:flex" onClick={showEmojiPicker} >
-                        <Box>
-                            <SentimentSatisfiedOutlinedIcon style={{ fill: '#999999' }} />
-                        </Box>
-                    </Box>
-                    <Box className="block md:flex" onClick={sendData} >
-                        <Box>
-                            <img src="/static/images/send-2.png" style={{cursor: 'pointer'}} />
-                        </Box>
-                    </Box>
+                    <IconButton component="span" onClick={showEmojiPicker} size="small" disabled={!acceptFlag}>
+                        <SentimentSatisfiedOutlinedIcon style={{ fill: '#999999' }} />
+                    </IconButton>
+                    <IconButton component="span" onClick={sendData} size="small" disabled={!acceptFlag}>
+                        <img src="/static/images/send-2.png" style={{cursor: 'pointer'}} />
+                    </IconButton>
                 </Box>
             </Box>
         </Box>

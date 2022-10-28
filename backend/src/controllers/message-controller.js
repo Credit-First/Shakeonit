@@ -44,16 +44,16 @@ exports.getAllChattingHistories = async function(req, res) {
     return res.status(200).json(chats);
 }
 
-exports.getAcceptStatus = async (req, res) => {
-    const contract_address = req.params.contract_address;
-    const token_id = req.params.token_id;
-    const accepts = await Accept.find({ contract_address: contract_address }).find({ token_id: token_id });
-
-    if(accepts[0]){
-        return res.status(200).json(accepts[0]);
-    }else{
-        return false;
-    }
+exports.getAcceptStatus = (req, res) => {
+    return new Promise((resolve, reject)=>{
+        const contract_address = req.params.contract_address;
+        // const token_id = req.params.token_id;
+        Accept.findOne({ contract_address })
+            .then(data=>{
+                resolve(res.status(200).json(data))
+            })
+            .catch(reject)
+    })
 }
 
 exports.getAllRequests = async (req, res) => {
@@ -107,13 +107,46 @@ exports.getContacts = async (req, res) => {
     return res.status(200).json(data);
 }
 
-exports.getChats = async (req, res) => {
-    const from_addr = req.params.from_addr;
-    const to_addr = req.params.to_addr;
-    const token_id = req.params.token_id;
-    if(!from_addr || !to_addr || !token_id) return res.status(200).json({ message: 'Invaild  address' });
+exports.getLastMessage = async (req, res) => {
+    const _data = await Message.aggregate([
+        {"$sort": { "_id": 1 }},
+        {"$group": { "_id": "$to_addr", content: {$last: "$content"} } },
+    ]);
+    return res.status(200).json(_data);
+}
 
-    const data = await Message.find({from_addr, to_addr, token_id}, {from_addr: 1, to_addr: 1, content: 1, _id: 0});
+// exports.getChats = async (req, res) => {
+//     const from_addr = req.params.from_addr;
+//     const to_addr = req.params.to_addr;
+//     const token_id = req.params.token_id;
+//     if(!from_addr || !to_addr || !token_id) return res.status(200).json({ message: 'Invaild  address' });
+
+//     const data = await Message.find({from_addr, to_addr, token_id}, {from_addr: 1, to_addr: 1, content: 1, _id: 0});
         
-    return res.status(200).json(data);
+//     return res.status(200).json(data);
+// }
+
+exports.getChats = async (req, res) => {
+    return new Promise((resolve, reject)=>{
+        const to_addr = req.params.to_addr;
+        if(!to_addr) resolve(res.status(200).json({ message: 'Invaild  address' }))
+        
+        Message.find({to_addr}, {from_addr: 1, to_addr: 1, content: 1})
+            .then(data=>{
+                resolve(res.status(200).json(data))
+            })
+            .catch(reject)
+    })
+}
+
+exports.getContactAddresses = (req, res) => {
+    return new Promise((resolve, reject)=>{
+        Accept.find({}, {contract_address: 1}).sort("contract_address").exec((err, docs)=>{
+            if(!err) {
+                resolve(res.status(200).json(docs));
+            }
+            else
+                reject(err)
+        })
+    })
 }

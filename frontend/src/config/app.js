@@ -1,6 +1,7 @@
 import abi from "./abi";
 
-const url = window.location.hostname === 'localhost' ? 'localhost:5000' : window.location.hostname;
+// const url = window.location.hostname === 'localhost' ? 'localhost:5000' : window.location.hostname;
+const url = '10.10.10.75:5000';
 
 export default {
     netId: 5,

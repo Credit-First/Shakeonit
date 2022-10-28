@@ -111,6 +111,21 @@ nav {
     border-radius: 12px !important;
 }
 
+.button-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    background: red;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid #71BED8;
+}
+
 .grid-size {
     width: 100%;
 }
