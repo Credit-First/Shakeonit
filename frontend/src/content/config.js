@@ -4,7 +4,7 @@ export const coinTypes = [
     {id: 3, name: 'SOL', address: '0x41848d32f281383f214c69b7b248dc7c2e0a7374', router: 'https://diamond.org', logo: '/coin/dia.svg'},
     {id: 4, name: 'DAI', address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D', router: 'https://makerdao.com', logo: '/coin/dai.svg'},
     {id: 5, name: 'LINK', address: '0x326C977E6efc84E512bB9C30f76E30c160eD06FB', router: 'https://makerdao.com', logo: '/coin/dai.svg'},
-    {id: 6, name: 'shake coin', address: '0x0C41f27429ef5A1eccDb36faf38E343eccf38e86', router: 'https://makerdao.com', logo: '/coin/dai.svg'},
+    {id: 6, name: 'Shake coin', address: '0x0C41f27429ef5A1eccDb36faf38E343eccf38e86', router: 'https://makerdao.com', logo: '/coin/dai.svg'},
     {id: 7, name: 'shakecoin1', address: '0x404140256212cB3eb9Ce8cf9ae7B260fb80B271F', router: 'https://makerdao.com', logo: '/coin/dai.svg'},
 ]
 

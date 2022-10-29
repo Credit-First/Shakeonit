@@ -164,9 +164,46 @@ function Buyer() {
 	const [isModalOpened, setModalOpened] = useState(false);
 	const [isModalOpen, setModalOpen] = useState(false);
 
+	const [buyLoading, setBuyLoading] = useState(0)
+	const [buySwapLoading, setBuySwapLoading] = useState(0)
+	const [MakeOfferLoading, setMakeOfferLoading] = useState(0)
+
 	const [swapTokenAddress, setSwapTokenAdress] = useState('');
 	const [swapTokenAmount, setSwapTokenAmount] = useState(0);
 	const [swapTokenToUSD, setSwapTokenToUSD] = useState(0);
+
+	const getEstimateAmount = async (_swapTokenAddress) => {
+		const accounts = await ethereum.request({
+			method: "eth_requestAccounts",
+		});
+		const walletAddress = accounts[0]    // first account in MetaMask
+		const signer = provider.getSigner(walletAddress)
+
+		const routerContract = new ethers.Contract(Config.RouterContract.address, Config.RouterContract.abi, signer)
+
+		let path = [];
+		if (nftDetail.get === '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd') { // bnb native coin 
+			console.log(routerContract)
+			path = [_swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd']
+		} else {
+			path = [_swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd', nftDetail.get]
+		}
+
+		const estimateAmounts = await routerContract.getAmountsIn(nftDetail.amountGetOrTokenID.toString(), path)
+		const estimateAmount = new BigNumber(getTokenWeiToInt(estimateAmounts[0].toString())).toString();
+
+		myBalances.map((token, index) => {
+			if (token.contract_address === _swapTokenAddress) {
+				setSwapTokenToUSD(myBalancePrice[index] * estimateAmount * 1)
+				setSwapTokenAmount(estimateAmount)
+			}
+		})
+	}
+
+	const handleSelectToken = async (e) => {
+		setSwapTokenAdress(e.target.value);
+		getEstimateAmount(e.target.value)
+	}
 
 	const handleSwapTokenAmount = (e) => {
 		myBalances.map((token, index) => {
@@ -192,13 +229,18 @@ function Buyer() {
 		const walletAddress = accounts[0]    // first account in MetaMask
 		const signer = provider.getSigner(walletAddress)
 
+		let amount = 0;
+		if (nftDetail.get.toString() === '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd') {
+			amount = Math.round(modalPriceValue * Math.pow(10, 18))
+			console.log(amount)
+		} else {
+			amount = ethers.utils.parseUnits(modalPriceValue.toString()).toString();
+		}
 		// ethers contract instantiation
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 		// getActiveOrderLength 
 
-		await shakeContract.updateOrder(nonce, '0x0000000000000000000000000000000000000000', '1000000000000', {
-			gasLimit: 250000
-		}).then(res => {
+		await shakeContract.updateOrder(nonce, nftDetail.get.toString(), amount).then(res => {
 			console.log(res)
 		})
 	}
@@ -279,11 +321,13 @@ function Buyer() {
 		const coin_detail = coinTypes.find(coin => coin.address === shakeItem.get);
 
 		setCoin((coin_detail.id - 1) || 0)
-		
-		setInitialpriceValue(getWeiToInt(Number(shakeItem.amountGetOrTokenID)));
-		
+
+		const price = getTokenWeiToInt(shakeItem.amountGetOrTokenID.toString())
+
+		setInitialpriceValue(price);
+
 		setCoinType(coinTypes)
-		
+
 		setCoinPrice(CoinTypesPrice[coin_detail.id - 1]);
 
 		setNftDetail({
@@ -311,6 +355,11 @@ function Buyer() {
 		setCollectionItems(nfts);
 	}
 
+	const getTokenWeiToInt = (balance) => {
+		const bignumber = new BigNumber(balance);
+		return bignumber.dividedBy(BIG_TEN.pow(18)).toString()
+	}
+
 	const getWeiToInt = (balance) => {
 		const wei = parseInt(balance || 0, 10)
 		const eth = Math.round((wei / Math.pow(10, 18)) * 10000) === 0 ? (wei / Math.pow(10, 18)) * 10000 : Math.round((wei / Math.pow(10, 18)) * 10000)// parse to ETH
@@ -326,16 +375,15 @@ function Buyer() {
 	const handleGetBalance = () => {
 		setMyBalances([]);
 
-		console.log(tokenCtx)
 		if (tokenCtx.native.balance) {
 			const obj = {
 				id: 0,
-				balance: parseInt(tokenCtx.native.balance),
+				balance: (getWeiToInt(tokenCtx.native.balance)),
 				decimals: 18,
-				symbol: "Ethereum mainnet",
-				name: "ETH",
-				contract_address: '0x2170Ed0880ac9A755fd29B2688956BD959F933F8',
-				chain: '0x1'
+				symbol: "Binance Smart Chain",
+				name: "BNB",
+				contract_address: '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd',
+				chain: '0x61'
 			}
 			setMyBalances(myBalances => ([...myBalances, obj]));
 		}
@@ -344,7 +392,7 @@ function Buyer() {
 		tokenCtx.custom.map((_token, index) => {
 			const obj = {
 				id: index + 1,
-				balance: parseInt(_token.value),
+				balance: _token.value,
 				decimals: _token.token.decimals,
 				symbol: _token.token.name,
 				name: _token.token.symbol,
@@ -386,6 +434,9 @@ function Buyer() {
 
 	useEffect(() => {
 		switch (OtherAction) {
+			case "buyTokenWithSwap":
+				document.getElementById("buyTokenWithSwap").style.display = "block";
+				break;
 			case "counteroffer":
 				document.getElementById("counteroffer").style.display = "block";
 				break;
@@ -407,7 +458,7 @@ function Buyer() {
 			const balance = finalofferdata.chain === '0x1' ? getWeiToInt(finalofferdata.balance) : finalofferdata.balance;
 			total += parseFloat(balance * (CoinTypesPrice[coinType.id - 1] || 0));
 		});
-		setTotalPrice(total.toFixed(4));
+		setTotalPrice(total.toFixed(20));
 	}, [finalOfferdatas.tokens])
 
 	const handleRemoveOffer = (type = 'token', id, address) => {
@@ -454,8 +505,14 @@ function Buyer() {
 	const getMybalanceCoinPrice = useCallback(() => {
 		myBalances.forEach((item, index) => {
 			const coin = coinTypes.find(_coin => _coin.name === item.name)
-			if(!coin) return
+			if (!coin) return
 			if (item.name === 'shake coin') {
+				setMyBalancePrice((prev) => {
+					const tempPrice = [...prev]
+					tempPrice[index] = '0.000000000000060306'
+					return tempPrice
+				})
+			} else if (item.name === 'Shake coin') {
 				setMyBalancePrice((prev) => {
 					const tempPrice = [...prev]
 					tempPrice[index] = '0.000000000000060306'
@@ -493,12 +550,18 @@ function Buyer() {
 
 
 	//CoinType
-	
+
 	const [CoinTypesPrice, setCoinTypesPrice] = useState(Array(myBalances).fill(0))
 	const getCoinType = useCallback(
 		() => {
 			coinTypes.forEach((item, index) => {
 				if (item.name === 'shake coin') {
+					setCoinTypesPrice((prev) => {
+						const tempPrice = [...prev]
+						tempPrice[index] = '0.000000000000060306'
+						return tempPrice
+					})
+				} else if (item.name === 'Shake coin') {
 					setCoinTypesPrice((prev) => {
 						const tempPrice = [...prev]
 						tempPrice[index] = '0.000000000000060306'
@@ -543,8 +606,14 @@ function Buyer() {
 	const getCoinPrice = useCallback(() => {
 		validatedTokens.forEach((item, index) => {
 			const coin = coinTypes.find(_coin => _coin.name === item.name)
-			if(!coin) return
+			if (!coin) return
 			if (item.name === 'shake coin') {
+				setValidatedCoinPrice((prev) => {
+					const tempPrice = [...prev]
+					tempPrice[index] = '0.000000000000060306'
+					return tempPrice
+				})
+			} else if (item.name === 'Shake coin') {
 				setValidatedCoinPrice((prev) => {
 					const tempPrice = [...prev]
 					tempPrice[index] = '0.000000000000060306'
@@ -590,7 +659,7 @@ function Buyer() {
 		const currentcoinType = myBalances.filter((item) => item.name == coinTypes[coin].name);
 		myBalances.map((myBalance) => {
 			if (validatedTokens.find((item) => item.name == myBalance.name)) {
-				currentPrice = currentcoinType[0]?.balance || 10;
+				currentPrice = currentcoinType[0]?.balance || '1000000000000000000000';
 				// setPreTotal(parseInt(pretotal) + parseInt(myBalance.balance));
 				var id = parseInt(myBalance.id);
 				pretotal += (parseFloat(myBalance.balance) * parseInt(myBalancePrice[id]));
@@ -598,9 +667,8 @@ function Buyer() {
 		})
 		setPreTotal(pretotal);
 		if (parseInt(total) < parseInt(initialpriceValue * coinPrice) && flag) {
-			console.log(parseInt(total), parseInt(initialpriceValue * coinPrice))
 			document.getElementById('changeprice').style.display = 'none';
-			setDisableFlag(true);
+			// setDisableFlag(true);
 			if (OtherAction == "counteroffer") {
 				setOpen(true);
 				setContent("You can't buy this NFT because your balance is less than the NFTs price!")
@@ -609,8 +677,8 @@ function Buyer() {
 		}
 		else if (parseInt(total) > parseInt(initialpriceValue * coinPrice)) {
 			if (parseInt(currentPrice) < parseInt(initialpriceValue)) {
-				document.getElementById('changeprice').style.display = 'block';
-				setDisableFlag(true);
+				// document.getElementById('changeprice').style.display = 'block';
+				// setDisableFlag(true);
 			}
 			else {
 				document.getElementById('changeprice').style.display = 'none';
@@ -703,7 +771,13 @@ function Buyer() {
 
 		finalOfferdatas.tokens.map(function (i) {
 			filterCoinTypes.push(coinTypes.filter((el) => el.name == i.name))
-			amountOrTokenIds.push(i.balance)
+			let amount = 0;
+			if (i.contract_address === '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd') {
+				amount = Math.round(i.balance * Math.pow(10, 18))
+			} else {
+				amount = ethers.utils.parseUnits(i.balance.toString()).toString();
+			}
+			amountOrTokenIds.push(amount)
 			addressTypes.push('token')
 		})
 
@@ -723,24 +797,30 @@ function Buyer() {
 		/// @param amountOrTokenIds Amounts (fungible) of TokenIDs (non-fungible)
 
 		const processCallback = () => {
-			if (flag < givesTokenAddress.length) return
-			shakeContract.makeOfferFromOrder(1, givesTokenAddress, amountOrTokenIds, {
-				value: Number(nftDetail.amountGetOrTokenID),
-				gasLimit: 300000,
-			}).then(res => {
-				console.log(res)
+			if (flags < givesTokenAddress.length) return
+			setMakeOfferLoading(2)
+			console.log(nonce, givesTokenAddress, amountOrTokenIds)
+			shakeContract.makeOfferFromOrder(nonce, givesTokenAddress, amountOrTokenIds)
+				.then(res => {
+					console.log(res)
+				})
+			shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
+				setMakeOfferLoading(0)
 			})
 		}
 
 		for (let i = 0; i < givesTokenAddress.length; i++) {
 			const address = givesTokenAddress[i];
+			setMakeOfferLoading(1)
 			if (addressTypes[i] === 'token') {
 				const tokenContract = new ethers.Contract(address, Config.tokenContract.abi, signer)
+
 				await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i]);
 
 				tokenContract.on('Approval', (owner, spender, value) => {
-					if (owner === account && value === amountOrTokenIds[i]) {
-						flag++;
+					console.log(value.toString(), amountOrTokenIds[i].toString())
+					if (owner === account && value.toString() === amountOrTokenIds[i].toString()) {
+						flags++;
 						processCallback();
 					}
 				})
@@ -750,7 +830,7 @@ function Buyer() {
 
 				nftContract.on('Approval', (owner, approved, tokenId) => {
 					if (owner === account && tokenId === amountOrTokenIds[i]) {
-						flag++;
+						flags++;
 						processCallback();
 					}
 				})
@@ -778,15 +858,21 @@ function Buyer() {
 			// ethers contract instantiation
 			const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 			// getActiveOrderLength 
-			const orderActiveSet = await shakeContract.getFromActiveOrderSet(nonce)
 
 			/// @notice Buy Few Orders at once. Anyone can execute this action
 			/// @dev If at lesat one order is possible then transaction will be successful
 			/// @param nonce - Array - Unique identifier of the order (always incremental)
-			shakeContract.buyOrders([...orderActiveSet], {
-				gasLimit: 300000
-			}).then(res => {
-				console.log(res)
+			const tokenContract = new ethers.Contract(nftDetail.get, Config.tokenContract.abi, signer);
+
+			tokenContract.approve(Config.shakeonit.address, nftDetail.amountGetOrTokenID.toString());
+
+			setBuyLoading(1)
+
+			tokenContract.on('Approval', (owner, spender, value) => {
+				if (owner === account && value.toString() === nftDetail.amountGetOrTokenID.toString()) {
+					setBuyLoading(0)
+					shakeContract.buyOrders([...nonce])
+				}
 			})
 		}
 	}
@@ -803,7 +889,7 @@ function Buyer() {
 		const order = await shakeContract.getFromActiveOrderSet(nonce);
 
 		//bsc testnet
-		const routerContractAddress = '0x9ac64cc6e4415144c455bd8e4837fea55603e5c3'; // bsc pancakeswap router contract
+		const routerContractAddress = Config.RouterContract.address // bsc pancakeswap router contract
 		let addressList = [];
 		if (order.get !== '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd' || order.get !== '0x0000000000000000000000000000000000000000') {
 			addressList = [swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd', order.get];
@@ -811,17 +897,20 @@ function Buyer() {
 			if (swapTokenAddress !== '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd') return alert('You can only choose ETH to swap')
 			addressList = [swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd'];
 		}
-		
+
 		const tokenContract = new ethers.Contract(swapTokenAddress, Config.tokenContract.abi, signer)
-		
+
 		const amount = ethers.utils.parseUnits(swapTokenAmount.toString()).toString()
 		tokenContract.approve(Config.shakeonit.address, amount);
+		setBuySwapLoading(1)
 		tokenContract.on('Approval', (owner, spender, value) => {
-			console.log(Number(value), Number(amount))
 			if (owner === account && Number(value) === Number(amount)) {
-				console.log(nonce, routerContractAddress, addressList, amount)
-				shakeContract.buyTokenWithSwap(11, '0x9ac64cc6e4415144c455bd8e4837fea55603e5c3', ["0x404140256212cb3eb9ce8cf9ae7b260fb80b271f", "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd", "0x0C41f27429ef5A1eccDb36faf38E343eccf38e86"], amount).then(res => {
+				setBuySwapLoading(2)
+				shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, amount).then(res => {
 					console.log(res)
+				})
+				shakeContract.on('BuyOrder', (nonce) => {
+					setBuySwapLoading(0)
 				})
 			}
 		})
@@ -872,15 +961,15 @@ function Buyer() {
 										<TypographySize14 className="flex items-center">Price:</TypographySize14>
 									</Box>
 									<Box className="flex items-center" style={{ marginTop: "4%" }}>
-										{!modalflag ?
-											<TypographySize32>{modalPrice}</TypographySize32>
+										{modalflag ?
+											<TypographySize32>$ {modalPrice}</TypographySize32>
 											:
-											<TypographySize32>{initialPrice}</TypographySize32>
+											<TypographySize32>$ {initialPrice}</TypographySize32>
 										}
-										{!modalflag ?
-											<TypographySize14 className="pl-6">/ {modalPriceValue}</TypographySize14>
+										{modalflag ?
+											<TypographySize14 className="pl-6">/ {modalPriceValue} {coinTypes[coin].name}</TypographySize14>
 											:
-											<TypographySize14 className="pl-6">/ {initialpriceValue}</TypographySize14>
+											<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
 										}
 									</Box>
 								</Box>
@@ -891,8 +980,8 @@ function Buyer() {
 										<TypographySize14 className="flex items-center">Price:</TypographySize14>
 									</Box>
 									<Box className="flex items-center" style={{ marginTop: "4%" }}>
-										<TypographySize32>$ {scientificToDecimal(initialpriceValue * coinPrice)}</TypographySize32>
-										<TypographySize14 className="pl-6">/ {scientificToDecimal(initialpriceValue)} {coinTypes[coin].name}</TypographySize14>
+										<TypographySize32>$ {initialPrice}</TypographySize32>
+										<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
 									</Box>
 								</Box>
 						}
@@ -906,22 +995,28 @@ function Buyer() {
 								:
 								<>
 									<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-										<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>Buy</a>
+										<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>
+											{
+												buyLoading === 0 ? 'Buy' : 'Approving...'
+											}
+										</a>
 										<Box className="outlined-btn px-3">
 											<select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
 												<option value="otheractions" >Other Actions</option>
+												<option value="buyTokenWithSwap" >Buy token with swap</option>
 												<option value="counteroffer">Counter Offer</option>
 												<option value="openchat">Open a chat</option>
 												<option value="initiatecall">Initiate a Call</option>
 											</select>
 										</Box>
 									</Box>
-									<div className="flex items-center justify-start mt-10">
+
+									<div id="buyTokenWithSwap" style={{ display: "none" }} className="flex items-center justify-start mt-10">
 										<div className="w-full flex relative">
 											<div className="w-full flex relative">
 												<select className="rounded-l-xl border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenAddress}
-													onChange={(e) => setSwapTokenAdress(e.target.value)}
+													onChange={handleSelectToken}
 												>
 													<option value=''>Select token</option>
 													{
@@ -934,13 +1029,17 @@ function Buyer() {
 													value={swapTokenAmount} onChange={handleSwapTokenAmount}
 												/>
 												<input readOnly className="w-32 border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
-													value={swapTokenToUSD.toFixed(2)}
+													value={swapTokenToUSD.toFixed(7)}
 												/>
 												<div className="absolute right-2 inset-y-0 flex items-center">
 													<span>USD</span>
 												</div>
 											</div>
-											<a className='w-[250px] h-12 btn px-4 py-3 pulse rounded-l-none text-xl' onClick={handleBuyTokenWithSwap}>Buy with Swap</a>
+											<a className='w-[250px] h-12 btn px-4 py-3 pulse rounded-l-none text-xl' onClick={handleBuyTokenWithSwap}>
+												{
+													buySwapLoading === 0 ? 'Buy with Swap' : (buySwapLoading === 1 ? 'Approving...' : 'Swapping...')
+												}
+											</a>
 										</div>
 									</div>
 								</>
@@ -966,7 +1065,7 @@ function Buyer() {
 									let validatedToken = validatedTokens.find(item => item.name === myBalance.name);
 									let className = !disableflag ? "asset" : "asset-disable";
 									let balance = parseFloat(!offerdata ? myBalance.balance : (myBalance.balance - offerdata.balance));
-									let display_balance = parseFloat(myBalance.chain === '0x1' ? getWeiToInt(balance) : balance)
+									let display_balance = parseFloat(myBalance.chain === '0x1' ? getWeiToInt(balance) : balance).toFixed(4)
 									return (
 										<AssetCard
 											draggable
@@ -975,23 +1074,25 @@ function Buyer() {
 											className={className}
 											style={{ width: '100%', position: 'relative' }}
 										>
-											<div className="flex-1 flex items-center">
-												<img src="../static/images/client/image 14.png" />
-												<div className="w-full flex items-center justify-around">
-													<div className="w-1/2 px-5">
-														<TypographySize20 style={{ textAlign: 'right' }}>{display_balance}</TypographySize20>
+											<div className="flex items-center w-full h-full justify-between">
+												<div className="w-[30px] h-full flex items-center">
+													<img src="../static/images/client/image 14.png" />
+												</div>
+												<div className="flex-1 w-full h-full flex items-center justify-center">
+													<div className="w-1/2 pr-2">
+														<div className="truncate text-right text-xl">{display_balance}</div>
 													</div>
-													<div className="w-1/2 px-5">
-														<TypographySize20 className="truncate w-[200px]">{myBalance.name}</TypographySize20>
+													<div className="w-1/2 pl-2">
+														<div className="truncate text-xl">{myBalance.name}</div>
 													</div>
 												</div>
-											</div>
-											<div className="absolute right-5 inset-y-0 flex items-center">
-												{!validatedToken ?
-													<img id={"error-img" + myBalance.name} />
-													:
-													<img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" />
-												}
+												<div className="flex items-center h-full w-[30px]">
+													{!validatedToken ?
+														<img id={"error-img" + myBalance.name} />
+														:
+														<img id={"success-img" + myBalance.name} src="../static/images/client/image 20.png" />
+													}
+												</div>
 											</div>
 										</AssetCard>
 									)
@@ -1104,7 +1205,9 @@ function Buyer() {
 									style={{ width: "86%" }}
 									onClick={makeCounterOffer}
 								>
-									Make Offer
+									{
+										MakeOfferLoading === 0 ? 'Make Offer' : (MakeOfferLoading === 1 ? 'Approving...' : 'Offering...')
+									}
 								</Link>
 							</OfferButton>
 						</div>

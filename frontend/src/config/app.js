@@ -28,5 +28,9 @@ export default {
     },
     tokenContract: {
         abi: abi.ERC20
+    },
+    RouterContract: {
+        address: '0x9ac64cc6e4415144c455bd8e4837fea55603e5c3',
+        abi: abi.Router,
     }
 }

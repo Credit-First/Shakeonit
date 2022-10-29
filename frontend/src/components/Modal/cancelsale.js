@@ -21,13 +21,9 @@ function CancelSale({ open, onClose, image, nonce }) {
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
         // getActiveOrderLength 
-        const orderActiveSet = await shakeContract.getFromActiveOrderSet(nonce)
 
-        console.log(nonce, orderActiveSet)
-        await shakeContract.cancelOrderByAdmin(nonce, {
-            gasLimit: 250000
-        }).then(res => {
-            navigate("/#/collections");
+        shakeContract.cancelOrder(nonce).then(res => {
+            navigate("/collections");
             console.log(res)
         })
     }
@@ -53,7 +49,7 @@ function CancelSale({ open, onClose, image, nonce }) {
                         <p className="wallet-md" style={{ textAlign: "center", lineHeight: "1.3" }}>Please click the cancel button if you want to cancel sale.</p>
                     </div>
                     <div className="flex justify-center mx-6 border-2 border-gray-200 mb-5 mt-3 pulse">
-                        <div className="welcome-btn1 py-3" onClick={() => {
+                        <div className="cursor-pointer welcome-btn1 py-3" onClick={() => {
                             cancelOrder();
                             onClose();
                             window.localStorage.clear();
