@@ -30,6 +30,7 @@ import TokenContext from '../../context/tokenContext';
 import { httpGet } from "../../utils/http.utils";
 import CancelSale from "../../components/Modal/cancelsale";
 import ChangePrice from "../../components/Modal/changeprice";
+import scientificToDecimal from 'scientific-to-decimal';
 
 const BIG_TEN = new BigNumber(10);
 
@@ -812,14 +813,14 @@ function Buyer() {
 		}
 		
 		const tokenContract = new ethers.Contract(swapTokenAddress, Config.tokenContract.abi, signer)
-		tokenContract.approve(Config.shakeonit.address, swapTokenAmount);
+		
+		const amount = ethers.utils.parseUnits(swapTokenAmount.toString()).toString()
+		tokenContract.approve(Config.shakeonit.address, amount);
 		tokenContract.on('Approval', (owner, spender, value) => {
-			if (owner === account && Number(value) === swapTokenAmount) {
-				const amount = ethers.utils.parseUnits(swapTokenAmount.toString())
+			console.log(Number(value), Number(amount))
+			if (owner === account && Number(value) === Number(amount)) {
 				console.log(nonce, routerContractAddress, addressList, amount)
-				shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, amount, {
-					gasLimit: 300000
-				}).then(res => {
+				shakeContract.buyTokenWithSwap(11, '0x9ac64cc6e4415144c455bd8e4837fea55603e5c3', ["0x404140256212cb3eb9ce8cf9ae7b260fb80b271f", "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd", "0x0C41f27429ef5A1eccDb36faf38E343eccf38e86"], amount).then(res => {
 					console.log(res)
 				})
 			}
@@ -890,8 +891,8 @@ function Buyer() {
 										<TypographySize14 className="flex items-center">Price:</TypographySize14>
 									</Box>
 									<Box className="flex items-center" style={{ marginTop: "4%" }}>
-										<TypographySize32>$ {Number(initialpriceValue * coinPrice).toString()}</TypographySize32>
-										<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
+										<TypographySize32>$ {scientificToDecimal(initialpriceValue * coinPrice)}</TypographySize32>
+										<TypographySize14 className="pl-6">/ {scientificToDecimal(initialpriceValue)} {coinTypes[coin].name}</TypographySize14>
 									</Box>
 								</Box>
 						}

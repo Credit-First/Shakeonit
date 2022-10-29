@@ -13271,6 +13271,11 @@ schema-utils@^3.0.0, schema-utils@^3.1.1:
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
 
+scientific-to-decimal@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/scientific-to-decimal/-/scientific-to-decimal-1.1.1.tgz#8696c9142ae7eba5efdb0ae80ae12f73e3d331c7"
+  integrity sha512-L4IT5XmaW2Nul08oe/dBpMbj4grI4JwoSiaAj+Y9WEK+TZ3UXS2b1cz59Tt/fTzONRk5y/ZcC2awfWYV9s0qxw==
+
 scrypt-js@3.0.1, scrypt-js@^3.0.0, scrypt-js@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-3.0.1.tgz#d314a57c2aef69d1ad98a138a21fe9eafa9ee312"
