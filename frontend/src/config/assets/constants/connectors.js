@@ -5,7 +5,8 @@ import Config from '../../app';
 const POLLING_INTERVAL = 12000;
 const RPC_URLS = {
     1: 'https://mainnet.infura.io/v3/eaf5b124b2cc4797beb8fcabe2c50825',
-    5: 'https://goerli.infura.io/v3/eaf5b124b2cc4797beb8fcabe2c50825'
+    5: 'https://goerli.infura.io/v3/eaf5b124b2cc4797beb8fcabe2c50825',
+    97: 'https://data-seed-prebsc-1-s1.binance.org:8545'
 };
 
 const rpcUrl = RPC_URLS[Config.netId];//getNodeUrl();

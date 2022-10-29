@@ -1,4 +1,5 @@
 import { Box, Grid } from "@mui/material";
+import BigNumber from 'bignumber.js';
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
@@ -29,6 +30,8 @@ import TokenContext from '../../context/tokenContext';
 import { httpGet } from "../../utils/http.utils";
 import CancelSale from "../../components/Modal/cancelsale";
 import ChangePrice from "../../components/Modal/changeprice";
+
+const BIG_TEN = new BigNumber(10);
 
 const Container = styled.div`
     width: 100%;
@@ -167,8 +170,8 @@ function Buyer() {
 	const handleSwapTokenAmount = (e) => {
 		myBalances.map((token, index) => {
 			if (token.contract_address === swapTokenAddress) {
-				setSwapTokenToUSD(myBalancePrice[index] * e.target.value)
-				setSwapTokenAmount(e.target.value)
+				setSwapTokenToUSD(myBalancePrice[index] * e.target.value * 1)
+				setSwapTokenAmount(e.target.value * 1)
 			}
 		})
 	}
@@ -239,8 +242,9 @@ function Buyer() {
 
 
 	useEffect(() => {
+		getNft();
+
 		if (nftCtx.nfts.length > 0) {
-			getNft();
 			getCollections();
 		}
 	}, [nftCtx, nonce, account]);
@@ -271,8 +275,19 @@ function Buyer() {
 
 		const { image, name } = await httpGet(getGenericImageUrl(tokenURI));
 
+		const coin_detail = coinTypes.find(coin => coin.address === shakeItem.get);
+
+		setCoin((coin_detail.id - 1) || 0)
+		
+		setInitialpriceValue(getWeiToInt(Number(shakeItem.amountGetOrTokenID)));
+		
+		setCoinType(coinTypes)
+		
+		setCoinPrice(CoinTypesPrice[coin_detail.id - 1]);
+
 		setNftDetail({
 			give: shakeItem.give,
+			get: shakeItem.get,
 			amountGiveOrTokenID: shakeItem.amountGiveOrTokenID,
 			image: getGenericImageUrl(image),
 			name: name,
@@ -310,6 +325,7 @@ function Buyer() {
 	const handleGetBalance = () => {
 		setMyBalances([]);
 
+		console.log(tokenCtx)
 		if (tokenCtx.native.balance) {
 			const obj = {
 				id: 0,
@@ -436,10 +452,24 @@ function Buyer() {
 
 	const getMybalanceCoinPrice = useCallback(() => {
 		myBalances.forEach((item, index) => {
-			if (item.name === 'shake' || item.name === 'SAFE') {
+			const coin = coinTypes.find(_coin => _coin.name === item.name)
+			if(!coin) return
+			if (item.name === 'shake coin') {
 				setMyBalancePrice((prev) => {
 					const tempPrice = [...prev]
-					tempPrice[index] = 0
+					tempPrice[index] = '0.000000000000060306'
+					return tempPrice
+				})
+			} else if (item.name === 'shakecoin1') {
+				setMyBalancePrice((prev) => {
+					const tempPrice = [...prev]
+					tempPrice[index] = '0.000000000120586'
+					return tempPrice
+				})
+			} else if (item.name === 'Shake' || item.name === 'SHAKE TOKEN') {
+				setMyBalancePrice((prev) => {
+					const tempPrice = [...prev]
+					tempPrice[index] = '0'
 					return tempPrice
 				})
 			} else {
@@ -462,15 +492,27 @@ function Buyer() {
 
 
 	//CoinType
-
+	
 	const [CoinTypesPrice, setCoinTypesPrice] = useState(Array(myBalances).fill(0))
 	const getCoinType = useCallback(
 		() => {
 			coinTypes.forEach((item, index) => {
-				if (item.name === 'shake' || item.name === 'SAFE') {
+				if (item.name === 'shake coin') {
 					setCoinTypesPrice((prev) => {
 						const tempPrice = [...prev]
-						tempPrice[index] = 0
+						tempPrice[index] = '0.000000000000060306'
+						return tempPrice
+					})
+				} else if (item.name === 'shakecoin1') {
+					setCoinTypesPrice((prev) => {
+						const tempPrice = [...prev]
+						tempPrice[index] = '0.000000000120586'
+						return tempPrice
+					})
+				} else if (item.name === 'Shake' || item.name === 'SHAKE TOKEN') {
+					setCoinTypesPrice((prev) => {
+						const tempPrice = [...prev]
+						tempPrice[index] = '0'
 						return tempPrice
 					})
 				} else {
@@ -499,10 +541,24 @@ function Buyer() {
 	}, [])
 	const getCoinPrice = useCallback(() => {
 		validatedTokens.forEach((item, index) => {
-			if (item.name === 'shake' || item.name === 'SAFE') {
+			const coin = coinTypes.find(_coin => _coin.name === item.name)
+			if(!coin) return
+			if (item.name === 'shake coin') {
 				setValidatedCoinPrice((prev) => {
 					const tempPrice = [...prev]
-					tempPrice[index] = 0
+					tempPrice[index] = '0.000000000000060306'
+					return tempPrice
+				})
+			} else if (item.name === 'shakecoin1') {
+				setValidatedCoinPrice((prev) => {
+					const tempPrice = [...prev]
+					tempPrice[index] = '0.000000000120586'
+					return tempPrice
+				})
+			} else if (item.name === 'Shake' || item.name === 'SHAKE TOKEN') {
+				setValidatedCoinPrice((prev) => {
+					const tempPrice = [...prev]
+					tempPrice[index] = '0'
 					return tempPrice
 				})
 			} else {
@@ -533,7 +589,7 @@ function Buyer() {
 		const currentcoinType = myBalances.filter((item) => item.name == coinTypes[coin].name);
 		myBalances.map((myBalance) => {
 			if (validatedTokens.find((item) => item.name == myBalance.name)) {
-				currentPrice = currentcoinType[0].balance;
+				currentPrice = currentcoinType[0]?.balance || 10;
 				// setPreTotal(parseInt(pretotal) + parseInt(myBalance.balance));
 				var id = parseInt(myBalance.id);
 				pretotal += (parseFloat(myBalance.balance) * parseInt(myBalancePrice[id]));
@@ -743,13 +799,30 @@ function Buyer() {
 
 		// ethers contract instantiation
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
+		const order = await shakeContract.getFromActiveOrderSet(nonce);
 
-		const routerContractAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
-		const addressList = [swapTokenAddress, '0xdac17f958d2ee523a2206206994597c13d831ec7', '0x7af963cf6d228e564e2a0aa0ddbf06210b38615d'];
-		shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, swapTokenAmount, {
-			gasLimit: 300000
-		}).then(res => {
-			console.log(res)
+		//bsc testnet
+		const routerContractAddress = '0x9ac64cc6e4415144c455bd8e4837fea55603e5c3'; // bsc pancakeswap router contract
+		let addressList = [];
+		if (order.get !== '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd' || order.get !== '0x0000000000000000000000000000000000000000') {
+			addressList = [swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd', order.get];
+		} else {
+			if (swapTokenAddress !== '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd') return alert('You can only choose ETH to swap')
+			addressList = [swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd'];
+		}
+		
+		const tokenContract = new ethers.Contract(swapTokenAddress, Config.tokenContract.abi, signer)
+		tokenContract.approve(Config.shakeonit.address, swapTokenAmount);
+		tokenContract.on('Approval', (owner, spender, value) => {
+			if (owner === account && Number(value) === swapTokenAmount) {
+				const amount = ethers.utils.parseUnits(swapTokenAmount.toString())
+				console.log(nonce, routerContractAddress, addressList, amount)
+				shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, amount, {
+					gasLimit: 300000
+				}).then(res => {
+					console.log(res)
+				})
+			}
 		})
 	}
 	//send datas
@@ -817,14 +890,14 @@ function Buyer() {
 										<TypographySize14 className="flex items-center">Price:</TypographySize14>
 									</Box>
 									<Box className="flex items-center" style={{ marginTop: "4%" }}>
-										<TypographySize32>$ {initialpriceValue * coinPrice}</TypographySize32>
+										<TypographySize32>$ {Number(initialpriceValue * coinPrice).toString()}</TypographySize32>
 										<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
 									</Box>
 								</Box>
 						}
 
 						{
-							nftDetail.owner !== account ?
+							nftDetail.owner === account ?
 								<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
 									<div className="cursor-pointer flex justify-center btn pulse1 w-full" onClick={handleModalChangeOpen}>Change Price</div>
 									<div className="cursor-pointer flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleModalOpen}>Cancel Sale</div>
