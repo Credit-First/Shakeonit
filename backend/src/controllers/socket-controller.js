@@ -48,7 +48,7 @@ const init = function (http) {
           //gets the room user and the message sent
           const p_user = get_Current_User(socket.id);
           if (p_user != null) {
-            messageController.insert(data.fromAddress, data.toAddress, data.tokenId, data.ans, data.role);
+            messageController.insert(data.fromAddress, data.toAddress, data.ans, data.role, data.buyerAddr);
             io.to(p_user.room).emit("message", {
               userId: p_user.id,
               fromAddress: data.fromAddress,

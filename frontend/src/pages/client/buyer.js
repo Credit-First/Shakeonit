@@ -367,7 +367,7 @@ function Buyer() {
 				openchat();
 				break;
 			case "initiatecall":
-				window.open(`/#/jitsi/room${nftDetail.give}/${tokenId}`);
+				window.open(`/#/jitsi/room${contractAddress}/${tokenId}`);
 				break;
 
 		}

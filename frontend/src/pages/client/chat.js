@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box } from "@mui/material";
+import { Box, Avatar, IconButton, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { to_Decrypt, to_Encrypt } from "./aes";
-import { Avatar, IconButton } from "@mui/material";
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import Picker from '@emoji-mart/react'
@@ -12,13 +11,9 @@ import './chat.css';
 
 import {socket} from '../global';
 import Contact from './contact';
+import { reduceAddress } from '../../utils/common'
 
-import { getAllChattingHistories, getAcceptStatus, getContactsForBuyer, getMessages, getLastMessage, setAcceptStatusAllow } from '../../store/apis';
-
-// const contacts = [
-//     {address: '0x81c200 ... $000C', unread: 1, lastmsg: '@mui/icons-material/Sent'},
-//     {address: '0x313444 ... $5cC0', unread: 0, lastmsg: '@mui/icons-material/Sen'},
-// ]
+import { getAllChattingHistories, getAcceptStatus, getContactsForBuyer, getBuyersByContract, getMessages, getLastMessage, setAcceptStatusAllow } from '../../store/apis';
 
 const BuyerChat = (props) => {
     const { active, account } = useWeb3React();
@@ -28,17 +23,23 @@ const BuyerChat = (props) => {
     const [showEmoji, setShowEmoji] = useState(false);
     const [messages, setMessages] = useState([]);
     const [curAddr, setCurAddr] = useState(contractAddress);
-    const [histories, setHistories] = useState([]);
     const [acceptFlag, setAcceptFlag] = useState(false);
     const [lastMessage, setLastMessage] = useState({});
+    const [buyerAddr, setBuyerAddr] = useState('');
+    const [buyers, setBuyers] = useState([]);
 
     useEffect(()=>{
-        getLastMessage()
-            .then(setLastMessage)
         getContactsForBuyer()
             .then(res=>{
                 const contactArr = res.map(item=>({address: item.contract_address, unread: 0, lastmsg: ''}))
                 setContacts(prev=>[...getFilteredArrayByUnique([...prev, ...contactArr], 'address')])
+            })
+        getBuyersByContract(curAddr)
+            .then(res=>{
+                if(res != undefined && res.length) {
+                    setBuyers(res.map(item=>item.from_address))
+                    setBuyerAddr(res[0].from_address)
+                }
             })
     }, [])
 
@@ -101,25 +102,37 @@ const BuyerChat = (props) => {
     }, [isOpenedChat])
 
     useEffect(() => {
-        getMessages(curAddr)
-            .then(res=>{
-                const formatData = res.map(item=>({text: to_Decrypt(item.content, username), fromAddress: item.from_addr}))
-                setMessages(formatData)
-            })
-            .catch(err=>{
-                console.log(err)
-            })
-        getAcceptStatus(curAddr)
-            .then((accept) => {
-                if(role == "seller"){
+        getLastMessage(role == "seller"? buyerAddr: account)
+            .then(setLastMessage)
+    }, [buyerAddr, account])
+
+    useEffect(() => {
+        if(account || (buyerAddr && role == "seller"))
+            Promise.resolve()
+                .then(_=>{
+                    if(role == "seller")
+                        return getMessages(curAddr, account, buyerAddr)
+                    else
+                        return getMessages(curAddr, 0, account)
+                })
+                .then(res=>{
+                    const formatData = res.map(item=>({text: to_Decrypt(item.content, username), fromAddress: item.from_addr}))
+                    setMessages(formatData)
+                })
+                .catch(err=>{
+                    console.log(err)
+                })
+        if(role == "seller")
+            getAcceptStatus(curAddr, buyerAddr)
+                .then((accept) => {
                     console.log("seller", accept);
                     setAcceptFlag(accept);
-                }else{
-                    console.log("buyer");
-                    setAcceptFlag(true);
-                }
-            });       
-    }, [curAddr])
+                })
+        else {
+            console.log("buyer");
+            setAcceptFlag(true);
+        }
+    }, [curAddr, account, buyerAddr])
 
     const handler = (data) => {
         //decypt
@@ -181,7 +194,7 @@ const BuyerChat = (props) => {
     }, [socket]);
     
     const setAcceptAllow = () => {
-        setAcceptStatusAllow(contractAddress, tokenId);
+        setAcceptStatusAllow(contractAddress, buyerAddr, account);
         setAcceptFlag(true);
     }
 
@@ -190,7 +203,7 @@ const BuyerChat = (props) => {
             if (text !== "") {
               //encrypt here
               const ans = to_Encrypt(text);
-              socket.emit("chat", {ans, fromAddress: account, toAddress: curAddr, tokenId: tokenId, role: role});
+              socket.emit("chat", {ans, fromAddress: account, toAddress: curAddr, tokenId: tokenId, role: role, buyerAddr});
               setText("");
             }
         }
@@ -203,20 +216,42 @@ const BuyerChat = (props) => {
   
     useEffect(scrollToBottom, [messages]);
 
+    const handleChangeBuyer = (event) => {
+        setBuyerAddr(event.target.value);
+    };
+
     return (
     <Box className="rounded-xl message bg-gray-100">
         <Box className="rounded-xl text-white user-bg relative">
             <Box className="text-2xl font-medium pl-7 pr-7 py-3 flex">
-                Jordan Powell
+                {account !== undefined ? reduceAddress(account) : ""}
                 <div style={{ marginLeft: 'auto', marginTop: -3 }}>
                     <PhoneOutlinedIcon style={{fontSize: 30}} onClick={opencall} />
                 </div>
             </Box>
-            <Box className="flex pl-4 pr-16  py-3">
-                <Avatar className="mx-3">
-                    {"J"}
-                </Avatar>
-                <Box className="text-white px-2 pt-2">Hello {username}, how can we help you</Box>
+            <Box className="flex pl-4 pr-4 py-3">
+                {role === "buyer" && account !== undefined ? (<Box className="text-white px-2 pt-2">Hello {reduceAddress(account)}, how can we help you</Box>) : ""}
+                {
+                    role === "seller" &&
+                    <div style={{ marginLeft: 'auto', marginTop: -3, minWidth: 100 }}>
+                        <FormControl variant="standard" fullWidth>
+                            <InputLabel id="buyer-select-label">Buyer</InputLabel>
+                            <Select
+                                labelId="buyer-select-label"
+                                value={buyerAddr}
+                                label="Buyer"
+                                autoWidth
+                                onChange={handleChangeBuyer}
+                            >
+                                {
+                                    buyers.map(buyer=>(
+                                        <MenuItem value={buyer}>{reduceAddress(buyer)}</MenuItem>
+                                    ))
+                                }
+                            </Select>
+                        </FormControl>
+                    </div>
+                }
             </Box>
         </Box>
         <Box className="flex">

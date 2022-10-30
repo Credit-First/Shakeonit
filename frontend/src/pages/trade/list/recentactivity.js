@@ -42,10 +42,10 @@ function RecentActivity() {
     }
 
     const openchat = () => {
-        if(request_flag){
+        // if(request_flag){
             document.getElementById("openchat").style.display = "block";
             setOpenedChat(true);
-        }
+        // }
     }
 
     // ETHERS SETUP

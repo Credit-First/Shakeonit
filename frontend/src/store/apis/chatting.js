@@ -19,10 +19,10 @@ export const getAllChattingHistories = (from_addr, to_addr, token_id) => {
 	});
 };
 
-export const getAcceptStatus = (contract_address) => {
+export const getAcceptStatus = (contract_address, from_address) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`api/v1/get_accepts/${contract_address}`)
+			.get(`api/v1/get_accepts/${contract_address}/${from_address}`)
 			.then((response) => {
 				if (response.status === 200 && response.data !== null) {
 					resolve(response.data.flag);
@@ -53,10 +53,10 @@ export const getAllRequests = (contractAddress) => {
 	});
 };
 
-export const setAcceptStatusAllow = (contract_address, token_id) => {
+export const setAcceptStatusAllow = (contract_address, from_address, accepter) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`api/v1/set_accepts/${contract_address}/${token_id}`)
+			.get(`api/v1/set_accepts/${contract_address}/${from_address}/${accepter}`)
 			.then((response) => {
 				const response_data = response.data;
 				if (response.status === 200) {
@@ -89,10 +89,10 @@ export const getContactsForBuyer = () => {
 	});
 }
 
-export const getMessages = (contract_address) => {
+export const getMessages = (contract_address, seller_addr, buyer_addr) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`api/v1/get_chats/${contract_address}`)
+		.get(`api/v1/get_chats/${contract_address}/${seller_addr}/${buyer_addr}`)
 			.then((response) => {
 				if (response.status === 200) {
 					resolve(response.data);
@@ -106,10 +106,10 @@ export const getMessages = (contract_address) => {
 	});
 };
 
-export const getLastMessage = () => {
+export const getLastMessage = (from_addr) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.get(`api/v1/get_last_message`)
+			.get(`api/v1/get_last_message/${from_addr}`)
 			.then((response) => {
 				if (response.status === 200) {
 					const lastMsgObj = response.data.reduce((obj, msg)=>{
@@ -126,3 +126,20 @@ export const getLastMessage = () => {
 			});
 	});
 };
+export const getBuyersByContract = (contract_address) => {
+	return new Promise((resolve, reject) => {
+		axios
+			.get(`api/v1/get_buyers_by_contract/${contract_address}`)
+			.then((response) => {
+				const response_data = response.data;
+				if (response.status === 200) {
+					resolve(response_data);
+				} else {
+					reject(response_data);
+				}
+			})
+			.catch((err) => {
+				reject(err);
+			});
+	});
+}

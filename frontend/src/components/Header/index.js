@@ -73,7 +73,7 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                                     if (location.pathname === item.url)
                                         activeClass = "active"
                                     return <StyleMenuItem className={`text-header hover:text-indigo-200 ${activeClass}`} key={_i}>
-                                        <a href="#" style={{cursor: "default", pointerEvents: "none" }}>{item.name}</a>
+                                        <a style={{cursor: "default", pointerEvents: "none" }}>{item.name}</a>
                                     </StyleMenuItem>
                                 })
                             }
@@ -88,7 +88,7 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                 </Hidden>
                 <Hidden lgUp>
                     <Box className="flex items-center">
-                        <a href='#' onClick={() => setNavbar(!navbar)}>
+                        <a onClick={() => setNavbar(!navbar)}>
                             {!navbar ?
                                 <MenuIcon className="text-black-900" /> :
                                 <CloseIcon className="text-black-900" />

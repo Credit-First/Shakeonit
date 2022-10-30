@@ -1,13 +1,8 @@
 
 import { Box, Avatar, Badge } from "@mui/material";
-
+import { reduceAddress } from '../../utils/common'
 const Contact = (props) => {
     const { data, selected, lastMessage } = props;
-    const reduceAddress = (addr)=>{
-        if(addr.length>10)
-            return `${addr.substring(0, 8)} ... ${addr.substring(addr.length-4)}`
-        return addr
-    }
 
     return <Box className={`py-4 message-contact flex ${selected ? "message-contact-selected" : ""}`} onClick={() => props.openaddress(data.address)}>
         <Avatar className="mx-3">
