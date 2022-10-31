@@ -7,8 +7,6 @@ import { ethers, BigNumber } from 'ethers'
 import BuyerChat from '../../client/chat'
 import { Toaster } from 'react-hot-toast';
 import { Box } from "@mui/material";
-import { useParams } from "react-router";
-import { getAllRequests } from '../../../store/apis';
 
 const AssetCard = styled.div`
     display: flex;
