@@ -58,7 +58,7 @@ function List() {
     const [modalPriceValue, setModalPriceValue] = useState(initialpriceValue);
 
     const nftCtx = useContext(NftContext);
-    const { contractAddress, tokenId } = useParams();
+    const { address, tokenId } = useParams();
     const [nftDetail, setNftDetail] = useState({});
     const [modalflag, setModalFlag] = useState(false);
     const [isModalOpened, setModalOpened] = useState(false);
