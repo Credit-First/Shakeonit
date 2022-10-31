@@ -12,8 +12,8 @@ export default {
     // test_rpc_url: 'https://goerli.infura.io/v3/eaf5b124b2cc4797beb8fcabe2c50825',
     test_rpc_url: 'https://data-seed- prebsc-1-s1.binance.org:8545/',
     socket_url: url,
-    // server_url: 'https://shakeonit-backend.herokuapp.com/',
-    server_url: 'http://localhost:5000/',
+    server_url: 'https://shakeonit-backend.herokuapp.com/',
+    // server_url: 'http://localhost:5000/',
     template_address: '0x645d2B4bfB047566ff60e2E7112373885935EAc4',
     token_magic: {
         address: '0xa9b2B3a7e81F26587E88F829a5A447D3f0dB9dA9',
