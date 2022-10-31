@@ -110,21 +110,6 @@ class BannerExample extends React.Component {
         cycleNavigation={this.state.cycleNavigation}
         navButtonsAlwaysVisible={this.state.navButtonsAlwaysVisible}
         navButtonsAlwaysInvisible={this.state.navButtonsAlwaysInvisible}
-        next={(now, previous) =>
-          console.log(
-            // `Next User Callback: Now displaying child${now}. Previously displayed child${previous}`
-          )
-        }
-        prev={(now, previous) =>
-          console.log(
-            // `Prev User Callback: Now displaying child${now}. Previously displayed child${previous}`
-          )
-        }
-        onChange={(now, previous) =>
-          console.log(
-            // `OnChange User Callback: Now displaying child${now}. Previously displayed child${previous}`
-          )
-        }
       >
         {items.map((item, index) => {
           return <Banner item={item} key={index} />;

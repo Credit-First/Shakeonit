@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 
 routesV1(app);
 
-// connectDB();
+connectDB();
 
 startMoralisServer();
 

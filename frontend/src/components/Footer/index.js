@@ -35,7 +35,6 @@ export default function Footer({isOpen, isOpened, setOpen, setOpened}) {
 
     useEffect(() => {
         window.localStorage.getItem('isOpened');
-        // console.log("12");
     })
     // console.log(window.localStorage.getItem('isOpened'), "8888888888");
     return (

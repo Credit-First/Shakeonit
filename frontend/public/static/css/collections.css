@@ -111,6 +111,21 @@ nav {
     border-radius: 12px !important;
 }
 
+.button-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    background: red;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid #71BED8;
+}
+
 .grid-size {
     width: 100%;
 }
@@ -156,9 +171,26 @@ nav {
 } */
 
 .message {
-    width: 320px;
+    width: 560px;
     right: 30px;
     top: 50% !important;
+}
+
+.message-inbox {
+    width: 240px;
+    height: 370px;
+    overflow-y: auto;
+    border-right: 1px solid #DEDEDE;
+}
+
+.message-contact {
+    height: 72px;
+    border-bottom: 1px solid #DEDEDE;
+    cursor: pointer;
+}
+
+.message-contact-selected {
+    background-color: #F7FFEF;
 }
 
 .user-bg {

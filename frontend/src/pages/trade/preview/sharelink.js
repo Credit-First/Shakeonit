@@ -49,7 +49,6 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		const provider = new ethers.providers.Web3Provider(ethereum)
 		const signer = provider.getSigner(walletAddress)
 
-		console.log(coin)
 		let get = coin ? coinTypes[coin].address : '0x0000000000000000000000000000000000000000'
 		let give = contract_address
 		let amountGive = tokenId // (wei for 0.0001 WETH) SHOULD BE THE NFT @ AMOUNT OF 1

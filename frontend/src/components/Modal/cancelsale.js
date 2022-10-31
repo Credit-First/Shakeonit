@@ -21,7 +21,6 @@ function CancelSale({ open, onClose, image, nonce }) {
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
         // getActiveOrderLength 
-
         shakeContract.cancelOrder(nonce).then(res => {
             navigate("/collections");
             console.log(res)

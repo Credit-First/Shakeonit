@@ -1,5 +1,4 @@
 const axios = require('axios');
-
 const { Moralis, EvmChain, supportedChainList } = require('../../config/moralis');
 
 const getTokens = async (req, res) => {
