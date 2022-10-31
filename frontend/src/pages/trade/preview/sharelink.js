@@ -52,11 +52,11 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		let get = coin ? coinTypes[coin].address : '0x0000000000000000000000000000000000000000'
 		let give = contract_address
 		let amountGive = tokenId // (wei for 0.0001 WETH) SHOULD BE THE NFT @ AMOUNT OF 1
-		let amountGet = ethers.utils.parseUnits(pricedata.priceValue).toNumber() // Should pull in price data value from the input in Listitemforsale File
+		let amountGet = ethers.utils.parseUnits(pricedata.priceValue) // Should pull in price data value from the input in Listitemforsale File
 		let buyer = '0x0000000000000000000000000000000000000000' // 0x0 address so anyone can buy
 		
 		const nftContract = new ethers.Contract(contract_address, Config.nftContract.abi, signer)
-		const tokenContract = new ethers.Contract(get, Config.nftContract.abi, signer)
+		const tokenContract = new ethers.Contract(get, Config.tokenContract.abi, signer)
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 
 		console.log(give, get, amountGive, amountGet, buyer)
@@ -81,18 +81,14 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 
 		tokenContract.on("Approval", (owner, spender, value) => {
 			flags.token = true;
-			console.log('approval token')
 			if (owner === account) {
-				console.log('approval token owner')
 				processCallback();
 			}
 		});
 		
 		nftContract.on("Approval", (owner, approved, tokenId) => {
 			flags.nft = true;
-			console.log('approval nft')
 			if (owner === account) {
-				console.log('approval nft owner')
 				processCallback();
 			}
 		});
@@ -172,12 +168,12 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 						underline="none"
 						color="inherit"
 						className="btn tex-btn pulse flex justify-center"
-						to={{
-                            pathname: `/buyer/${contract_address}/${tokenId}`,
-                        }}
+						// to={{
+						//     pathname: `/buyer/1`,
+						// }}
 						state={pricedata}
 						style={{ width: "86%" }}
-						// onClick={createOrder()}
+						onClick={createOrder()}
 					>
 						{
 							loadingState === 1 ? 'Approving...' : (loadingState === 2 ? 'Listing...' : 'Done')

@@ -141,9 +141,9 @@ const BuyerChat = (props) => {
         const account = sessionStorage.getItem("account");
         console.log(data);
 
-        if (account === undefined || account === '') return;
+        if (data.role = role && data.username !== username) return;
 
-        if (data.account !== account && open_chat !== "true") {
+        if (data.username !== username && open_chat !== "true") {
             toast.custom((t) => (
                 <div
                 className={`${

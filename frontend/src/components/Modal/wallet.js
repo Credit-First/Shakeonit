@@ -68,7 +68,7 @@ const WalletModal = () => {
                             chainId: `0x${Config.netId.toString(16)}`,
                             chainName: "Ethereum Mainnet",
                             rpcUrls: [
-                                Config.rpc_url
+                                Config.test_rpc_url
                             ],
                             nativeCurrency: {
                                 name: "ETH",
@@ -76,7 +76,7 @@ const WalletModal = () => {
                                 decimals: 18,
                             },
                             blockExplorerUrls: [
-                                Config.rpc_url
+                                Config.test_rpc_url
                             ],
                         },
                     ],

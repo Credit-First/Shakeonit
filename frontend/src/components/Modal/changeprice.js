@@ -7,11 +7,12 @@ import CloseIcon from '@mui/icons-material/Close';
 function ChangePrice({ open, onClose, image, price, setPrice, coinPrice, setPriceValue, handleFlag, handleChangeFlag }) {
     const [isErrorprice, setErrorPrice] = useState(false);
     const handleChangePrice = (e) => {
-        const re = /^[0-9\b]+$/;
+        const re = /^[0-9\b.]+$/;
         if (e.target.value === '' || re.test(e.target.value)) {
             setPrice(e.target.value);
             setPriceValue(e.target.value/coinPrice);
             setErrorPrice(false);
+            handleFlag()
         }
         else {
             setErrorPrice(true);
@@ -39,7 +40,6 @@ function ChangePrice({ open, onClose, image, price, setPrice, coinPrice, setPric
                             <TextField
                                 fullWidth
                                 name="content"
-                                minRows={1}
                                 variant="outlined"
                                 onChange={handleChangePrice}
                                 value={price}
@@ -57,11 +57,11 @@ function ChangePrice({ open, onClose, image, price, setPrice, coinPrice, setPric
                         </div>
                     </div>
                     <div className="flex justify-around mx-6 mb-5 mt-3">
-                        <div className="welcome-btn1 p-3 border-2 border-gray-200 pulse" onClick={() => {
+                        <div className="cursor-pointer welcome-btn1 p-3 border-2 border-gray-200 pulse" onClick={() => {
                             onClose();
                             handleChangeFlag();
                         }}>Change Price</div>
-                        <div className="welcome-btn1 p-3 border-2 border-gray-200 pulse" onClick={() => {
+                        <div className="cursor-pointer welcome-btn1 p-3 border-2 border-gray-200 pulse" onClick={() => {
                             onClose();
                             handleFlag();
                         }}>Cancel</div>

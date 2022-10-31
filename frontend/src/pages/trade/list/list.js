@@ -65,13 +65,13 @@ function List() {
     const [isModalOpen, setModalOpen] = useState(false);
 
     const getNft = useCallback(() => {
-        const nft = nftCtx.nfts.find(nft => (nft.contract_address === contractAddress && nft.tokenId === tokenId));
+        const nft = nftCtx.nfts.find(nft => (nft.contract_address === address && nft.tokenId === tokenId));
         setNftDetail(nft);
-    }, [nftCtx, contractAddress, tokenId])
+    }, [nftCtx, address, tokenId])
 
     React.useEffect(() => {
         if (nftCtx.nfts.length > 0) getNft();
-    }, [nftCtx, contractAddress, tokenId, getNft]);
+    }, [nftCtx, address, tokenId, getNft]);
 
     const handleModalFlag = () => {
         setModalFlag(true);
@@ -165,7 +165,6 @@ function List() {
                         </Box>
                     </ListContent>
                 </ListContainer>
-                <RecentActivity finalOfferdatas = {finalOfferdatas} isflag = {isflag} valiatedprice = {valiatedprice} validatedCoinType = {validatedCoinType} contractAddress={contractAddress} tokenId={tokenId} />
                 <CancelSale open={isModalOpened} onClose={handleModalClose} image={nftDetail.image} />
                 <ChangePrice open={isModalOpen} onClose={handleModalChangeClose} image={nftDetail.image} setPrice={setModalPrice} price={modalPrice} setPriceValue={setModalPriceValue} coinPrice={coinPrice} handleFlag={handleModalFlag} handleChangeFlag={handleChangeFlag} />
             </div>
