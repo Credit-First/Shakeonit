@@ -15,12 +15,12 @@ const { PORT } = process.env || 5000;
 
 const app = express();
 
-// app.use(express.static('public'));
-// app.use(cors({
-// 	origin: '*',
-// 	optionsSuccessStatus: 200,
-// 	preflightContinue: true,
-// }));
+app.use(express.static('public'));
+app.use(cors({
+	origin: '*',
+	optionsSuccessStatus: 200,
+	preflightContinue: true,
+}));
 
 app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*")
@@ -47,8 +47,8 @@ connectDB();
 
 startMoralisServer();
 
-const http = require('http').Server(app);
-socketController.init(http);
+// const http = require('http').Server(app);
+// socketController.init(http);
 http.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 // cron.schedule('*/30 * * * *', async function () {
