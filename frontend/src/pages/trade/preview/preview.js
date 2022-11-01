@@ -87,6 +87,8 @@ const Preview = () => {
                                 return tempPrice
                             })
                         }
+                    }).catch(() => {
+                        
                     })
             }
         })
