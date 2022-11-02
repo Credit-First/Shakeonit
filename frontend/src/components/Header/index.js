@@ -43,12 +43,11 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
 
     return (
         <>
-            <Box className="flex justify-between px-6" style={{ height: "100px", width: "100%", background: "white" }}>
-                <Box className="flex items-center">
-                    <Link href="/">
-                        <img src="../logo.png" alt="logo" />
-                    </Link>
-                </Box>
+            <Box className="flex justify-between" style={{ height: "100px", width: "100%", background: "white", paddingRight: 26 }}>
+                <Link href="/" className="flex" style={{textDecoration: 'none', padding: 26}}>
+                    <img src="../logo.svg" alt="logo" />
+                    <p className="desktop-visible" style={{padding: 8, fontFamily: 'Mina', fontWeight: 700, fontSize: 24, color: '#38435E'}}>Shakeonit</p>
+                </Link>
                 <Hidden lgDown>
                     {!flag ? 
                     <Box className="flex items-center" style={{ width: "45%" }}>
@@ -88,7 +87,12 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                 </Hidden>
                 <Hidden lgUp>
                     <Box className="flex items-center">
-                        <a href='#' onClick={() => setNavbar(!navbar)}>
+                        <Box className="text-center" style={{ background: 'white', padding: '24px 12px 24px 0' }}>
+                            <Box className="" style={{ height: "56px", width: "160px", display: "inline-grid" }}>
+                                <WalletModal />
+                            </Box>
+                        </Box>
+                        <a onClick={() => setNavbar(!navbar)}>
                             {!navbar ?
                                 <MenuIcon className="text-black-900" /> :
                                 <CloseIcon className="text-black-900" />
@@ -97,6 +101,7 @@ export default function Header({isOpen, isOpened, setOpen, setOpened}) {
                     </Box>
                 </Hidden>
             </Box>
+            
             <Hidden lgUp>
                 <Box
                     className={`${navbar ? "block" : "hidden"}`} style={{ position: "absolute", zIndex: "999", width: "100%", background: "white" }}

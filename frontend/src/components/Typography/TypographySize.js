@@ -1,17 +1,6 @@
 import { Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-export const TypographySize481 = styled(Typography)`
-font-family: 'Roboto';
-font-style: normal;
-font-weight: 500;
-font-size: 48px;
-line-height: 56px;
-text-align: justify;
-text-transform: capitalize;
-
-color: #38435E;
-`;
 export const TypographySize48 = styled(Typography)`
 font-family: 'Roboto';
 font-style: normal;
@@ -33,21 +22,6 @@ line-height: 47px;
 text-align: center;
 
 color: #38435E;
-`;
-
-export const TypographySize24 = styled(Typography)`
-font-family: 'Roboto';
-font-style: normal;
-font-weight: 400;
-font-size: 24px;
-line-height: 140%;
-/* or 34px */
-
-// text-align: justify;
-text-transform: capitalize;
-
-color: rgba(11, 18, 45, 0.4);
-
 `;
 
 export const TypographySize242 = styled(Typography)`
@@ -103,7 +77,7 @@ line-height: 140%;
 text-align: justify;
 text-transform: capitalize;
 
-color: rgba(11, 18, 45, 0.6);
+color: rgba(11, 18, 45, 0.8);
 `;
 export const TypographySize141 = styled(Typography)`
 font-family: 'Roboto';

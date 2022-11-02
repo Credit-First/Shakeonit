@@ -14,7 +14,7 @@ export default function Footer({ isOpen, isOpened, setOpen, setOpened }) {
         <div className="w-full bg-[#2E3951] text-footer text-center text-xl px-[5%] py-6">
             <div className="my-4 flex items-center justify-center">
                 <a href="/">
-                    <img className='w-16 h-16' src="/static/images/footer/Frame 2 (1).png" alt="footer" />
+                    <img className='w-16 h-16' src="../logo.svg" alt="footer" />
                 </a>
             </div>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-6 px-20 text-center sm:text-left lg:text-center" >

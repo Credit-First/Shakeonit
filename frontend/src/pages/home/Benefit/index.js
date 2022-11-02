@@ -4,7 +4,7 @@ import OurBenefit from "./benefit";
 
 function Benefit() {
     return(
-        <div className="grid grid-cols-1 lg:grid-cols-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{margin: 24}}>
             <Image />
             <OurBenefit />
         </div>

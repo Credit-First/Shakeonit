@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Patrick+Hand+SC|Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Mina');
+@import url('https://fonts.googleapis.com/css?family=Michroma');
 emain-btn
 .text-inter {
     font-family: Inter;
@@ -142,7 +144,7 @@ emain-btn
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
-    line-height: 50px;
+    line-height: 36px;
     color: rgba(255, 255, 255, 0.8);
 }
 

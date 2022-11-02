@@ -58,16 +58,22 @@ function Collections() {
 
                 {
                     !account && <div className="flex items-center justify-center mt-10">
-                        <span className="text-2xl">Please check your wallet connection</span>
+                        <span className="text-2xl text-center">Please check your wallet connection</span>
                     </div>
                 }
 
                 <div className="flex items-center justify-center mt-10">
-                    <div className="flex">
-                        <input className="w-[400px] border border-gray-800 rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none" 
+                    <div className="flex desktop-visible">
+                        <input className="w-[400px] border border-gray-800 rounded-l-xl p-2 px-3 focus:outline-none focus-visible:outline-none" 
                         value={searchAddress}
                         onChange={(e) => setSearchAddress(e.target.value)}/>
                         <a className='btn px-6 py-3 pulse rounded-l-none text-xl' onClick={handleSearch}>Search</a>
+                    </div>
+                    <div className="mobile-visible">
+                        <input className="w-[280px] border border-gray-800 rounded-xl p-2 mb-3 focus:outline-none focus-visible:outline-none" 
+                        value={searchAddress}
+                        onChange={(e) => setSearchAddress(e.target.value)}/>
+                        <a className='btn py-3 pulse rounded-x-none text-xl' onClick={handleSearch}>Search</a>
                     </div>
                 </div>
 

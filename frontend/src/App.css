@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+@media only screen and (max-width : 1199px) {
+  .mobile-visible {
+    display: visible !important;
+  }
+  .desktop-visible {
+    display: none !important;
+  }
+}
+@media only screen and (min-width : 1200px) {
+  .mobile-visible {
+    display: none !important;
+  }
+  .desktop-visible {
+    display: visible !important;
+  }
+}
