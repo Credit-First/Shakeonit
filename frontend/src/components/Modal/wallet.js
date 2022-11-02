@@ -54,7 +54,6 @@ const WalletModal = () => {
         setIsSelectingWallet(true);
         sessionStorage.close = "true";
         deactivate();
-        setOpen(false);
     };
 
     const retryConnect = async () => {
@@ -115,6 +114,7 @@ const WalletModal = () => {
 
     React.useEffect(() => {
         if (active) {
+            setOpen(false);
         } else {
             setIsSelectingWallet(true);
         }
