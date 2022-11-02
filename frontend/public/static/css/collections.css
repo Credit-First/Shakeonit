@@ -17,7 +17,7 @@ nav {
 
 .btn {
     color: white !important;
-    background: linear-gradient(265.83deg, #98F7FF -23.13%, #10B0C7 21.83%, #14365C 93.42%);
+    background: linear-gradient(265.83deg, #98F7FF -23.13%, #10B0C7 21.83%, #14365C 93.42%) !important;
     /* padding: 15px 30px 15px 30px !important; */
     height: 60px;
     display: flex;
@@ -25,6 +25,10 @@ nav {
     justify-content: center;
     border-radius: 10px;
     /* border-color: transparent; */
+}
+
+a.btn[disabled] {
+    color: lightgray !important;
 }
 
 /* .btn:hover {

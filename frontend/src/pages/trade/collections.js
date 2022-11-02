@@ -22,18 +22,21 @@ function Collections() {
     const {account, chainId} = useWeb3React();
     const [collections, setCollections] = useState([]);
     const [searchAddress, setSearchAddress] = useState('');
+    const [loading, setLoading] = useState(false);
     
     const handleSelectCollection = (address) => {
         navigate(`/collectionItems/${address}`)
     }
 
     const handleSearch = () => {
-        if(searchAddress.length == 42 && searchAddress.includes('0x')) {
+        if(loading === false && searchAddress.length == 42 && searchAddress.includes('0x')) {
             nftCtx.getNfts(chainId, searchAddress);
+            setLoading(true);
         }
     }
     useEffect(() => {
         setCollections(nftCtx.collections);
+        setLoading(false);
     }, [nftCtx]);
 
     useEffect(() => {
@@ -63,47 +66,57 @@ function Collections() {
                 }
 
                 <div className="flex items-center justify-center mt-10">
-                    <div className="flex desktop-visible">
-                        <input className="w-[400px] border border-gray-800 rounded-l-xl p-2 px-3 focus:outline-none focus-visible:outline-none" 
+                    <div className="flex desktop-visible w-[70%] max-w-[800px]">
+                        <input className="w-[70%] border border-gray-800 rounded-l-xl p-2 px-3 focus:outline-none focus-visible:outline-none" 
                         value={searchAddress}
                         onChange={(e) => setSearchAddress(e.target.value)}/>
-                        <a className='btn px-6 py-3 pulse rounded-l-none text-xl' onClick={handleSearch}>Search</a>
+                        <a className='w-[30%] btn px-6 py-3 pulse rounded-l-none text-xl' disabled={loading} onClick={loading ? '' : handleSearch}>Search</a>
                     </div>
-                    <div className="mobile-visible">
-                        <input className="w-[280px] border border-gray-800 rounded-xl p-2 mb-3 focus:outline-none focus-visible:outline-none" 
+                    <div className="mobile-visible w-[70%]">
+                        <input className="w-[100%] border border-gray-800 rounded-xl p-2 mb-3 focus:outline-none focus-visible:outline-none" 
                         value={searchAddress}
                         onChange={(e) => setSearchAddress(e.target.value)}/>
-                        <a className='btn py-3 pulse rounded-x-none text-xl' onClick={handleSearch}>Search</a>
+                        <a disabled={loading} className='btn py-3 pulse rounded-x-none text-xl' onClick={loading ? '' : handleSearch}>Search</a>
                     </div>
                 </div>
 
                 {
-                    collections.length === 0 && 
+                    loading === true &&
+                    <div className="flex items-center justify-center mt-10">
+                        <div className="">Loading...</div>
+                    </div>
+                }
+
+                {
+                    loading === false && collections.length === 0 && 
                     <div className="flex items-center justify-center mt-10">
                         <div className="">No collections</div>
                     </div>
                 }
 
-                <CollectionContainer className="pt-16 pb-24">
-                    <Grid
-                        container
-                        spacing={3}
-                        justifyContent="center"
-                    >
-                        {collections.map((item, index) =>
-                            <Grid
-                                item
-                                lg={4}
-                                md={4}
-                                xl={4}
-                                xs={12}
-                                key={index}
-                                className="mx-4 md:mx-24 lg:mx-4 rounded-xl">
-                                <CollectionCard onSelect={handleSelectCollection} {...item} />
-                            </Grid>
-                        )}
-                    </Grid>
-                </CollectionContainer> 
+                <CollectionContainer className="pt-16 pb-24">        
+                    {
+                        loading === false && 
+                        <Grid
+                            container
+                            spacing={3}
+                            justifyContent="center"
+                        >
+                            {collections.map((item, index) =>
+                                <Grid
+                                    item
+                                    lg={4}
+                                    md={4}
+                                    xl={4}
+                                    xs={12}
+                                    key={index}
+                                    className="mx-4 md:mx-24 lg:mx-4 rounded-xl">
+                                    <CollectionCard onSelect={handleSelectCollection} {...item} />
+                                </Grid>
+                            )}
+                        </Grid>
+                    } 
+                </CollectionContainer>
 
             </CollectionBg>
         </Box>

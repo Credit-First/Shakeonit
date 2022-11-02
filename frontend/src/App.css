@@ -37,19 +37,50 @@
   }
 }
 
-@media only screen and (max-width : 1199px) {
+@media only screen and (max-width : 1023px) {
   .mobile-visible {
     display: visible !important;
   }
   .desktop-visible {
     display: none !important;
+  }
+  .footer-text {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 26px;
+    /* identical to box height, or 186% */
+    
+    font-feature-settings: 'salt' on, 'liga' off;
+    
+    color: rgba(255, 255, 255, 0.8);
+  }
+  .footer-logo-text {
+    font-family: 'Michroma';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 23px;
   }
 }
-@media only screen and (min-width : 1200px) {
+@media only screen and (min-width : 1024px) {
   .mobile-visible {
     display: none !important;
   }
   .desktop-visible {
     display: visible !important;
+  }
+  .footer-text {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 26px;
+    /* identical to box height, or 162% */
+
+    font-feature-settings: 'salt' on, 'liga' off;
+
+    color: rgba(255, 255, 255, 0.8);
   }
 }
