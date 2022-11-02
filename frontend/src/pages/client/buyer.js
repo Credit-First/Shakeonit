@@ -206,10 +206,11 @@ function Buyer() {
 	}
 
 	const handleSwapTokenAmount = (e) => {
+		const value = e.target.value * 1;
 		myBalances.map((token, index) => {
 			if (token.contract_address === swapTokenAddress) {
-				setSwapTokenToUSD(myBalancePrice[index] * e.target.value * 1)
-				setSwapTokenAmount(e.target.value * 1)
+				setSwapTokenToUSD(myBalancePrice[index] * value)
+				setSwapTokenAmount(value)
 			}
 		})
 	}
