@@ -1037,10 +1037,10 @@ function Buyer() {
 												<input type='number' className="w-full border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenAmount} onChange={handleSwapTokenAmount}
 												/>
-												<input readOnly className="w-32 border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
+												<input readOnly className="w-20 border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenToUSD.toFixed(7)}
 												/>
-												<div className="absolute right-2 inset-y-0 flex items-center">
+												<div className="border-y border-[#71BED8] flex items-center pr-2">
 													<span>USD</span>
 												</div>
 											</div>
