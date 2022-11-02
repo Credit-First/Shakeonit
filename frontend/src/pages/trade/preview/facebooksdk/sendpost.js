@@ -118,8 +118,8 @@ function SendPost(disable) {
 
   return (
       <main id="app-main">
-        <section className="app-section">
-            <BoxCenter className='border-icon pulse'>
+        <section className="app-section flex items-center justify-center">
+            <BoxCenter className='border-icon pulse w-12 h-12 flex items-center justify-center'>
               {!disable ?
                 <div onClick={logInToFB} target="_blank"><InstagramIcon /></div>
                : 
