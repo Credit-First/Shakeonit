@@ -820,7 +820,6 @@ function Buyer() {
 				.catch(() => setMakeOfferLoading(0));
 
 				tokenContract.on('Approval', (owner, spender, value) => {
-					console.log(value.toString(), amountOrTokenIds[i].toString())
 					if (owner === account && value.toString() === amountOrTokenIds[i].toString()) {
 						flags++;
 						processCallback();

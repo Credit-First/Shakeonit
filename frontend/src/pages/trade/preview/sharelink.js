@@ -88,15 +88,15 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		}
 
 		tokenContract.on("Approval", (owner, spender, value) => {
-			flags.token = true;
-			if (owner === account) {
+			if (owner === account && value.toString() === amountGet.toString()) {
+				flags.token = true;
 				processCallback();
 			}
 		})
 		
 		nftContract.on("Approval", (owner, approved, tokenId) => {
-			flags.nft = true;
-			if (owner === account) {
+			if (owner === account && tokenId.toString() === amountGive) {
+				flags.nft = true;
 				processCallback();
 			}
 		});
