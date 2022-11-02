@@ -952,7 +952,7 @@ function Buyer() {
 							<BoxCenter className=" px-2 py-2 rounded-xl bg-white">
 								{/* <Avatar className="" alt="Remy Sharp" src="/static/images/cards/avatar.png" />
 								<TypographySize18 className="flex items-center pl-3">Steven Bartlett</TypographySize18> */}
-								<TypographySize18 className=''>By Owner: {reduceAddress(nftDetail.owner || '0x0000000000000000000000000000000000000000', 12, 10)}</TypographySize18>
+								<TypographySize18 className=''>By Owner: {reduceAddress(nftDetail.owner, 12, 10)}</TypographySize18>
 							</BoxCenter>
 							<BoxCenter className="flex items-center">
 								<TypographySize12 className="remain-btn pulse1 px-1 sm:px-2 py-2">Remaining 100/500</TypographySize12>
