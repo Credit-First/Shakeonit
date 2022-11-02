@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
 import Box from "@material-ui/core/Box";
 import BoxCenter from '../../../components/Box/BoxCenter';
@@ -19,7 +19,6 @@ import { coinTypes } from '../../../content/config';
 import { useWeb3React } from "@web3-react/core";
 
 function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
-	const navigate = useNavigate();
 	const { account } = useWeb3React();
 	const pricedata = {
 		coin: coin,
@@ -30,8 +29,9 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 	const [value, setValue] = useState("");
 	const [linkFlag, setLinkFlag] = useState(false);
 	const [loadingState, setLoadingState] = useState(0);
-	const handleLinkaddress = () => {
-		setValue(window.location.href);
+	
+	const handleLinkaddress = (nonce) => {
+		setValue(`${window.location.origin}/#/buyer/${nonce}`);
 		setLinkFlag(true);
 	}
 
@@ -59,14 +59,18 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		const tokenContract = new ethers.Contract(get, Config.tokenContract.abi, signer)
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 
-		console.log(give, get, amountGive, amountGet, buyer)
 		const owner = await nftContract.ownerOf(amountGive);
 		
 		if(owner !== account) return alert('you are not an owner of this nft.')
 
-		tokenContract.approve(Config.shakeonit.address, amountGet);
+		tokenContract.approve(Config.shakeonit.address, amountGet)
+			.then(() => {})
+			.catch(() => setLoadingState(0));
 
-		nftContract.approve(Config.shakeonit.address, amountGive);
+		nftContract.approve(Config.shakeonit.address, amountGive)
+			.then(() => {})
+			.catch(() => setLoadingState(0));
+
 		setLoadingState(1);
 
 		const flags = {
@@ -88,7 +92,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 			if (owner === account) {
 				processCallback();
 			}
-		});
+		})
 		
 		nftContract.on("Approval", (owner, approved, tokenId) => {
 			flags.nft = true;
@@ -98,12 +102,10 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		});
 
 		shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
-			setLoadingState(0);
-			navigate(`/buyer/${Number(nonce)}`);
+			setLoadingState(3);
+			handleLinkaddress(nonce);
 		})
 	}
-
-	// console.log(id, "=====");
 	return (
 		<Box style={{ height: "100%" }}>
 			<Card
@@ -159,7 +161,6 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 							variant="outlined"
 							value={value}
 							className="address"
-							onClick={handleLinkaddress}
 						/>
 					</Box>
 					<Box>
@@ -180,7 +181,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 						onClick={createOrder()}
 					>
 						{
-							loadingState === 1 ? 'Approving...' : (loadingState === 2 ? 'Listing...' : 'Done')
+							loadingState === 1 ? 'Approving...' : (loadingState === 2 ? 'Listing...' : (loadingState === 3 ? 'Done' : 'Create Order'))
 						}
 					</Link>
 				</Box>
