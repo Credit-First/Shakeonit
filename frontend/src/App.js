@@ -37,6 +37,7 @@ function App() {
   }
 
   return (
+    <>
     <Web3Provider>
       <NftProvider>
         <TokenProvider>
@@ -61,6 +62,7 @@ function App() {
         </TokenProvider>
       </NftProvider>
     </Web3Provider>
+    </>
   );
 }
 

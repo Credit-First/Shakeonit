@@ -60,31 +60,33 @@ const WalletModal = () => {
     const retryConnect = async () => {
         const activating = Wallets.find(item => (item.connector === activatingConnector || item.connector === connector));
         if (window.ethereum) {
+            console.log(Config.netId.toString(16))
             await window.ethereum
                 .request({
                     method: "wallet_addEthereumChain",
                     params: [
                         {
                             chainId: `0x${Config.netId.toString(16)}`,
-                            chainName: "Ethereum Mainnet",
+                            chainName: "BSC Testnet",
                             rpcUrls: [
                                 Config.test_rpc_url
                             ],
                             nativeCurrency: {
-                                name: "ETH",
-                                symbol: "ETH",
+                                name: "WBNB",
+                                symbol: "WBNB",
                                 decimals: 18,
                             },
                             blockExplorerUrls: [
-                                Config.test_rpc_url
+                                Config.explorer_url
                             ],
                         },
                     ],
                 })
                 .then(() => {
-                    alert("You have successfully changed to Binance Smart Main Network.");
+                    alert("You have successfully changed to Binance Smart Test Network.");
                 })
-                    .catch((error) => {
+                .catch((error) => {
+                    console.log(error)
                     alert(error.toString());
                 });
         } else {
@@ -158,7 +160,7 @@ const WalletModal = () => {
                                             <div className="flex items-center justify-center">
                                                     <button type="button" onClick={() => retryConnect()} className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 mr-2 text-center inline-flex items-center dark:bg-red-800 dark:hover:bg-red-900">
                                                             <svg className="-ml-0.5 mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"></path></svg>
-                                                            Change Network
+                                                            Change BSC Test Network
                                                     </button>
                                                     <button type="button" className="text-red-700 bg-transparent border border-red-700 hover:bg-red-800 hover:text-white focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:border-red-800 dark:text-red-800 dark:hover:text-white" data-dismiss-target="#alert-error" aria-label="Close" onClick={() => setAlertClose(true)}>
                                                             Dismiss
@@ -173,7 +175,7 @@ const WalletModal = () => {
                                 <a key={item.title} className="flex justify-between mx-5 px-4 border-2 border-gray-200 mt-4 vs-border-tip-blue pulse" style={{ borderRadius: "8px" }} onClick={onConnectWallet(item)} disabled={isSelectingWallet ? false : true}>
                                     <div className="flex">
                                         <div className="flex items-center justify-center">
-                                            <img className="pr-2 w-10 h-10" src={item.logo} alt="" />
+                                            <img className="mr-2 w-10 h-10" src={item.logo} alt="" />
                                         </div>
                                         <TypographySize20 className="flex items-center" style={{ color: "black" }}>{item.title}</TypographySize20>
                                     </div>

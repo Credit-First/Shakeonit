@@ -60,6 +60,10 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 
 		console.log(give, get, amountGive, amountGet, buyer)
+		const owner = await nftContract.ownerOf(amountGive);
+		
+		if(owner !== account) return alert('you are not an owner of this nft.')
+
 		tokenContract.approve(Config.shakeonit.address, amountGet);
 
 		nftContract.approve(Config.shakeonit.address, amountGive);
