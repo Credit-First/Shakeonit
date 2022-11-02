@@ -94,11 +94,11 @@ const Content = styled.div`
     }
 `
 const Card = styled.div`
-    @media only screen and (max-width : 1199px) {
+    @media only screen and (max-width : 1023px) {
         padding-bottom: 80px;
         padding-top: 4px;
     }
-    @media only screen and (min-width : 1200px) {
+    @media only screen and (min-width : 1024px) {
         padding-bottom: 162px;
         padding-top: 32px;
     }
