@@ -815,7 +815,9 @@ function Buyer() {
 			if (addressTypes[i] === 'token') {
 				const tokenContract = new ethers.Contract(address, Config.tokenContract.abi, signer)
 
-				await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i]);
+				await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i])
+				.then(() => {})
+				.catch(() => setMakeOfferLoading(0));
 
 				tokenContract.on('Approval', (owner, spender, value) => {
 					console.log(value.toString(), amountOrTokenIds[i].toString())
@@ -826,7 +828,9 @@ function Buyer() {
 				})
 			} else {
 				const nftContract = new ethers.Contract(address, Config.nftContract.abi, signer)
-				await nftContract.approve(Config.shakeonit.address, amountOrTokenIds[i]);
+				await nftContract.approve(Config.shakeonit.address, amountOrTokenIds[i])
+				.then(() => {})
+				.catch(() => setMakeOfferLoading(0));
 
 				nftContract.on('Approval', (owner, approved, tokenId) => {
 					if (owner === account && tokenId === amountOrTokenIds[i]) {
@@ -864,7 +868,9 @@ function Buyer() {
 			/// @param nonce - Array - Unique identifier of the order (always incremental)
 			const tokenContract = new ethers.Contract(nftDetail.get, Config.tokenContract.abi, signer);
 
-			tokenContract.approve(Config.shakeonit.address, nftDetail.amountGetOrTokenID.toString());
+			tokenContract.approve(Config.shakeonit.address, nftDetail.amountGetOrTokenID.toString())
+			.then(() => {})
+			.catch(() => setBuyLoading(0));
 
 			setBuyLoading(1)
 
@@ -901,7 +907,10 @@ function Buyer() {
 		const tokenContract = new ethers.Contract(swapTokenAddress, Config.tokenContract.abi, signer)
 
 		const amount = ethers.utils.parseUnits(swapTokenAmount.toString()).toString()
-		tokenContract.approve(Config.shakeonit.address, amount);
+		tokenContract.approve(Config.shakeonit.address, amount)
+		.then(() => {})
+		.catch(() => setBuySwapLoading(0));
+
 		setBuySwapLoading(1)
 		tokenContract.on('Approval', (owner, spender, value) => {
 			if (owner === account && Number(value) === Number(amount)) {

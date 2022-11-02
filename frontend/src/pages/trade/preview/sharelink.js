@@ -122,9 +122,9 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 						<TypographySize18 className=''>Share Link</TypographySize18>
 						<TypographySize14 className='py-2'>Copy or Share Link Automatically</TypographySize14>
 					</Box>
-					<Box className='grid grid-cols-4 gap-10 my-8'>
-						<div>
-							<BoxCenter className='border-icon pulse'>
+					<Box className='grid grid-cols-4 gap-2 md:gap-4 lg:gap-10 my-8'>
+						<div className='flex items-center justify-center'>
+							<BoxCenter className='border-icon pulse w-12 h-12'>
 								{!linkFlag ?
 									<a style={{ cursor: "default", pointerEvents: "none" }} href='https://www.youtube.com/' target="_blank" rel="noreferrer"><YouTubeIcon /><script src="https://apis.google.com/js/platform.js"></script></a>
 									:
@@ -132,8 +132,8 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 								}
 							</BoxCenter>
 						</div>
-						<div>
-							<BoxCenter className='border-icon pulse'>
+						<div className='flex items-center justify-center'>
+							<BoxCenter className='border-icon pulse w-12 h-12'>
 								{!linkFlag ?
 									<a style={{ cursor: "default", pointerEvents: "none" }} href={facebookShareUrl} target="_blank" rel="noreferrer"><FacebookIcon /> </a>
 									:
@@ -141,8 +141,8 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 								}
 							</BoxCenter>
 						</div>
-						<div>
-							<BoxCenter className='border-icon pulse'>
+						<div className='flex items-center justify-center'>
+							<BoxCenter className='border-icon pulse w-12 h-12'>
 								{!linkFlag ?
 									<a rel="noreferrer" style={{ cursor: "default", pointerEvents: "none" }} href={twitterShareUrl} data-text="Check out my NFT!" target="_blank"><TwitterIcon /><script async src="https://platform.twitter.com/widgets.js"></script></a>
 									:
