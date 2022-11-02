@@ -1056,14 +1056,14 @@ function Buyer() {
 				</ListContainer>
 				<ListContainer id="counteroffer" style={{ display: "none" }}>
 					<TypographySize20>Your assets</TypographySize20>
-					<div className="flex items-center justify-start">
+					{/* <div className="flex items-center justify-start">
 						<div className="flex">
 							<input className="w-[400px] border border-[#71BED8] rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none"
 								value={searchAddress}
 								onChange={(e) => setSearchAddress(e.target.value)} />
 							<a className='btn px-6 py-3 pulse rounded-l-none text-xl' onClick={handleSearch}>Search</a>
 						</div>
-					</div>
+					</div> */}
 					<Container>
 						<div className="grid grid-cols-3 gap-4 pt-6">
 							<div className="flex flex-col gap-y-2">
