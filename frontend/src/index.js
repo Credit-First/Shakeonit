@@ -16,8 +16,6 @@ root.render(
 );
 }
 
-renderApp();
-
 initFacebookSDK().then(() => {
    renderApp();
 })
