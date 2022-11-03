@@ -2,6 +2,7 @@ import React from "react";
 import Carousel from "react-material-ui-carousel";
 import autoBind from "auto-bind";
 import CarouselBlueImg from "../../assets/slider-images/Frame1.png";
+import CarouselImg2 from "../../assets/slider-images/Frame2.png";
 import CarouselBlackImg from "../../assets/slider-images/Frame3.png";
 import CarouselBlImg from "../../assets/slider-images/Frame4.png";
 
@@ -27,7 +28,7 @@ const items = [
   {
     id: 2,
     alt: "carousel-black",
-    imgSrc: CarouselBlackImg,
+    imgSrc: CarouselImg2,
   },
   {
     id: 3,
