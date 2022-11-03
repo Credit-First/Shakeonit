@@ -102,7 +102,7 @@ const Preview = () => {
                 <Box className='totalbox'>
                     <BoxCenter className="imagebox">
                         <Box className='image'>
-                            <div onClick={handlePreview} className="hidden md:block"><TypographySize20>Preview</TypographySize20></div>
+                            <div onClick={handlePreview} className="hidden md:block"><TypographySize20 className="py-4">Preview</TypographySize20></div>
                             <PreviewCard image={nftDetail.image} name={nftDetail.name} value={(priceValue * coinPrice[coin]).toFixed(2)} />
                         </Box>
                     </BoxCenter>

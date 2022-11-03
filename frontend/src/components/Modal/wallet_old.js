@@ -120,7 +120,7 @@ function Wallet({ open, onClose, getData }) {
                     </div>
                     <a className="flex justify-between mx-5 px-4 border-2 border-gray-200 vs-border-tip pulse" style={{ borderRadius: "8px" }} onClick={btnhandler} variant="primary">
                         <div className="flex">
-                            <TypographySize20 className="flex items-center" style={{ color: "black" }}>MetaMask</TypographySize20>
+                            <TypographySize20 className="flex items-center py-4" style={{ color: "black" }}>MetaMask</TypographySize20>
                         </div>
                         <div className="flex items-center">
                             <img className="pr-2" src="../static/images/modal/01.png" alt="" />
@@ -129,7 +129,7 @@ function Wallet({ open, onClose, getData }) {
                     </a>
                     <a className="flex justify-between mx-5 px-4 border-2 border-gray-200 mt-4 vs-border-tip-blue pulse" style={{ borderRadius: "8px" }} onClick={connectWallet}>
                         <div className="flex">
-                            <TypographySize20 className="flex items-center" style={{ color: "black" }}>Wallet Connect</TypographySize20>
+                            <TypographySize20 className="flex items-center py-4" style={{ color: "black" }}>Wallet Connect</TypographySize20>
                         </div>
                         <div className="flex items-center">
                             <img className="pr-2" src="../static/images/modal/02.png" alt="" />

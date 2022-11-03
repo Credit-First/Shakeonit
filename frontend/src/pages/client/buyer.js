@@ -1040,7 +1040,7 @@ function Buyer() {
 					</ListContent>
 				</Box>
 				<Box id="counteroffer" style={{ visibility: "hidden" }} className="w-full px-[7%] pb-4">
-					<TypographySize20>Your Assets</TypographySize20>
+					<TypographySize20 className="py-4">Your Assets</TypographySize20>
 					{/* <div className="flex items-center justify-start">
 						<div className="flex">
 							<input className="w-[400px] border border-[#71BED8] rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none"
@@ -1098,7 +1098,7 @@ function Buyer() {
 											onClick={() => handleViewCollaction(collection.address)}>
 											{/* <img src="../static/images/client/image 14.png" /> */}
 											<img className="ml-4" src={collection.image} style={{ height: "100%", width: "auto" }} />
-											<TypographySize20 className="px-4 flex-1">{collection.name}</TypographySize20>
+											<TypographySize20 className="p-4 flex-1">{collection.name}</TypographySize20>
 											<div>
 												<svg className="z-10 cursor-pointer mr-4 hover:fill-blue-700" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"> <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" /> <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" /> </svg>
 											</div>
@@ -1121,7 +1121,7 @@ function Buyer() {
 										>
 											<img src="../static/images/client/image 14.png" />
 											<img className="ml-4" src={nft.image} style={{ height: "100%", width: "auto" }} />
-											<TypographySize20 className="px-4 flex-1">{nft.name}</TypographySize20>
+											<TypographySize20 className="p-4 flex-1">{nft.name}</TypographySize20>
 										</AssetCard>
 									))
 								}
@@ -1129,11 +1129,11 @@ function Buyer() {
 						</div>
 					</Container>
 					<div>
-						<TypographySize20>Counter Offer</TypographySize20>
+						<TypographySize20 className="py-4">Counter Offer</TypographySize20>
 						<Border className="relative px-3" id="addoffer" onDragOver={(e) => onDragOver(e)} onDrop={(e) => onDrop(e)}>
 							<div id="changeprice" style={{ display: "none" }}>
 								<CounterCard>
-									<TypographySize20>
+									<TypographySize20 className="py-4">
 										<input className="mx-2 py-2" style={{ width: "220px" }} onChange={validatedTotalprice} value={valiatedprice}
 										/>
 									</TypographySize20>
@@ -1154,11 +1154,11 @@ function Buyer() {
 								<div className="w-full h-full custom-scrollbar">
 									{finalOfferdatas.tokens.map((offerdata, index) =>
 										<CounterCard key={index} style={{ justifyContent: "space-between" }}>
-											<TypographySize20 className="pr-8 w-full">
+											<TypographySize20 className="py-4 pr-8 w-full">
 												<input className="mx-2 w-full" name={offerdata.name} onChange={(e) => handleChange(e, offerdata.name, offerdata.chain)}
 													value={offerdata.chain === '0x1' ? getWeiToInt(offerdata.balance) : offerdata.balance} />
 											</TypographySize20>
-											<TypographySize20 className="truncate w-[50px]">{offerdata.name}</TypographySize20>
+											<TypographySize20 className="truncate w-[50px] py-4">{offerdata.name}</TypographySize20>
 											<CloseIcon className='mr-2' onClick={(e) => handleRemoveOffer('token', offerdata.id, offerdata.contract_address)} />
 										</CounterCard>
 									)}
@@ -1167,7 +1167,7 @@ function Buyer() {
 									{finalOfferdatas.nfts.map((offerdata, index) =>
 										<CounterCard key={index}>
 											<img className="ml-4" src={offerdata.image} style={{ height: "100%", width: "auto" }} />
-											<TypographySize20 className="px-4 flex-1">{offerdata.name}</TypographySize20>
+											<TypographySize20 className="p-4 flex-1">{offerdata.name}</TypographySize20>
 											<CloseIcon className='mr-2' onClick={(e) => handleRemoveOffer('nft', offerdata.tokenId, offerdata.contract_address)} />
 										</CounterCard>
 									)}
@@ -1177,8 +1177,8 @@ function Buyer() {
 					</div>
 					<div className="block md:flex justify-between my-6 md:my-12">
 						<div className="grid pb-4 grid-cols-1 md:pb-0 md:grid-cols-2">
-							<TypographySize20>Estimated Offer Value</TypographySize20>
-							<TypographySize20>$ {totalprice}</TypographySize20>
+							<TypographySize20 className="py-4">Estimated Offer Value</TypographySize20>
+							<TypographySize20 className="py-4">$ {totalprice}</TypographySize20>
 						</div>
 						<div>
 							<OfferButton className=" pulse1">

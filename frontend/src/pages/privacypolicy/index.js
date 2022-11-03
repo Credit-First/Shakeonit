@@ -5,44 +5,38 @@ import { LastUpdate, HowCollect, HowUse, Updates, GeneralInformation, Sharing } 
 
 function PrivacyPolicy() {
     return (
-        <>
-            <Box className="privacy-bg">
-                <Box className="pb-12">
-                    <TypographySize40 className="py-12">Privacy Policy</TypographySize40>
-                    <Box className="px-4 md:mx-10 lg:mx-20 xl:mx-80 py-8 md:px-12 rounded-xl bg-white">
-                        <Box className="my-2">
-                            <TypographySize20>Last Updated: June 20, 2022</TypographySize20>
-                            <TypographySize14> {LastUpdate}</TypographySize14>
-                            <TypographySize20>How we collect user data</TypographySize20>
-                            <TypographySize14>{HowCollect}</TypographySize14>
-                        </Box>
-                        <Box>
-                            <TypographySize20>How we use your data</TypographySize20>
-                            <TypographySize14> Typically, we use your Personal Data to:</TypographySize14>
-                            <TypographySize14 className="pl-16">{HowUse}</TypographySize14>
-                        </Box>
-                        <Box>
-                            <TypographySize20>Sharing your data</TypographySize20>
-                            <TypographySize14 className="pl-16">{Sharing}</TypographySize14>
-                        </Box>
-                        <Box>
-                            <TypographySize20>General information</TypographySize20>
-                            <TypographySize14 className="pl-16">{GeneralInformation}</TypographySize14>
-                        </Box>
-                        <Box>
-                            <TypographySize20>Updates to this page</TypographySize20>
-                            <TypographySize14 className="pl-16">{Updates}</TypographySize14>
-                        </Box>
-                        {/* </textarea> */}
+        <div>
+            <div className="privacy-bg">
+                <TypographySize40 className="flex justify-center font-md-list pt-10 pb-4 lg:py-16">Privacy Policy</TypographySize40>
+            </div>
+            <div className="service-bg pb-20 lg:pb-28">
+                <div className="mx-6 lg:mx-32 lg:mx-[22%] p-7 lg:p-12 rounded-[16px] lg:rounded-[24px] bg-white">
+                    <Box>
+                        <TypographySize20 className="pb-3">Last Updated: June 20, 2022</TypographySize20>
+                        <TypographySize14 className="pb-3"> {LastUpdate}</TypographySize14>
+                        <TypographySize20 className="pb-3">How we collect user data</TypographySize20>
+                        <TypographySize14 className="pb-7">{HowCollect}</TypographySize14>
                     </Box>
-
-                    <Box className="absolute">
-                        <img src="static/images/Vector-1.png" className="p-v-bg1" alt='' />
-                        {/* <img src="static/images/Vector.png" className="p-v-bg2" /> */}
+                    <Box>
+                        <TypographySize20 className="pb-3">How we use your data</TypographySize20>
+                        <TypographySize14 className="pb-3"> Typically, we use your Personal Data to:</TypographySize14>
+                        <TypographySize14 className="pb-3 pl-7 lg:pl-16">{HowUse}</TypographySize14>
                     </Box>
-                </Box>
-            </Box>
-        </>
+                    <Box>
+                        <TypographySize20 className="pb-3">Sharing your data</TypographySize20>
+                        <TypographySize14 className="pb-3 pl-7 lg:pl-16">{Sharing}</TypographySize14>
+                    </Box>
+                    <Box>
+                        <TypographySize20 className="pb-3">General information</TypographySize20>
+                        <TypographySize14 className="pb-3 pl-7 lg:pl-16">{GeneralInformation}</TypographySize14>
+                    </Box>
+                    <Box>
+                        <TypographySize20 className="pb-3">Updates to this page</TypographySize20>
+                        <TypographySize14 className="pb-3 pl-7 lg:pl-16">{Updates}</TypographySize14>
+                    </Box>
+                </div>
+            </div>
+        </div>
     );
 }
 

@@ -11,6 +11,11 @@ text-align: center;
 text-transform: capitalize;
 
 color: #38435E;
+
+@media only screen and (max-width : 1023px) {
+    font-size: 24px;
+    line-height: 28px;
+}
 `;
 
 export const TypographySize40 = styled(Typography)`
@@ -19,24 +24,16 @@ font-style: normal;
 font-weight: 500;
 font-size: 40px;
 line-height: 47px;
+/* identical to box height */
+
 text-align: center;
 
-color: #38435E;
-`;
+color: #032144;
 
-export const TypographySize242 = styled(Typography)`
-font-family: 'Roboto';
-font-style: normal;
-font-weight: 500;
-font-size: 24px;
-line-height: 140%;
-/* identical to box height, or 34px */
-
-text-align: left;
-
-color: #38435E;
-padding-top: 1rem;
-padding-bottom: 1rem;
+@media only screen and (max-width : 1023px) {
+    font-size: 24px;
+    line-height: 28px;
+}
 `;
 
 export const TypographySize20 = styled(Typography)`
@@ -45,8 +42,6 @@ font-style: normal;
 font-weight: 500;
 line-height: 120%;
 text-align: justify;
-padding-top: 1rem;
-padding-bottom: 1rem;
 
 @media only screen and (max-width : 1023px) {
     font-size: 16px;

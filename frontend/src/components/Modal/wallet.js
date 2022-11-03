@@ -177,7 +177,7 @@ const WalletModal = () => {
                                         <div className="flex items-center justify-center">
                                             <img className="mr-2 w-10 h-10" src={item.logo} alt="" />
                                         </div>
-                                        <TypographySize20 className="flex items-center" style={{ color: "black" }}>{item.title}</TypographySize20>
+                                        <TypographySize20 className="flex items-center py-4" style={{ color: "black" }}>{item.title}</TypographySize20>
                                     </div>
                                     <div className="flex items-center">
                                         <div className='wallet-info flex items-center justify-end'>

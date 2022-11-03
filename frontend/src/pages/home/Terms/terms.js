@@ -108,7 +108,7 @@ function Terms() {
             <div className="mt-4 px-6">
                 <TermTitle>Buy And Sell NFTs On Your Terms</TermTitle>
                 <TermContent>
-                    Shakeoint is The No 1 Secondary Marketplace For NFTs. Buy And Sell NFTs Directly With Anyone; Just
+                    Shakeonit is The No 1 Secondary Marketplace For NFTs. Buy And Sell NFTs Directly With Anyone; Just
                     Shake On It And Trade
                 </TermContent>
                 <div style={{textAlign: 'center'}}>

@@ -5,14 +5,14 @@ function Service() {
     return (
         <div>
             <div className="privacy-bg">
-                <TypographySize40 className="flex justify-center font-md-list py-12">Terms Of Service</TypographySize40>
+                <TypographySize40 className="flex justify-center font-md-list pt-10 pb-4 lg:py-16">Terms Of Service</TypographySize40>
             </div>
-            <div className="service-bg pb-10">
-                <div className="px-4 md:mx-10 lg:mx-20 xl:mx-96 py-8 md:px-12 rounded-xl bg-white">
-                    <TypographySize20>
+            <div className="service-bg pb-20 lg:pb-28">
+                <div className="mx-6 lg:mx-[22%] p-7 lg:p-12 rounded-[16px] lg:rounded-[24px] bg-white">
+                    <TypographySize20 className="pb-3 lg:pb-6">
                         BY USING OUR SERVICE, YOU AGREE TO BE BOUND BY ALL OF THE TERMS OF SERVICE CONTAINED AND REFERENCED. IF YOU DO NOT AGREE TO THESE TERMS, PLEASE DO NOT USE THIS SERVICE.
                     </TypographySize20>
-                    <TypographySize20 className="my-4">
+                    <TypographySize20 className="pb-3 lg:pb-6">
                         DISCLAIMER
                     </TypographySize20>
                     <div className="text-content">
