@@ -1,10 +1,9 @@
 
 em-emoji-picker {
     position: absolute;
-    max-width: 320px;
+    max-width: 300px;
     border-radius: 20px;
-    top: 120px;
-    height: 320px;
+    height: 317px;
 }
 
 .accept_btn{

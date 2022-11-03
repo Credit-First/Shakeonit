@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Box, Avatar, IconButton, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { to_Decrypt, to_Encrypt } from "./aes";
 import SentimentSatisfiedOutlinedIcon from '@mui/icons-material/SentimentSatisfiedOutlined';
+import ArrowBack from '@mui/icons-material/ArrowBack';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import Picker from '@emoji-mart/react'
 import toast from 'react-hot-toast';
@@ -78,6 +79,10 @@ const BuyerChat = (props) => {
 
     const openaddress = (address) => {
         console.log(address);
+        if (document.body.clientWidth < 767) { // mobile or tablet
+            document.getElementById("message-content").style.display = "block";
+            document.getElementById("message-back").style.display = "block";
+        }
         setCurAddr(address);
     }
 
@@ -209,6 +214,11 @@ const BuyerChat = (props) => {
         }
     };
 
+    const backToInbox = () => {
+        document.getElementById("message-content").style.display = "none";
+        document.getElementById("message-back").style.display = "none";
+    }
+
     const messagesEndRef = useRef(null);
     const scrollToBottom = () => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -229,7 +239,12 @@ const BuyerChat = (props) => {
                     <PhoneOutlinedIcon style={{fontSize: 30}} onClick={opencall} />
                 </div>
             </Box>
-            <Box className="flex pl-4 pr-4 py-3">
+            <Box className="flex pl-4 pr-4 py-3 flex">
+                <div id="message-back" className="hidden">
+                    <IconButton component="span" onClick={backToInbox} size="small" className="pt-2">
+                        <ArrowBack style={{ fill: '#ffffff' }} />
+                    </IconButton>
+                </div>
                 {role === "buyer" && account !== undefined ? (<Box className="text-white px-2 pt-2">Hello {reduceAddress(account)}, how can we help you</Box>) : ""}
                 {
                     role === "seller" &&
@@ -262,7 +277,7 @@ const BuyerChat = (props) => {
                     );
                 })}
             </Box>
-            <Box>
+            <Box id="message-content" className="hidden md:block">
                 {showEmoji ? (
                     <Picker
                         sx={{
@@ -273,9 +288,11 @@ const BuyerChat = (props) => {
                         previewPosition={'none'}
                         autoFocus={true}
                         onEmojiSelect={addEmoji}
+                        emojiButtonSize={34}
+                        perLine={8}
                         theme="light" />
                 ) : null}
-                <Box sx={{ display: "block", width: 320, height: 320, overflowY: "auto" }} className="px-5">
+                <Box sx={{ display: "block", width: 300, height: 320, overflowY: "auto" }} className="px-5">
                     {(() => {
                         if (role == "seller") {
                             if(!acceptFlag){
@@ -307,7 +324,7 @@ const BuyerChat = (props) => {
                     <Box>
                         <input
                             id="buyerchat_input"
-                            style={{outline: 'none', width: 220}}
+                            style={{outline: 'none', width: 200}}
                             placeholder={(!acceptFlag && role == "seller") ? "Please accept first!" : "Text here!"}
                             value={text}
                             onChange={(e) => setText(e.target.value)}

@@ -181,10 +181,19 @@ a.btn[disabled] {
 }
 
 .message-inbox {
-    width: 240px;
+    width: 260px;
     height: 370px;
     overflow-y: auto;
     border-right: 1px solid #DEDEDE;
+}
+
+@media only screen and (max-width: 767px) {
+    .message {
+        width: 300px;
+    }
+    .message-inbox {
+        width: 300px;
+    }
 }
 
 .message-contact {
