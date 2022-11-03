@@ -435,10 +435,10 @@ function Buyer() {
 	useEffect(() => {
 		switch (OtherAction) {
 			case "buyTokenWithSwap":
-				document.getElementById("buyTokenWithSwap").style.display = "block";
+				document.getElementById("buyTokenWithSwap").style.visibility = "visible";
 				break;
 			case "counteroffer":
-				document.getElementById("counteroffer").style.display = "block";
+				document.getElementById("counteroffer").style.visibility = "visible";
 				break;
 			case "openchat":
 				openchat();
@@ -1020,9 +1020,9 @@ function Buyer() {
 										</Box>
 									</Box>
 
-									<div id="buyTokenWithSwap" style={{ display: "none" }} className="flex items-center justify-start mt-10">
-										<div className="w-full flex relative">
-											<div className="w-full flex relative">
+									<div id="buyTokenWithSwap" style={{ visibility: "hidden" }} className="flex items-center justify-start mt-10">
+										<div className="w-full flex relative grid grid-cols-1 md:grid-cols-2">
+											<div className="flex pb-4 md:pb-0">
 												<select className="rounded-l-xl border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenAddress}
 													onChange={handleSelectToken}
@@ -1034,28 +1034,30 @@ function Buyer() {
 														))
 													}
 												</select>
-												<input type='number' className="w-full border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
+												<input type='number' className="w-full border rounded-r-[10px] md:rounded-none md:border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenAmount} onChange={handleSwapTokenAmount}
 												/>
-												<input readOnly className="w-20 border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
+											</div>
+											<div className="flex">
+												<input readOnly className="w-full border rounded-l-[10px] md:rounded-none border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenToUSD.toFixed(7)}
 												/>
-												<div className="border-y border-[#71BED8] flex items-center pr-2">
+												<div className="bg-white border-y border-[#71BED8] flex items-center pr-2">
 													<span>USD</span>
 												</div>
+												<a className='w-[250px] h-[42px] btn px-4 py-3 pulse rounded-l-none text-xs md:text-sm' onClick={handleBuyTokenWithSwap}>
+													{
+														buySwapLoading === 0 ? 'Buy with Swap' : (buySwapLoading === 1 ? 'Approving...' : 'Swapping...')
+													}
+												</a>
 											</div>
-											<a className='w-[250px] h-12 btn px-4 py-3 pulse rounded-l-none text-xl' onClick={handleBuyTokenWithSwap}>
-												{
-													buySwapLoading === 0 ? 'Buy with Swap' : (buySwapLoading === 1 ? 'Approving...' : 'Swapping...')
-												}
-											</a>
 										</div>
 									</div>
 								</>
 						}
 					</ListContent>
 				</ListContainer>
-				<ListContainer id="counteroffer" style={{ display: "none" }}>
+				<ListContainer id="counteroffer" style={{ visibility: "hidden" }}>
 					<TypographySize20>Your assets</TypographySize20>
 					{/* <div className="flex items-center justify-start">
 						<div className="flex">
