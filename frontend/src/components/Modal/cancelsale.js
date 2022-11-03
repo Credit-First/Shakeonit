@@ -7,6 +7,8 @@ import Config from '../../config/app';
 
 function CancelSale({ open, onClose, image, nonce }) {
     const navigate = useNavigate();
+    const [cancelOrderLodaing, setCancelOrderLoading] = useState(0);
+
     const cancelOrder = async () => {
         // ETHERS SETUP
         const ethereum = window.ethereum;
@@ -21,10 +23,21 @@ function CancelSale({ open, onClose, image, nonce }) {
         // ethers contract instantiation
         const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
         // getActiveOrderLength 
+        setCancelOrderLoading(1)
         shakeContract.cancelOrder(nonce).then(res => {
             navigate("/collections");
             console.log(res)
+        }).then(() => {
+            console.log('success')
+        }).catch(() => {
+            setCancelOrderLoading(0)
         })
+        const _nonce = nonce;
+        shakeContract.on('CancelOrder', (nonce) => {
+			if (nonce === _nonce) {
+				setCancelOrderLoading(0)
+			}
+		})
     }
 
     return (

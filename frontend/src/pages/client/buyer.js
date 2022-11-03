@@ -27,6 +27,7 @@ import TokenContext from '../../context/tokenContext';
 import { httpGet } from "../../utils/http.utils";
 import CancelSale from "../../components/Modal/cancelsale";
 import ChangePrice from "../../components/Modal/changeprice";
+import Spinner from "../../components/Spinner";
 
 const BIG_TEN = new BigNumber(10);
 
@@ -148,6 +149,7 @@ function Buyer() {
 	const [buyLoading, setBuyLoading] = useState(0)
 	const [buySwapLoading, setBuySwapLoading] = useState(0)
 	const [MakeOfferLoading, setMakeOfferLoading] = useState(0)
+	const [updateOrderLodaing, setUpdateOrderLodaing] = useState(0);
 
 	const [swapTokenAddress, setSwapTokenAdress] = useState('');
 	const [swapTokenAmount, setSwapTokenAmount] = useState(0);
@@ -221,9 +223,18 @@ function Buyer() {
 		// ethers contract instantiation
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 		// getActiveOrderLength 
-
-		await shakeContract.updateOrder(nonce, nftDetail.get.toString(), amount).then(res => {
-			console.log(res)
+		setUpdateOrderLodaing(1)
+		await shakeContract.updateOrder(nonce, nftDetail.get.toString(), amount)
+			.then(res => {
+				console.log(res)
+			}).catch(() => {
+				setUpdateOrderLodaing(0)
+			})
+		const _nonce = nonce;
+		shakeContract.on('CancelOrder', (nonce) => {
+			if (nonce === _nonce) {
+				setUpdateOrderLodaing(0)
+			}
 		})
 	}
 	const handleModalChangeOpen = () => {
@@ -264,10 +275,10 @@ function Buyer() {
 	useEffect(() => {
 		handleGetBalance()
 	}, [tokenCtx])
-	
+
 	useEffect(() => {
 		window.scrollTo(0, 0)
-	  }, [])
+	}, [])
 
 	useEffect(() => {
 		getNft();
@@ -801,8 +812,8 @@ function Buyer() {
 				const tokenContract = new ethers.Contract(address, Config.tokenContract.abi, signer)
 
 				await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i])
-				.then(() => {})
-				.catch(() => setMakeOfferLoading(0));
+					.then(() => { })
+					.catch(() => setMakeOfferLoading(0));
 
 				tokenContract.on('Approval', (owner, spender, value) => {
 					if (owner === account && value.toString() === amountOrTokenIds[i].toString()) {
@@ -813,8 +824,8 @@ function Buyer() {
 			} else {
 				const nftContract = new ethers.Contract(address, Config.nftContract.abi, signer)
 				await nftContract.approve(Config.shakeonit.address, amountOrTokenIds[i])
-				.then(() => {})
-				.catch(() => setMakeOfferLoading(0));
+					.then(() => { })
+					.catch(() => setMakeOfferLoading(0));
 
 				nftContract.on('Approval', (owner, approved, tokenId) => {
 					if (owner === account && tokenId === amountOrTokenIds[i]) {
@@ -853,15 +864,15 @@ function Buyer() {
 			const tokenContract = new ethers.Contract(nftDetail.get, Config.tokenContract.abi, signer);
 
 			tokenContract.approve(Config.shakeonit.address, nftDetail.amountGetOrTokenID.toString())
-			.then(() => {})
-			.catch(() => setBuyLoading(0));
+				.then(() => { })
+				.catch(() => setBuyLoading(0));
 
 			setBuyLoading(1)
 
 			tokenContract.on('Approval', (owner, spender, value) => {
 				if (owner === account && value.toString() === nftDetail.amountGetOrTokenID.toString()) {
-					setBuyLoading(0)
-					shakeContract.buyOrders([...nonce])
+					setBuyLoading(2)
+					shakeContract.buyOrders([...nonce]).then(() => setBuyLoading(0))
 				}
 			})
 		}
@@ -892,8 +903,8 @@ function Buyer() {
 
 		const amount = ethers.utils.parseUnits(swapTokenAmount.toString()).toString()
 		tokenContract.approve(Config.shakeonit.address, amount)
-		.then(() => {})
-		.catch(() => setBuySwapLoading(0));
+			.then(() => { })
+			.catch(() => setBuySwapLoading(0));
 
 		setBuySwapLoading(1)
 		tokenContract.on('Approval', (owner, spender, value) => {
@@ -991,7 +1002,17 @@ function Buyer() {
 									<Box className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-8 md:pt-24">
 										<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>
 											{
-												buyLoading === 0 ? 'Buy' : 'Approving...'
+												buyLoading === 0 ? 'Buy' : (buyLoading === 1 ? (
+													<>
+														<Spinner />
+														<span>Approving...</span>
+													</>
+												) : (
+													<>
+														<Spinner />
+														<span>Buying...</span>
+													</>
+												))
 											}
 										</a>
 										<Box className="outlined-btn px-3">
@@ -1032,7 +1053,17 @@ function Buyer() {
 												</div>
 												<a className='w-[250px] h-[42px] btn px-4 py-3 pulse rounded-l-none text-xs md:text-sm' onClick={handleBuyTokenWithSwap}>
 													{
-														buySwapLoading === 0 ? 'Buy with Swap' : (buySwapLoading === 1 ? 'Approving...' : 'Swapping...')
+														buySwapLoading === 0 ? 'Buy with Swap' : (buySwapLoading === 1 ? (
+															<>
+																<Spinner />
+																<span>Approving...</span>
+															</>
+														) : (
+															<>
+																<Spinner />
+																<span>Swapping...</span>
+															</>
+														))
 													}
 												</a>
 											</div>
@@ -1197,7 +1228,17 @@ function Buyer() {
 									onClick={makeCounterOffer}
 								>
 									{
-										MakeOfferLoading === 0 ? 'Make Offer' : (MakeOfferLoading === 1 ? 'Approving...' : 'Offering...')
+										MakeOfferLoading === 0 ? 'Make Offer' : (MakeOfferLoading === 1 ? (
+											<>
+												<Spinner />
+												<span>Approving...</span>
+											</>
+										) : (
+											<>
+												<Spinner />
+												<span>Offering...</span>
+											</>
+										))
 									}
 								</Link>
 							</OfferButton>

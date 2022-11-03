@@ -54,7 +54,7 @@ const CollectionItems = () => {
                 <div className="bg-white gradient-child flex justify-center items-center">
                     <div 
                     style={{ textAlign: "center" }} onClick={() => navigate(-1)} 
-                    className="flex items-center connect-btn px-4 py-3">
+                    className="cursor-pointer flex items-center connect-btn px-4 py-3">
                         Back To Collections
                     </div> 
                 </div>

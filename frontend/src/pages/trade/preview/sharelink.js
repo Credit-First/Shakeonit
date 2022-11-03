@@ -17,6 +17,7 @@ import SendPost from './facebooksdk/sendpost';
 import Config from '../../../config/app';
 import { coinTypes } from '../../../content/config';
 import { useWeb3React } from "@web3-react/core";
+import Spinner from '../../../components/Spinner';
 
 function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
 	const { account } = useWeb3React();
@@ -29,7 +30,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 	const [value, setValue] = useState("");
 	const [linkFlag, setLinkFlag] = useState(false);
 	const [loadingState, setLoadingState] = useState(0);
-	
+
 	const handleLinkaddress = (nonce) => {
 		setValue(`${window.location.origin}/#/buyer/${nonce}`);
 		setLinkFlag(true);
@@ -54,21 +55,21 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		let amountGive = tokenId // (wei for 0.0001 WETH) SHOULD BE THE NFT @ AMOUNT OF 1
 		let amountGet = ethers.utils.parseUnits(pricedata.priceValue) // Should pull in price data value from the input in Listitemforsale File
 		let buyer = '0x0000000000000000000000000000000000000000' // 0x0 address so anyone can buy
-		
+
 		const nftContract = new ethers.Contract(contract_address, Config.nftContract.abi, signer)
 		const tokenContract = new ethers.Contract(get, Config.tokenContract.abi, signer)
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 
 		const owner = await nftContract.ownerOf(amountGive);
-		
-		if(owner !== account) return alert('you are not an owner of this nft.')
+
+		if (owner !== account) return alert('you are not an owner of this nft.')
 
 		tokenContract.approve(Config.shakeonit.address, amountGet)
-			.then(() => {})
+			.then(() => { })
 			.catch(() => setLoadingState(0));
 
 		nftContract.approve(Config.shakeonit.address, amountGive)
-			.then(() => {})
+			.then(() => { })
 			.catch(() => setLoadingState(0));
 
 		setLoadingState(1);
@@ -93,7 +94,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 				processCallback();
 			}
 		})
-		
+
 		nftContract.on("Approval", (owner, approved, tokenId) => {
 			if (owner === account && tokenId.toString() === amountGive) {
 				flags.nft = true;
@@ -181,7 +182,17 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 						onClick={createOrder()}
 					>
 						{
-							loadingState === 1 ? 'Approving...' : (loadingState === 2 ? 'Listing...' : (loadingState === 3 ? 'Done' : 'Create Order'))
+							loadingState === 1 ? (
+								<>
+									<Spinner />
+									<span>Approving...</span>
+								</>
+							) : (loadingState === 2 ? (
+								<>
+									<Spinner />
+									<span>Listing...</span>
+								</>
+							) : (loadingState === 3 ? 'Done' : 'Create Order'))
 						}
 					</Link>
 				</Box>
