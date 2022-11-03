@@ -148,7 +148,7 @@ const WalletModal = () => {
                     <div>
                         <div className="py-6">
                             <p className="flex justify-center wallet-lg">Connect Wallet</p>
-                            <p className="flex justify-center wallet-md pt-2">To start using shakeoint</p>
+                            <p className="flex justify-center wallet-md pt-2">To Start Using Shakeoint</p>
                         </div>
                     </div>
                     {
@@ -202,7 +202,7 @@ const WalletModal = () => {
                         })
                     }
                     <div className="py-6 wallet-md px-9" style={{ textAlign: "center", lineHeight: "1.3" }}>
-                        <span>By connecting your wallet, you agree to our </span><a href="/#/service" style={{ color: 'black' }}>Terms of Service </a><span>and our </span><a href="/#/privacypolicy" style={{ color: 'black' }}>Privacy Policy</a>
+                        <span>By Connecting Your Wallet, You Agree To Our </span><a href="/#/service" style={{ color: 'black' }}>Terms Of Service </a><span>And Our </span><a href="/#/privacypolicy" style={{ color: 'black' }}>Privacy Policy</a>
                     </div>
                     
                 {

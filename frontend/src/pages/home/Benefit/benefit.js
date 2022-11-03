@@ -157,7 +157,7 @@ function OurBenefit() {
                 <Box className="flex items-center">
                     <Card>
                         <Title>Chat with prospects </Title>
-                        <Content>Voice or text, you choose. Chat with potential collectors, and get feedback</Content>
+                        <Content>Voice Or Text, You Choose. Chat With Potential Collectors, And Get Feedback</Content>
                     </Card>
                 </Box>
             </Box>
@@ -169,7 +169,7 @@ function OurBenefit() {
                 <Box className="flex items-center">
                     <Card>
                         <Title>Multichain Support </Title>
-                        <Content>List and explore collectibles across several blockchains</Content>
+                        <Content>List And Explore Collectibles Across Several Blockchains</Content>
                     </Card>
                 </Box>
             </Box>

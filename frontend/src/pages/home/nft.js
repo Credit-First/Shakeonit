@@ -140,8 +140,8 @@ function NFT() {
                 >
                     <div>
                         <img src="/static/images/home/Vector 19.png" alt="vector" className="py-3 desktop-visible" />
-                        <NftSell>Sell your NTFs</NftSell>
-                        <NftSellContent className="mobile-visible">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis faucibus sit dolor sed nec libero.</NftSellContent>
+                        <NftSell>Sell Your NTFs</NftSell>
+                        <NftSellContent className="mobile-visible">Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Felis Faucibus Sit Dolor Sed Nec Libero.</NftSellContent>
                     </div>
                 </Grid>
                 <Grid
@@ -159,7 +159,7 @@ function NFT() {
                                         <img src="static/images/home/Ellipse 17.png" alt="" />
                                         <img className=" " style={{ position: "absolute", top: "12px", left: "12px" }} src="static/images/home/empty-wallet.png" alt="" />
                                     </div>
-                                    <NftCardTitle >Connect your wallet</NftCardTitle>
+                                    <NftCardTitle >Connect Your wallet</NftCardTitle>
                                     <NftCardContent>After You've Setup A Compatible Wallet,
                                         Connect To Shakeoint By Trading The Connect
                                         Wallet Button On The Top Right Corner.
@@ -183,7 +183,7 @@ function NFT() {
                                         <img src="static/images/home/Ellipse 17.png" alt="" />
                                         <img className=" " style={{ position: "absolute", top: "12px", left: "12px" }} src="static/images/home/empty-wallet.png" alt="" />
                                     </div>
-                                    <NftCardTitle >Connect your wallet</NftCardTitle>
+                                    <NftCardTitle >Connect Your Wallet</NftCardTitle>
                                     <NftCardContent>After You've Setup A Compatible Wallet,
                                         Connect To Shakeoint By Trading The Connect
                                         Wallet Button On The Top Right Corner.
@@ -194,7 +194,7 @@ function NFT() {
                                         <img src="static/images/home/Ellipse 17.png" alt="" />
                                         <img className=" " style={{ position: "absolute", top: "12px", left: "12px" }} src="static/images/home/empty-wallet.png" alt="" />
                                     </div>
-                                    <NftCardTitle >Connect your wallet</NftCardTitle>
+                                    <NftCardTitle >Connect Your Wallet</NftCardTitle>
                                     <NftCardContent>After You've Setup A Compatible Wallet,
                                         Connect To Shakeoint By Trading The Connect
                                         Wallet Button On The Top Right Corner.

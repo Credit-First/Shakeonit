@@ -245,7 +245,7 @@ const BuyerChat = (props) => {
                         <ArrowBack style={{ fill: '#ffffff' }} />
                     </IconButton>
                 </div>
-                {role === "buyer" && account !== undefined ? (<Box className="text-white px-2 pt-2">Hello {reduceAddress(account)}, how can we help you</Box>) : ""}
+                {role === "buyer" && account !== undefined ? (<Box className="text-white px-2 pt-2">Hello {reduceAddress(account)}, How Can We Help You</Box>) : ""}
                 {
                     role === "seller" &&
                     <div style={{ marginLeft: 'auto', marginTop: -3, minWidth: 100 }}>

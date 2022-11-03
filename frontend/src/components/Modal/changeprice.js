@@ -47,13 +47,13 @@ function ChangePrice({ open, onClose, image, price, setPrice, coinPrice, setPric
                             />
                         </Box>
                         {isErrorprice ?
-                            <span className='text-red-400 text-md error flex justify-end'>You must input only integer</span> : null
+                            <span className='text-red-400 text-md error flex justify-end'>You Must Input Only Integer</span> : null
                         }
                     </Box>
                     <div className="flex justify-center px-2 md:px-6 my-4">
                         <div>
-                            <p className="wallet-sm" style={{ textAlign: "center", lineHeight: "1.3" }}>Please input the price if you want to Change Price.</p>
-                            <p className="wallet-sm" style={{ textAlign: "center", lineHeight: "1.3" }}>Please click the cancel button if you don't want to change price</p>
+                            <p className="wallet-sm" style={{ textAlign: "center", lineHeight: "1.3" }}>Please Input The Price If You Want To Change Price.</p>
+                            <p className="wallet-sm" style={{ textAlign: "center", lineHeight: "1.3" }}>Please Click The Cancel Button If You Don't Want To Change Price</p>
                         </div>
                     </div>
                     <div className="flex justify-around mx-6 mb-5 mt-3">

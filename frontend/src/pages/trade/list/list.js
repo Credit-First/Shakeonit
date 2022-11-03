@@ -140,7 +140,7 @@ function List() {
                         </BoxBetween>
                         <Box className="" style={{ marginTop: "5%" }}>
 							<TypographySize42 className="pb-4">{nftDetail.contract_name} - {nftDetail.name}</TypographySize42>
-							<TypographySize14 className="pb-4">A collection of 10000 owl-looking portraits with varying traits. The NFT gives holders access to private club memberships plus other perks</TypographySize14>
+							<TypographySize14 className="pb-4">A Collection Of 10000 Owl-Looking Portraits With Varying Traits. The NFT Gives Holders Access To Private Club Memberships Plus Other Perks</TypographySize14>
 						</Box>
                         <Box>
                             <Box className="flex pb-4">

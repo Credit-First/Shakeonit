@@ -941,7 +941,7 @@ function Buyer() {
 						</BoxBetween>
 						<Box className="" style={{ marginTop: "5%" }}>
 							<TypographySize42 className="pb-4">{nftDetail.contract_name} - {nftDetail.name}</TypographySize42>
-							<TypographySize14 className="pb-4">A collection of 10000 owl-looking portraits with varying traits. The NFT gives holders access to private club memberships plus other perks</TypographySize14>
+							<TypographySize14 className="pb-4">A Collection Of 10000 Owl-Looking Portraits With Varying Traits. The NFT Gives Holders Access To Private Club Memberships Plus Other Perks</TypographySize14>
 						</Box>
 						{
 							nftDetail.owner === account ?
@@ -993,10 +993,10 @@ function Buyer() {
 										<Box className="outlined-btn px-3">
 											<select className="w-full bg-transparent h-full" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
 												<option value="otheractions" >Other Actions</option>
-												<option value="buyTokenWithSwap" >Buy token with swap</option>
+												<option value="buyTokenWithSwap" >Buy Token With Swap</option>
 												<option value="counteroffer">Counter Offer</option>
-												<option value="openchat">Open a chat</option>
-												<option value="initiatecall">Initiate a Call</option>
+												<option value="openchat">Open A Chat</option>
+												<option value="initiatecall">Initiate A Call</option>
 											</select>
 										</Box>
 									</Box>
@@ -1008,7 +1008,7 @@ function Buyer() {
 													value={swapTokenAddress}
 													onChange={handleSelectToken}
 												>
-													<option value=''>Select token</option>
+													<option value=''>Select Token</option>
 													{
 														myBalances.map((item, index) => (
 															<option key={index} value={item.contract_address}>{item.name}</option>
@@ -1039,7 +1039,7 @@ function Buyer() {
 					</ListContent>
 				</Box>
 				<Box id="counteroffer" style={{ visibility: "hidden" }} className="w-full px-[7%] pb-4">
-					<TypographySize20>Your assets</TypographySize20>
+					<TypographySize20>Your Assets</TypographySize20>
 					{/* <div className="flex items-center justify-start">
 						<div className="flex">
 							<input className="w-[400px] border border-[#71BED8] rounded-l-xl py-2 px-3 focus:outline-none focus-visible:outline-none"
@@ -1108,7 +1108,7 @@ function Buyer() {
 							<div className="flex flex-col gap-y-2 max-h-[300px] overflow-y-auto overflow-x-hidden custom-scrollbar">
 								{
 									collectionItems.length === 0 &&
-									<div className="text-center pt-4">No items</div>
+									<div className="text-center pt-4">No Items</div>
 								}
 								{
 									collectionItems.map((nft, index) => (

@@ -98,7 +98,7 @@ const Card = styled.div`
 function Shakeoint() {
     return (
         <Box className="px-4 md:px-12 lg:px-24 xl:px-72 py-6 md:py-24">
-            <Header>Shakeoint brings value to...</Header>
+            <Header>Shakeoint Brings Value To...</Header>
             <Grid
                 container
                 spacing={4}
@@ -113,11 +113,11 @@ function Shakeoint() {
                     <Title>The Creator</Title>
                     <Card>
                         <img style={{ float: "left" }} className="pr-2" src="static/images/home/tick-circle.png" alt="" />
-                        <Content>Trade on your terms; return full custody of your assets</Content>
+                        <Content>Trade On Your Terms; Return Full Custody Of Your Assets</Content>
                     </Card>
                     <Card>
                         <img style={{ float: "left" }} className="pr-2" src="static/images/home/tick-circle.png" alt="" />
-                        <Content>GEt feedback from potential collectors</Content>
+                        <Content>Get Feedback From Potential Collectors</Content>
                     </Card>
                 </Grid>
                 <Grid
@@ -130,11 +130,11 @@ function Shakeoint() {
                     <Title>The Fans</Title>
                     <Card>
                         <img style={{ float: "left" }} className="pr-2" src="static/images/home/tick-circle.png" alt="" />
-                        <Content>Buy cheaper and save on platform fees, 80% lower than OpenSea</Content>
+                        <Content>Buy Cheaper Snd Save On Platform Fees, 80% Lower Than OpenSea</Content>
                     </Card>
                     <Card>
                         <img style={{ float: "left" }} className="pr-2" src="static/images/home/tick-circle.png" alt="" />
-                        <Content>Chat and bargain with the seller</Content>
+                        <Content>Chat And Bargain With The Seller</Content>
                     </Card>
                 </Grid>
             </Grid>

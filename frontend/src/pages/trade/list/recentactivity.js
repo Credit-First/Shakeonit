@@ -129,7 +129,7 @@ function RecentActivity() {
                     <Box className="my-6" >
                         <Box className="block lg:flex">
                             <Box className="w-full">
-                                <p className="listinput text-gray-400">Somebody wants to buy your NFT</p>
+                                <p className="listinput text-gray-400">Somebody Wants To Buy Your NFT</p>
                             </Box>
                             <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center">
                                 <Box onClick={() => openchat()} className="outlined-btn1 text-list-accept pulse"><span style={{'fontSize':` ${request_flag ? '18px' : ''}`, 'fontWeight':` ${request_flag ? 'bold' : ''}`, 'marginRight':` ${request_flag ? '0.5rem' : ''}`}}>Accept Chat</span>{request_flag ? '(' + requests + ')': ''}
@@ -140,7 +140,7 @@ function RecentActivity() {
                     <Box className="my-6">
                         <Box className="block lg:flex">
                             <Box className="w-full">
-                                <p className="listinput text-gray-400">Somebody wants to buy your NFT</p>
+                                <p className="listinput text-gray-400">Somebody Wants To Buy Your NFT</p>
                             </Box>
                             <Box className="w-full lg:w-96 mt-3 ml-0 lg:ml-6 lg:mt-0 flex justify-center">
                                 <Box className="outlined-btn1 text-list-accept pulse">Propose Chat</Box>

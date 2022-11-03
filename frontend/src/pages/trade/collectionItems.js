@@ -36,13 +36,13 @@ const CollectionItems = () => {
             <BoxCenter className="relative hidden mt-10">
                 <Hidden xlDown>
                     <img src="../static/images/cards/Frame 2 (2).png" alt='' />
-                    <TypographySize14 className="modal py-6 px-12">List your assets for sale, share with friends and chat with potential buyers</TypographySize14>
+                    <TypographySize14 className="modal py-6 px-12">List Your Assets For Sale, Share With Friends And Chat With Potential Buyers</TypographySize14>
                 </Hidden>
             </BoxCenter>
-            <Hidden xlUp className="lg:hidden">
+            <Hidden xlUp>
                 <Box className="collection-bg pt-16 pb-16">
                     <BoxCenter className="sm-text-modal-lg text-sm-title">Your NTF's Collections</BoxCenter>
-                    <BoxCenter className="sm-text-modal pl-6 pr-2 py-2 text-md text-black-200">List your assets for sale, share with friends and chat with potential buyers</BoxCenter>
+                    <BoxCenter className="sm-text-modal pl-6 pr-2 py-2 text-md text-black-200">List Your Assets For Sale, Share With Friends And Chat With Potential Buyers</BoxCenter>
                 </Box>
             </Hidden>
 
@@ -51,7 +51,7 @@ const CollectionItems = () => {
                     <div 
                     style={{ textAlign: "center" }} onClick={() => navigate(-1)} 
                     className="flex items-center connect-btn px-4 py-3">
-                        Back to collections
+                        Back To Collections
                     </div> 
                 </div>
             </div>

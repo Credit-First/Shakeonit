@@ -57,14 +57,14 @@ function Listitemforsale(props) {
                     </Box>
                     <Box>
                         <Box>
-                            <TypographySize18>List item for sale</TypographySize18>
+                            <TypographySize18>List Item For Sale</TypographySize18>
                         </Box>
                         <Box>
                             <TypographySize14 className='py-2'>Out Your NFT On The Market</TypographySize14>
                         </Box>
                     </Box>
                     <Box className='py-6'>
-                        <TypographySize18>About your offer</TypographySize18>
+                        <TypographySize18>About Your Offer</TypographySize18>
                     </Box>
                     <Box>
                         <Box className='pb-1'>
@@ -106,7 +106,7 @@ function Listitemforsale(props) {
                                     <div>&#8776; {(priceValue * coinPrice[coin])} usd</div>
                                 </div>
                                 {isError ?
-                                    <span className='text-red-400 text-md error flex justify-end'>You must input only number</span> : null
+                                    <span className='text-red-400 text-md error flex justify-end'>You Must Input Only Number</span> : null
                                 }
 
                             </Box>
@@ -131,7 +131,7 @@ function Listitemforsale(props) {
                             </Box>
                         </Box>
                         {isErrorday ?
-                            <span className='text-red-400 text-md error flex justify-end'>You must input only integer</span> : null
+                            <span className='text-red-400 text-md error flex justify-end'>You Must Input Only Integer</span> : null
                         }
                     </Box>
                     <Box className="block xl:flex xl:justify-between" style={{marginTop : "10%"}}>

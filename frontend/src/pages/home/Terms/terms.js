@@ -113,7 +113,7 @@ function Terms() {
                 </TermContent>
                 <div style={{textAlign: 'center'}}>
                     <TradeButton>
-                        <a href="/#/collections" className="btn">Make a Trade</a>
+                        <a href="/#/collections" className="btn">Make A Trade</a>
                     </TradeButton>
                 </div>
             </div>

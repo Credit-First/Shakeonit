@@ -31,7 +31,7 @@ function Sign({ open, onClose, getName }) {
                         <p className="wallet-lg" style={{ textAlign: "center", lineHeight: '1.3' }}>Wallet Connected!</p>
                     </div>
                     <div className="flex justify-center px-2 md:px-6 my-4">
-                        <p className="wallet-md" style={{ textAlign: "center", lineHeight: "1.3" }}>Please click the disconnect button if you want to disconnect the wallet.</p>
+                        <p className="wallet-md" style={{ textAlign: "center", lineHeight: "1.3" }}>Please Click The Disconnect Button If You Want To Disconnect The Wallet.</p>
                     </div>
                     <div className="flex justify-center mx-6 border-2 border-gray-200 mb-5 mt-3 pulse">
                         <a className="welcome-btn1 py-3" onClick={() => {

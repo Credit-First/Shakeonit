@@ -120,7 +120,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 					</Box>
 					<Box>
 						<TypographySize18 className=''>Share Link</TypographySize18>
-						<TypographySize14 className='py-2'>Copy or Share Link Automatically</TypographySize14>
+						<TypographySize14 className='py-2'>Copy Or Share Link Automatically</TypographySize14>
 					</Box>
 					<Box className='grid grid-cols-4 gap-2 md:gap-4 lg:gap-10 my-8'>
 						<div className='flex items-center justify-center'>

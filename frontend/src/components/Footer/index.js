@@ -20,8 +20,8 @@ export default function Footer({ isOpen, isOpened, setOpen, setOpened }) {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 py-6 px-6 lg:px-20 text-left lg:text-center footer-text" >
                 <a href="">Marketplace</a>
-                <a href="/#/resources">Resources</a>
-                <a href="/#/company">Company</a>
+                <a href="/#/resources">Tutorials</a>
+                <a href="/#/company">About</a>
                 <a onClick={() => handleConnectWallet(true)}>Connect Wallet</a>
                 <a href="">Help</a>
                 <a href="/#/privacypolicy">Privacy Policy</a>
@@ -29,7 +29,7 @@ export default function Footer({ isOpen, isOpened, setOpen, setOpened }) {
             <div className="border-t border-gray-400 pb-4 mt-4" />
             <div className="flex flex-col md:flex-row items-center gap-y-4">
                 <div className="flex flex-1 footer-text">
-                    <p>© 2022 Shakeonit. All rights reserved</p>
+                    <p>© 2022 Shakeonit. All Rights Reserved</p>
                 </div>
                 <div className="flex gap-x-4">
                     <InstagramIcon />

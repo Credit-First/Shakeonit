@@ -45,7 +45,7 @@ function CancelSale({ open, onClose, image, nonce }) {
                         <p className="wallet-lg" style={{ textAlign: "center", lineHeight: '1.3' }}>Cancel Sale!</p>
                     </div>
                     <div className="flex justify-center px-2 md:px-6 my-4">
-                        <p className="wallet-md" style={{ textAlign: "center", lineHeight: "1.3" }}>Please click the cancel button if you want to cancel sale.</p>
+                        <p className="wallet-md" style={{ textAlign: "center", lineHeight: "1.3" }}>Please Click The Cancel Button If You Want To Cancel Sale.</p>
                     </div>
                     <div className="flex justify-center mx-6 border-2 border-gray-200 mb-5 mt-3 pulse rounded-[10px]">
                         <div className="cursor-pointer welcome-btn1 py-3 w-full h-full text-center" onClick={() => {
