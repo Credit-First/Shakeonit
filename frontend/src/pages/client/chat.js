@@ -320,7 +320,7 @@ const BuyerChat = (props) => {
                     })}
                     <div ref={messagesEndRef} />
                 </Box>
-                <Box className="flex px-4 rounded-xl bg-white py-3" sx={{alignItems: 'center'}}>
+                <Box className="flex px-4 rounded-xl bg-white py-2" sx={{alignItems: 'center'}}>
                     <Box>
                         <input
                             id="buyerchat_input"

@@ -692,13 +692,6 @@ background: rgba(46, 57, 81, 1);
     }
 }
 
-.recentactivity {
-    margin-right: 19%;
-    margin-left: 19%;
-    padding-right: 1.5rem;
-    padding-left: 1.5rem;
-}
-
 @media only screen and (min-width : 851px) and (max-width : 1023px) {
     .listImage {
         display: flex;
@@ -729,14 +722,12 @@ background: rgba(46, 57, 81, 1);
     }
 }
 
-@media only screen and (max-width : 1000px) {
+@media only screen and (max-width : 767px) {
     .recentactivity {
-        margin-right: 0px;
-        margin-left: 0px;
-        padding-right: 7%;
-        padding-left: 7%;
-        border: none !important;
-        border-radius: 0px !important;
+        margin-right: 7%;
+        margin-left: 7%;
+        padding-right: 1.5rem;
+        padding-left: 1.5rem;
     }
 }
 

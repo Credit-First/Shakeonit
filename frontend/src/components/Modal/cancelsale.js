@@ -39,7 +39,7 @@ function CancelSale({ open, onClose, image, nonce }) {
                 <div className="absolute" style={{ top: "10px", right: "15px" }}><CloseIcon onClick={onClose} /></div>
                 <div>
                     <div className="flex justify-center py-5">
-                        <img src={image} alt="" style={{width : "100px", height: "auto"}} />
+                        <img src={image} alt="" style={{width : "100px", height: "auto"}} className="rounded-[10px]" />
                     </div>
                     <div className="flex justify-center px-4 md:px-12">
                         <p className="wallet-lg" style={{ textAlign: "center", lineHeight: '1.3' }}>Cancel Sale!</p>

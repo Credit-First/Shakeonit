@@ -926,7 +926,7 @@ function Buyer() {
 			<div>
 				<Box className="block lg:flex justify-between w-full px-[7%] pb-4">
 					<ListImage className="listImage" >
-						{nftDetail.image && <img src={nftDetail.image} className="img" />}
+						{nftDetail.image && <img src={nftDetail.image} className="img rounded-[10px]" />}
 					</ListImage>
 					<ListContent className="listContent">
 						<BoxBetween>

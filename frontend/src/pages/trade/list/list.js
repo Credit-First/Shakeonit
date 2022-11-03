@@ -58,7 +58,7 @@ function List() {
     const [modalPriceValue, setModalPriceValue] = useState(initialpriceValue);
 
     const nftCtx = useContext(NftContext);
-    const { address, tokenId } = useParams();
+    const { address, tokenId, nonce } = useParams();
     const [nftDetail, setNftDetail] = useState({});
     const [modalflag, setModalFlag] = useState(false);
     const [isModalOpened, setModalOpened] = useState(false);
@@ -125,46 +125,48 @@ function List() {
             <div>
                 <ListContainer className="block lg:flex justify-between">
                     <ListImage className="listImage" >
-                        <img src={nftDetail.image} className = "img"  alt=''/>
+                        <img src={nftDetail.image} className = "img rounded-[10px]"  alt=''/>
                     </ListImage>
                     <ListContent className="listContent">
                         <BoxBetween>
-                            <BoxCenter className="p-1 sm:p-2 rounded-xl bg-white">
-                                <Avatar className="ml-0 mr-3 sm:mx-3" alt="Remy Sharp" src="/static/images/cards/avatar.png" />
-                                <TypographySize18 className="flex items-center px-1 sm:px-3">Steven Bartlett</TypographySize18>
+                            <BoxCenter className=" px-2 py-2 rounded-xl bg-white">
+                                {/*<Avatar className="ml-0 mr-3 sm:mx-3" alt="Remy Sharp" src="/static/images/cards/avatar.png" />
+                                <TypographySize18 className="flex items-center px-1 sm:px-3">Steven Bartlett</TypographySize18>*/}
+                                <TypographySize18 className=''>Nonce #: {nonce}</TypographySize18>
                             </BoxCenter>
                             <BoxCenter className="flex items-center">
                                 <TypographySize12 className="remain-btn pulse1 px-1 sm:px-2 py-2">Remaining 100/500</TypographySize12>
                             </BoxCenter>
                         </BoxBetween>
                         <Box className="" style={{ marginTop: "5%" }}>
-                            <TypographySize42 style={{ marginBottom: "2.5%" }}>{nftDetail.name}</TypographySize42>
-                            <TypographySize14 style={{ marginBottom: "5%" }} className="my-3">A collection of 10000 owl-looking portraits with varying traits. The NFT gives holders access to private club memberships plus other perks</TypographySize14>
-                        </Box>
+							<TypographySize42 className="pb-4">{nftDetail.contract_name} - {nftDetail.name}</TypographySize42>
+							<TypographySize14 className="pb-4">A collection of 10000 owl-looking portraits with varying traits. The NFT gives holders access to private club memberships plus other perks</TypographySize14>
+						</Box>
                         <Box>
-                            <Box className="flex">
-                                <img src="/static/images/dollar-circle.png"  alt=''/>
+                            <Box className="flex pb-4">
+                                <img src="/static/images/dollar-circle.png" alt='' />
                                 <TypographySize14 className="flex items-center">Price:</TypographySize14>
                             </Box>
-                            <Box className="flex items-center" style={{ marginTop: "4%" }}>
-                                {!modalflag ?
-                                    <TypographySize32>{modalPrice}</TypographySize32>
+                            <Box className="grid grid-cols-1 md:grid-cols-2 items-center">
+                                {modalflag ?
+                                    <TypographySize32>$ {modalPrice}</TypographySize32>
                                     :
-                                    <TypographySize32>{initialPrice}</TypographySize32>
+                                    <TypographySize32>$ {initialPrice}</TypographySize32>
                                 }
-                                {!modalflag ?
-                                <TypographySize14 className="pl-6">/ {modalPriceValue} {coinTypes[coin]}</TypographySize14>
-                                 : 
-                                <TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin]}</TypographySize14>
-                                 }
+                                {modalflag ?
+                                    <TypographySize14>/ {modalPriceValue} {coinTypes[coin].name}</TypographySize14>
+                                    :
+                                    <TypographySize14>/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
+                                }
                             </Box>
                         </Box>
-                        <Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
-                            <div className="flex justify-center btn pulse1 w-full" onClick={handleModalChangeOpen}>Change Price</div>
-                            <div className="flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleModalOpen}>Cancel Sale</div>
+                        <Box className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-8 md:pt-24">
+                            <div className="cursor-pointer flex justify-center btn pulse1 w-full" onClick={handleModalChangeOpen}>Change Price</div>
+                            <div className="cursor-pointer flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleModalOpen}>Cancel Sale</div>
                         </Box>
                     </ListContent>
                 </ListContainer>
+                <RecentActivity finalOfferdatas = {finalOfferdatas} isflag = {isflag} valiatedprice = {valiatedprice} validatedCoinType = {validatedCoinType} address={address} />
                 <CancelSale open={isModalOpened} onClose={handleModalClose} image={nftDetail.image} />
                 <ChangePrice open={isModalOpen} onClose={handleModalChangeClose} image={nftDetail.image} setPrice={setModalPrice} price={modalPrice} setPriceValue={setModalPriceValue} coinPrice={coinPrice} handleFlag={handleModalFlag} handleChangeFlag={handleChangeFlag} />
             </div>
