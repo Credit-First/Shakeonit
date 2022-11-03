@@ -61,7 +61,7 @@ function Collections() {
 
                 {
                     !account && <div className="flex items-center justify-center mt-10">
-                        <span className="text-2xl text-center">Please check your wallet connection</span>
+                        <span className="text-2xl text-center">Please Connect Your Wallet</span>
                     </div>
                 }
 
@@ -70,13 +70,13 @@ function Collections() {
                         <input className="w-[70%] border border-gray-800 rounded-l-xl p-2 px-3 focus:outline-none focus-visible:outline-none" 
                         value={searchAddress}
                         onChange={(e) => setSearchAddress(e.target.value)}/>
-                        <a className='w-[30%] btn px-6 py-3 pulse rounded-l-none text-xl' disabled={loading} onClick={loading ? '' : handleSearch}>Search</a>
+                        <a className='w-[150px] btn px-6 py-3 pulse rounded-l-none text-xl' disabled={loading} onClick={loading ? '' : handleSearch}>Show Nfts</a>
                     </div>
                     <div className="mobile-visible w-[70%]">
                         <input className="w-[100%] border border-gray-800 rounded-xl p-2 mb-3 focus:outline-none focus-visible:outline-none" 
                         value={searchAddress}
                         onChange={(e) => setSearchAddress(e.target.value)}/>
-                        <a disabled={loading} className='btn py-3 pulse rounded-x-none text-xl' onClick={loading ? '' : handleSearch}>Search</a>
+                        <a disabled={loading} className='btn py-3 pulse rounded-x-none text-xl' onClick={loading ? '' : handleSearch}>Show Nfts</a>
                     </div>
                 </div>
 
