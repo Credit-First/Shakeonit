@@ -33,7 +33,7 @@ function Modal({ open, onClose, image, content }) {
                         <p className="wallet-md" style={{ textAlign: "center", lineHeight: "1.3" }}>{content}</p>
                     </div>
                     <div className="flex justify-center mx-6 border-2 border-gray-200 mb-5 mt-3 pulse">
-                        <a className="welcome-btn1 py-3" onClick={() => {
+                        <a className="welcome-btn1 py-3 w-full h-full text-center" onClick={() => {
                             onClose();
                         }}>Ok</a>
                     </div>

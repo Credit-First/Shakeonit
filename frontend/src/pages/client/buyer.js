@@ -1,10 +1,9 @@
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import BigNumber from 'bignumber.js';
 import React, { useEffect, useState, useContext, useCallback } from "react";
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
 import styled from 'styled-components';
-import { Avatar } from "@mui/material";
 import { useLocation, useParams } from "react-router";
 import "../../assets/scss/customize.scss";
 import Styled from "@mui/material/styles/styled";
@@ -16,9 +15,7 @@ import { coinTypes } from "../../content/config";
 import { validatedTokens } from "../../content/config";
 import CloseIcon from '@mui/icons-material/Close';
 import { TypographySize12, TypographySize14, TypographySize18, TypographySize20, TypographySize32, TypographySize42 } from "../../components/Typography/TypographySize";
-import Web3 from 'web3'
 import { ethers } from 'ethers'
-import { contract, web3, orderActiveSet, orderListLength, contractAbi, contractAddress } from '../../content/contractMethods'
 import { v4 as uuid } from 'uuid';
 import Modal from "../../components/Modal/modal";
 import { useWeb3React } from "@web3-react/core";
@@ -30,7 +27,6 @@ import TokenContext from '../../context/tokenContext';
 import { httpGet } from "../../utils/http.utils";
 import CancelSale from "../../components/Modal/cancelsale";
 import ChangePrice from "../../components/Modal/changeprice";
-import { reduceAddress } from "../../utils/common";
 
 const BIG_TEN = new BigNumber(10);
 
@@ -47,7 +43,6 @@ const AssetCard = styled.a`
     width: 100%;
     height : 50px;
     margin-right : 10px;
-    margin-bottom : 20px;
     align-items : center;
 
     @media only screen and (max-width: 1000px) {
@@ -57,21 +52,11 @@ const AssetCard = styled.a`
 `
 const CounterCard = styled.div`
     display : flex;
-    width : 80%;
+    width : auto;
     height : 50px;
-    margin-right : 10px;
-    margin-top : 10px;
-    margin-bottom : 10px;
+    margin: 10px;
     align-items : center;
     background: #E3E3E3;
-    @media only screen and (max-width: 850px) {
-        width : 100%;
-        margin-right : 0px;
-    }
-    @media only screen and (min-width: 851px) and (max-width : 1300px) {
-        width : 45%;
-        margin-right : 0px;
-    }
 `
 
 const OfferButton = styled.div`
@@ -84,11 +69,14 @@ const OfferButton = styled.div`
     border-radius: 10px !important;
     width : 350px;
 
-    @media only screen and (max-width : 700px) {
+    @media only screen and (max-width : 767px) {
         width : 100%;
     }
-    @media only screen and (min-width : 701px) and (max-width : 1300px) {
-        width : 350px
+	@media only screen and (min-width : 768px) and (max-width : 1023px) {
+        width : 150px;
+    }
+	@media only screen and (min-width : 1024px) and (max-width : 1279px) {
+        width : 200px;
     }
 `
 
@@ -103,13 +91,6 @@ const ActiveContainer = Styled(Box)({
 	marginBottom: "3.2rem",
 	paddingLeft: "7%",
 	paddingRight: "7%"
-});
-
-const ListContainer = Styled(Box)({
-	width: "100%",
-	paddingLeft: "7%",
-	paddingRight: "7%",
-	paddingBottom: "4.5rem"
 });
 
 const ListImage = Styled(Box)({
@@ -268,11 +249,11 @@ function Buyer() {
 
 	const [myBalances, setMyBalances] = useState([]);
 
-	const handleSearch = () => {
+	/*const handleSearch = () => {
 		if (searchAddress.length == 42 && searchAddress.includes('0x')) {
 			tokenCtx.getTokens(searchAddress);
 		}
-	}
+	}*/
 
 	useEffect(() => {
 		account && setSearchAddress(account);
@@ -943,7 +924,7 @@ function Buyer() {
 				<TypographySize32>Active Listing</TypographySize32>
 			</ActiveContainer>
 			<div>
-				<ListContainer className="block lg:flex justify-between">
+				<Box className="block lg:flex justify-between w-full px-[7%] pb-4">
 					<ListImage className="listImage" >
 						{nftDetail.image && <img src={nftDetail.image} className="img" />}
 					</ListImage>
@@ -959,51 +940,51 @@ function Buyer() {
 							</BoxCenter>
 						</BoxBetween>
 						<Box className="" style={{ marginTop: "5%" }}>
-							<TypographySize42 style={{ marginBottom: "2.5%" }}>{nftDetail.contract_name} - {nftDetail.name}</TypographySize42>
-							<TypographySize14 style={{ marginBottom: "5%" }} className="my-3">A collection of 10000 owl-looking portraits with varying traits. The NFT gives holders access to private club memberships plus other perks</TypographySize14>
+							<TypographySize42 className="pb-4">{nftDetail.contract_name} - {nftDetail.name}</TypographySize42>
+							<TypographySize14 className="pb-4">A collection of 10000 owl-looking portraits with varying traits. The NFT gives holders access to private club memberships plus other perks</TypographySize14>
 						</Box>
 						{
 							nftDetail.owner === account ?
 								<Box>
-									<Box className="flex">
+									<Box className="flex pb-4">
 										<img src="/static/images/dollar-circle.png" alt='' />
 										<TypographySize14 className="flex items-center">Price:</TypographySize14>
 									</Box>
-									<Box className="flex items-center" style={{ marginTop: "4%" }}>
+									<Box className="grid grid-cols-1 md:grid-cols-2 items-center">
 										{modalflag ?
 											<TypographySize32>$ {modalPrice}</TypographySize32>
 											:
 											<TypographySize32>$ {initialPrice}</TypographySize32>
 										}
 										{modalflag ?
-											<TypographySize14 className="pl-6">/ {modalPriceValue} {coinTypes[coin].name}</TypographySize14>
+											<TypographySize14>/ {modalPriceValue} {coinTypes[coin].name}</TypographySize14>
 											:
-											<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
+											<TypographySize14>/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
 										}
 									</Box>
 								</Box>
 								:
 								<Box>
-									<Box className="flex">
+									<Box className="flex pb-4">
 										<img src="../static/images/dollar-circle.png" />
 										<TypographySize14 className="flex items-center">Price:</TypographySize14>
 									</Box>
-									<Box className="flex items-center" style={{ marginTop: "4%" }}>
+									<Box className="grid grid-cols-1 md:grid-cols-2 items-center">
 										<TypographySize32>$ {initialPrice}</TypographySize32>
-										<TypographySize14 className="pl-6">/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
+										<TypographySize14>/ {initialpriceValue} {coinTypes[coin].name}</TypographySize14>
 									</Box>
 								</Box>
 						}
 
 						{
 							nftDetail.owner === account ?
-								<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
+								<Box className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-8 md:pt-24">
 									<div className="cursor-pointer flex justify-center btn pulse1 w-full" onClick={handleModalChangeOpen}>Change Price</div>
 									<div className="cursor-pointer flex justify-center outlined-btn connect-btn pulse1 w-full" onClick={handleModalOpen}>Cancel Sale</div>
 								</Box>
 								:
 								<>
-									<Box className="grid grid-cols-1 gap-6 md:grid-cols-2" style={{ marginTop: "12%" }}>
+									<Box className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-8 md:pt-24">
 										<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>
 											{
 												buyLoading === 0 ? 'Buy' : 'Approving...'
@@ -1056,8 +1037,8 @@ function Buyer() {
 								</>
 						}
 					</ListContent>
-				</ListContainer>
-				<ListContainer id="counteroffer" style={{ visibility: "hidden" }}>
+				</Box>
+				<Box id="counteroffer" style={{ visibility: "hidden" }} className="w-full px-[7%] pb-4">
 					<TypographySize20>Your assets</TypographySize20>
 					{/* <div className="flex items-center justify-start">
 						<div className="flex">
@@ -1068,7 +1049,7 @@ function Buyer() {
 						</div>
 					</div> */}
 					<Container>
-						<div className="grid grid-cols-3 gap-4 pt-6">
+						<div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-4">
 							<div className="flex flex-col gap-y-2">
 								{myBalances.map((myBalance, index) => {
 									const id = myBalance.id;
@@ -1127,7 +1108,7 @@ function Buyer() {
 							<div className="flex flex-col gap-y-2 max-h-[300px] overflow-y-auto overflow-x-hidden custom-scrollbar">
 								{
 									collectionItems.length === 0 &&
-									<div className="text-center">No items</div>
+									<div className="text-center pt-4">No items</div>
 								}
 								{
 									collectionItems.map((nft, index) => (
@@ -1168,39 +1149,35 @@ function Buyer() {
 									</Select>
 								</CounterCard>
 							</div>
-							<div className="flex items-start w-full h-full">
-								<div className="w-full h-full overflow-y-auto custom-scrollbar">
+							<div className="items-start w-full h-full grid grid-cols-1 md:grid-cols-2">
+								<div className="w-full h-full custom-scrollbar">
 									{finalOfferdatas.tokens.map((offerdata, index) =>
 										<CounterCard key={index} style={{ justifyContent: "space-between" }}>
-											<div>
-												<TypographySize20>
-													<input className="mx-2 py-2" style={{ width: "220px" }} name={offerdata.name} onChange={(e) => handleChange(e, offerdata.name, offerdata.chain)}
-														value={offerdata.chain === '0x1' ? getWeiToInt(offerdata.balance) : offerdata.balance} />
-												</TypographySize20>
-											</div>
-											<TypographySize20 className="truncate">{offerdata.name}</TypographySize20>
+											<TypographySize20 className="pr-8 w-full">
+												<input className="mx-2 w-full" name={offerdata.name} onChange={(e) => handleChange(e, offerdata.name, offerdata.chain)}
+													value={offerdata.chain === '0x1' ? getWeiToInt(offerdata.balance) : offerdata.balance} />
+											</TypographySize20>
+											<TypographySize20 className="truncate w-[50px]">{offerdata.name}</TypographySize20>
 											<CloseIcon className='mr-2' onClick={(e) => handleRemoveOffer('token', offerdata.id, offerdata.contract_address)} />
 										</CounterCard>
 									)}
 								</div>
-								<div className="w-full h-full overflow-y-auto custom-scrollbar">
+								<div className="w-full h-full custom-scrollbar">
 									{finalOfferdatas.nfts.map((offerdata, index) =>
-										<CounterCard key={index} className="asset">
+										<CounterCard key={index}>
 											<img className="ml-4" src={offerdata.image} style={{ height: "100%", width: "auto" }} />
 											<TypographySize20 className="px-4 flex-1">{offerdata.name}</TypographySize20>
-											<div>
-												<CloseIcon className='mr-2' onClick={(e) => handleRemoveOffer('nft', offerdata.tokenId, offerdata.contract_address)} />
-											</div>
+											<CloseIcon className='mr-2' onClick={(e) => handleRemoveOffer('nft', offerdata.tokenId, offerdata.contract_address)} />
 										</CounterCard>
 									)}
 								</div>
 							</div>
 						</Border>
 					</div>
-					<div className="block md:flex justify-between my-12">
-						<div className="flex">
+					<div className="block md:flex justify-between my-6 md:my-12">
+						<div className="grid pb-4 grid-cols-1 md:pb-0 md:grid-cols-2">
 							<TypographySize20>Estimated Offer Value</TypographySize20>
-							<TypographySize20 className="pl-6">$ {totalprice}</TypographySize20>
+							<TypographySize20>$ {totalprice}</TypographySize20>
 						</div>
 						<div>
 							<OfferButton className=" pulse1">
@@ -1208,12 +1185,11 @@ function Buyer() {
 									component={RouterLink}
 									underline="none"
 									color="inherit"
-									className="flex justify-center px-6"
+									className="w-full h-full flex justify-center py-4"
 									// to={{
 									// 	pathname: `/list/0xD9D1d191F530760Afa9842B36B75EE0800c9B1C9/3`,
 									// }}
 									state={pricedata}
-									style={{ width: "86%" }}
 									onClick={makeCounterOffer}
 								>
 									{
@@ -1223,7 +1199,7 @@ function Buyer() {
 							</OfferButton>
 						</div>
 					</div>
-				</ListContainer>
+				</Box>
 			</div>
 			<div style={{ position: "absolute", bottom: "70px", right: '10px', display: 'none' }} id="openchat">
 				<BuyerChat roomname={"room" + nftDetail.give} username={username} closechat={closechat} openchat={openchat} isOpenedChat={isOpenedChat} role="buyer" />

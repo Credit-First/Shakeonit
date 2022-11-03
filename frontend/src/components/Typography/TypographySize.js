@@ -43,11 +43,17 @@ export const TypographySize20 = styled(Typography)`
 font-family: 'Roboto';
 font-style: normal;
 font-weight: 500;
-font-size: 20px;
-line-height: 23px;
+line-height: 120%;
 text-align: justify;
 padding-top: 1rem;
 padding-bottom: 1rem;
+
+@media only screen and (max-width : 1023px) {
+    font-size: 16px;
+}
+@media only screen and (min-width : 1024px) {
+    font-size: 20px;
+}
 
 color: #38435E;
 `;
@@ -110,23 +116,35 @@ font-family: 'Roboto';
 font-style: normal;
 font-weight: 500;
 font-size: 32px;
-line-height: 38px;
+line-height: 120%;
 
 text-align: justify;
 
 color: #38435E;
+
+@media only screen and (max-width : 767px) {
+    font-size: 24px;
+}
+@media only screen and (min-width : 768px) {
+    font-size: 32px;
+}
 `;
 
 export const TypographySize42 = styled(Typography)`
 font-family: 'Roboto';
 font-style: normal;
 font-weight: 500;
-font-size: 42px;
 line-height: 100%;
 /* identical to box height, or 42px */
 
-
 color: #15375D;
+
+@media only screen and (max-width : 767px) {
+    font-size: 30px;
+}
+@media only screen and (min-width : 768px) {
+    font-size: 42px;
+}
 `;
 
 export const TypographySize12 = styled(Typography)`

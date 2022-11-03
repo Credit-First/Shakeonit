@@ -57,11 +57,11 @@ function ChangePrice({ open, onClose, image, price, setPrice, coinPrice, setPric
                         </div>
                     </div>
                     <div className="flex justify-around mx-6 mb-5 mt-3">
-                        <div className="cursor-pointer welcome-btn1 p-3 border-2 border-gray-200 pulse" onClick={() => {
+                        <div className="cursor-pointer welcome-btn1 p-3 border-2 border-gray-200 pulse rounded-[10px]" onClick={() => {
                             onClose();
                             handleChangeFlag();
                         }}>Change Price</div>
-                        <div className="cursor-pointer welcome-btn1 p-3 border-2 border-gray-200 pulse" onClick={() => {
+                        <div className="cursor-pointer welcome-btn1 p-3 border-2 border-gray-200 pulse rounded-[10px]" onClick={() => {
                             onClose();
                             handleFlag();
                         }}>Cancel</div>
