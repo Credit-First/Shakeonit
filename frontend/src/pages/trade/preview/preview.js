@@ -61,6 +61,10 @@ const Preview = () => {
     useEffect(() => {
         getCoinPrice()
     }, [])
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
     const getCoinPrice = () => {
         coinTypes.forEach((item, index) => {
             if (item.name === 'shake coin') {

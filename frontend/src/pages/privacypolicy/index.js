@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import { TypographySize40, TypographySize20, TypographySize14 } from "../../components/Typography/TypographySize";
 import { LastUpdate, HowCollect, HowUse, Updates, GeneralInformation, Sharing } from "../../content/content";
 
 function PrivacyPolicy() {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
+      
     return (
         <div>
             <div className="privacy-bg">

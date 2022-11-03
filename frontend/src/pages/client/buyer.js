@@ -264,7 +264,10 @@ function Buyer() {
 	useEffect(() => {
 		handleGetBalance()
 	}, [tokenCtx])
-
+	
+	useEffect(() => {
+		window.scrollTo(0, 0)
+	  }, [])
 
 	useEffect(() => {
 		getNft();

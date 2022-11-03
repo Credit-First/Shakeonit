@@ -1,5 +1,5 @@
 import { Avatar } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import BoxCenter from "../../components/Box/BoxCenter";
 import Grid from "@mui/material/Grid";
@@ -12,6 +12,10 @@ const companies = [
 ];
 
 function Company() {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
+      
     return (
         <>
             <Box className="company-bg1">

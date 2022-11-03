@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import { Avatar } from "@mui/material";
 import { useParams } from "react-router";
@@ -72,6 +72,10 @@ function List() {
     React.useEffect(() => {
         if (nftCtx.nfts.length > 0) getNft();
     }, [nftCtx, address, tokenId, getNft]);
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
 
     const handleModalFlag = () => {
         setModalFlag(true);

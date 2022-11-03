@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Container from "../../components/Container/Container";
 import ExploreBG from "../../components/Background/ExploreBG";
 import BuyAndSell from "./Terms/buyandsell";
@@ -13,6 +13,10 @@ import GreenLineHBg from "../../components/Background/greenline_h_bg";
 import { Box } from "@mui/material";
 
 function Home() {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
+
     return (
         <Box style={{background : "white"}}>
             <BuyBg>

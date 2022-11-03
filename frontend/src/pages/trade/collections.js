@@ -24,6 +24,10 @@ function Collections() {
     const [searchAddress, setSearchAddress] = useState('');
     const [loading, setLoading] = useState(false);
     
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
+
     const handleSelectCollection = (address) => {
         navigate(`/collectionItems/${address}`)
     }

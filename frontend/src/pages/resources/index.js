@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Styled from "@mui/material/styles/styled";
@@ -15,6 +15,10 @@ const resources = [
 ];
 
 function Resources() {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
+      
     return (
         <div>
             <div className="privacy-bg">

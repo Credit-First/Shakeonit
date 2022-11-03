@@ -31,6 +31,10 @@ const CollectionItems = () => {
         if (nftCtx.nfts.length > 0) getNfts();
     }, [nftCtx, address, account, getNfts]);
 
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
+      
     return (
         <CollectionBg>
             <BoxCenter className="relative hidden mt-10">

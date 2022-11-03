@@ -1,7 +1,11 @@
 import { TypographySize40, TypographySize20 } from "../../components/Typography/TypographySize";
-import React from "react";
+import React, { useEffect } from "react";
 
 function Service() {
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
+      
     return (
         <div>
             <div className="privacy-bg">
