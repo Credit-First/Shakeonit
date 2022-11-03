@@ -20,8 +20,8 @@ const StyleMenuItem = styled('li')({
 const menuTypes = [
     { url: "/", name: "Home" },
     { url: "/#/collections", name: "Make a Trade" },
-    { url: "/#/company", name: "Company" },
-    { url: "/#/resources", name: "Resources" },
+    { url: "/#/company", name: "About" },
+    { url: "/#/resources", name: "Tutorials" },
 ]
 export default function Header({isOpen, isOpened, setOpen, setOpened}) {
     const [flag, setFlag] = useState(false);

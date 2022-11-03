@@ -190,7 +190,7 @@ const WalletModal = () => {
                                                     }
                                                     {
                                                             connector == item.connector && active && (
-                                                                    <div className='state ml-4 font-bold'>actived</div>
+                                                                    <div className='state ml-4 font-bold'>Connected</div>
                                                             )
                                                     }
                                             </div>

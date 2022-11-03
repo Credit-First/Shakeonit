@@ -991,7 +991,7 @@ function Buyer() {
 											}
 										</a>
 										<Box className="outlined-btn px-3">
-											<select className="w-full bg-transparent" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
+											<select className="w-full bg-transparent h-full" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
 												<option value="otheractions" >Other Actions</option>
 												<option value="buyTokenWithSwap" >Buy token with swap</option>
 												<option value="counteroffer">Counter Offer</option>

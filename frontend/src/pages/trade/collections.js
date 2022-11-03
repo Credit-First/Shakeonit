@@ -61,7 +61,7 @@ function Collections() {
 
                 {
                     !account && <div className="flex items-center justify-center mt-10">
-                        <span className="text-2xl text-center">Please check your wallet connection</span>
+                        <span className="text-2xl text-center">Please connect your wallet</span>
                     </div>
                 }
 
