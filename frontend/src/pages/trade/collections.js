@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../../assets/scss/customize.scss";
 import { Grid, Hidden } from "@mui/material";
@@ -10,6 +10,7 @@ import CollectionBg from "../../components/Background/collectionbg";
 import CollectionCard from "../../components/Card/CollectionCard";
 import { useWeb3React } from "@web3-react/core";
 import NftContext from '../../context/nftContext';
+import Spinner from '../../components/Spinner';
 
 const CollectionContainer = Styled(Box)({
     paddingLeft: "7%",
@@ -19,21 +20,21 @@ const CollectionContainer = Styled(Box)({
 function Collections() {
     const navigate = useNavigate();
     const nftCtx = useContext(NftContext);
-    const {account, chainId} = useWeb3React();
+    const { account, chainId } = useWeb3React();
     const [collections, setCollections] = useState([]);
     const [searchAddress, setSearchAddress] = useState('');
     const [loading, setLoading] = useState(false);
-    
+
     useEffect(() => {
         window.scrollTo(0, 0)
-      }, [])
+    }, [])
 
     const handleSelectCollection = (address) => {
         navigate(`/collectionItems/${address}`)
     }
 
     const handleSearch = () => {
-        if(loading === false && searchAddress.length == 42 && searchAddress.includes('0x')) {
+        if (loading === false && searchAddress.length == 42 && searchAddress.includes('0x')) {
             nftCtx.getNfts(chainId, searchAddress);
             setLoading(true);
         }
@@ -46,7 +47,7 @@ function Collections() {
     useEffect(() => {
         account && setSearchAddress(account);
     }, [account]);
-    
+
     return (
         <Box style={{ backgroundColor: "#f5fafe" }}>
             <CollectionBg>
@@ -71,16 +72,16 @@ function Collections() {
 
                 <div className="flex items-center justify-center mt-10">
                     <div className="flex desktop-visible w-[70%] max-w-[800px]">
-                        <input className="w-[70%] border border-gray-800 rounded-l-xl p-2 px-3 focus:outline-none focus-visible:outline-none" 
-                        value={searchAddress}
-                        onChange={(e) => setSearchAddress(e.target.value)}/>
+                        <input className="w-[70%] border border-gray-800 rounded-l-xl p-2 px-3 focus:outline-none focus-visible:outline-none"
+                            value={searchAddress}
+                            onChange={(e) => setSearchAddress(e.target.value)} />
                         <a className='w-[150px] btn px-6 py-3 pulse rounded-l-none text-xl' disabled={loading} onClick={handleSearch}>Show Nfts</a>
 
                     </div>
                     <div className="mobile-visible w-[70%]">
-                        <input className="w-[100%] border border-gray-800 rounded-xl p-2 mb-3 focus:outline-none focus-visible:outline-none" 
-                        value={searchAddress}
-                        onChange={(e) => setSearchAddress(e.target.value)}/>
+                        <input className="w-[100%] border border-gray-800 rounded-xl p-2 mb-3 focus:outline-none focus-visible:outline-none"
+                            value={searchAddress}
+                            onChange={(e) => setSearchAddress(e.target.value)} />
                         <a disabled={loading} className='btn py-3 pulse rounded-x-none text-xl' onClick={handleSearch}>Show Nfts</a>
                     </div>
                 </div>
@@ -88,20 +89,23 @@ function Collections() {
                 {
                     loading === true &&
                     <div className="flex items-center justify-center mt-10">
-                        <div className="">Loading...</div>
+                        <div className="flex">
+                            <Spinner />
+                            <span>Loading...</span>
+                        </div>
                     </div>
                 }
 
                 {
-                    loading === false && collections.length === 0 && 
+                    loading === false && collections.length === 0 &&
                     <div className="flex items-center justify-center mt-10">
                         <div className="">No Collections</div>
                     </div>
                 }
 
-                <CollectionContainer className="pt-16 pb-24">        
+                <CollectionContainer className="pt-16 pb-24">
                     {
-                        loading === false && 
+                        loading === false &&
                         <Grid
                             container
                             spacing={3}
@@ -120,7 +124,7 @@ function Collections() {
                                 </Grid>
                             )}
                         </Grid>
-                    } 
+                    }
                 </CollectionContainer>
 
             </CollectionBg>
