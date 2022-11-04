@@ -95,18 +95,18 @@ function Sharelink({
 
 		tokenContract.approve(Config.shakeonit.address, amountGet)
 			.then(() => { })
-			.catch(() => {
+			.catch((error) => {
 				setLoadingState(0);
 				setApproveLoading(3);
-				toast.error('Metamask transaction Error');
+				toast.error(`Metamask transaction Error: ${error.code}`);
 			});
 
 		nftContract.approve(Config.shakeonit.address, amountGive)
 			.then(() => { })
-			.catch(() => {
+			.catch((error) => {
 				setLoadingState(0);
 				setApproveLoading(3);
-				toast.error('Metamask transaction Error');
+				toast.error(`Metamask transaction Error: ${error.code}`);
 			});
 
 		const processCallback = () => {
@@ -116,10 +116,10 @@ function Sharelink({
 			setConfirmLoading(1);
 			shakeContract.makeOrder(give, get, amountGive, amountGet, buyer, { gasLimit: 300000 })
 				.then(() => { })
-				.catch(() => {
+				.catch((error) => {
 					setLoadingState(0);
 					setConfirmLoading(3);
-					toast.error('Create Order Error');
+					toast.error(`Metamask transaction Error: ${error.code}`);
 				})
 		}
 

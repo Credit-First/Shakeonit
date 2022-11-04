@@ -119,7 +119,9 @@ const WalletModal = () => {
         } else {
             setIsSelectingWallet(true);
         }
-        if(error) setAlertClose(false);
+        if(error) {
+            setAlertClose(false);
+        }
     }, [account, active, error])
 
     return (

@@ -163,6 +163,7 @@ function Buyer() {
 	const [transactionStatusModalTitle, setTransactionModalTitle] = useState('Make Offer');
 	const [approveTitle, setApproveTitle] = useState('');
 	const [confirmTitle, setConfirmTitle] = useState('');
+	const [refreshTransaction, setRefreshTransaction] = useState();
 
 	const getEstimateAmount = async (_swapTokenAddress) => {
 		const accounts = await ethereum.request({
@@ -175,7 +176,6 @@ function Buyer() {
 
 		let path = [];
 		if (nftDetail.get === '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd') { // bnb native coin 
-			console.log(routerContract)
 			path = [_swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd']
 		} else {
 			path = [_swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd', nftDetail.get]
@@ -211,7 +211,12 @@ function Buyer() {
 		setModalFlag(true);
 	}
 
-	const handleChangeFlag = async () => {
+	const handleChangeFlag = () => {
+		setRefreshTransaction(() => changeFlag);
+		changeFlag();
+	}
+
+	const changeFlag = async () => {
 		setModalFlag(false);
 
 		const ethereum = window.ethereum;
@@ -243,10 +248,10 @@ function Buyer() {
 		await shakeContract.updateOrder(nonce, nftDetail.get.toString(), amount)
 			.then(res => {
 				console.log(res)
-			}).catch(() => {
+			}).catch((error) => {
 				setUpdateOrderLodaing(0);
 				setConfirmLoading(3);
-				toast.error('Metamask transaction Error');
+				toast.error(`Metamask transaction Error: ${error.code}`);
 			})
 		const _nonce = nonce;
 		shakeContract.on('CancelOrder', (nonce) => {
@@ -819,9 +824,10 @@ function Buyer() {
 			shakeContract.makeOfferFromOrder(nonce, givesTokenAddress, amountOrTokenIds)
 				.then(res => {
 					console.log(res)
-				}).catch(() => {
+				}).catch((error) => {
+					setMakeOfferLoading(0);
 					setConfirmLoading(3);
-					toast.error('Metamask transaction Error');
+					toast.error(`Metamask transaction Error: ${error.code}`);
 				})
 			shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
 				setMakeOfferLoading(0);
@@ -843,10 +849,10 @@ function Buyer() {
 
 				await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i])
 					.then(() => { })
-					.catch(() => {
+					.catch((error) => {
 						setMakeOfferLoading(0);
 						setApproveLoading(3);
-						toast.error('Metamask transaction Error');
+						toast.error(`Metamask transaction Error: ${error.code}`);
 					});
 
 				tokenContract.on('Approval', (owner, spender, value) => {
@@ -859,10 +865,10 @@ function Buyer() {
 				const nftContract = new ethers.Contract(address, Config.nftContract.abi, signer)
 				await nftContract.approve(Config.shakeonit.address, amountOrTokenIds[i])
 					.then(() => { })
-					.catch(() => {
+					.catch((error) => {
 						setMakeOfferLoading(0);
 						setApproveLoading(3);
-						toast.error('Metamask transaction Error');
+						toast.error(`Metamask transaction Error: ${error.code}`);
 					});
 
 				nftContract.on('Approval', (owner, approved, tokenId) => {
@@ -878,6 +884,10 @@ function Buyer() {
 
 	}
 
+	const handleBuyOrder = () => {
+		setRefreshTransaction(() => buyOrder);
+		buyOrder();
+	}
 	const buyOrder = async () => {
 		setIsflag(true);
 		if (parseInt(total) < parseInt(initialpriceValue * coinPrice) && flag) {
@@ -904,14 +914,14 @@ function Buyer() {
 
 			tokenContract.approve(Config.shakeonit.address, nftDetail.amountGetOrTokenID.toString())
 				.then(() => { })
-				.catch(() => {
+				.catch((error) => {
 					setBuyLoading(0);
 					setApproveLoading(3);
-					toast.error('Metamask transaction Error');
+					toast.error(`Metamask transaction Error: ${error.code}`);
 				});
 
 			setBuyLoading(1);
-			setApproveTitle(`${token.name || 'BNB'} ${getWeiToInt(nftDetail.amountGetOrTokenID.toString())}`);
+			setApproveTitle(`${token.name || 'BNB'} ( ${getWeiToInt(nftDetail.amountGetOrTokenID.toString())} )`);
 			setTransactionModalTitle('Buy Order');
 			setConfirmTitle(`${nftDetail.name}`);
 			setTransactionModalOpen(true);
@@ -928,14 +938,19 @@ function Buyer() {
 						toast.success('Buy Order successfully');
 					}).catch(() => {
 						setBuyLoading(0);
-						setConfirmLoading(2);
+						setConfirmLoading(3);
 					})
 				}
 			})
 		}
 	}
 
-	const handleBuyTokenWithSwap = async () => {
+	const handleBuyTokenWithSwap = () => {
+		setRefreshTransaction(() => buyTokenWithSwap);
+		buyTokenWithSwap();
+	}
+
+	const buyTokenWithSwap = async () => {
 		const accounts = await ethereum.request({
 			method: "eth_requestAccounts",
 		});
@@ -962,9 +977,10 @@ function Buyer() {
 		const amount = ethers.utils.parseUnits(swapTokenAmount.toString()).toString()
 		tokenContract.approve(Config.shakeonit.address, amount)
 			.then(() => { })
-			.catch(() => {
+			.catch((error) => {
 				setBuySwapLoading(0);
-				setApproveLoading(2);
+				setApproveLoading(3);
+				toast.error(`Metamask transaction Error: ${error.code}`);
 			});
 
 		setBuySwapLoading(1);
@@ -979,13 +995,15 @@ function Buyer() {
 				setBuySwapLoading(2);
 				setApproveLoading(2);
 				setConfirmLoading(1);
-				shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, amount).then(res => {
-					console.log(res)
-				}).catch(() => {
-					setConfirmLoading(3);
-					setBuySwapLoading(0);
-					toast.error('Metamask transaction Error');
-				})
+				shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, amount)
+					.then(res => {
+						console.log(res)
+					})
+					.catch((error) => {
+						setConfirmLoading(3);
+						setBuySwapLoading(0);
+						toast.error(`Metamask transaction Error: ${error.code}`);
+					})
 				shakeContract.on('BuyOrder', (nonce) => {
 					setConfirmLoading(2);
 					setBuySwapLoading(0);
@@ -1075,7 +1093,8 @@ function Buyer() {
 								:
 								<>
 									<Box className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-8 md:pt-24">
-										<a className="flex justify-center btn pulse1 w-full" onClick={buyOrder}>
+										<a className="flex justify-center btn pulse1 w-full"
+											onClick={handleBuyOrder}>
 											{
 												buyLoading === 0 ? 'Buy' : (buyLoading === 1 ? (
 													<>
@@ -1091,7 +1110,7 @@ function Buyer() {
 											}
 										</a>
 										<Box className="outlined-btn px-3">
-											<select className="w-full bg-transparent h-full" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
+											<select className="w-full bg-transparent h-full text-slate-700" onChange={onChange} style={{ outline: "none" }} value={OtherAction}>
 												<option value="otheractions" >Other Actions</option>
 												<option value="buyTokenWithSwap" >Buy Token With Swap</option>
 												<option value="counteroffer">Counter Offer</option>
@@ -1104,7 +1123,7 @@ function Buyer() {
 									<div id="buyTokenWithSwap" style={{ visibility: "hidden" }} className="flex items-center justify-start mt-10">
 										<div className="w-full flex relative grid grid-cols-1 md:grid-cols-2">
 											<div className="flex pb-4 md:pb-0">
-												<select className="rounded-l-xl border border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
+												<select className="rounded-l-xl border border-r-0 border-[#71BED8] text-slate-700 py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenAddress}
 													onChange={handleSelectToken}
 												>
@@ -1115,11 +1134,11 @@ function Buyer() {
 														))
 													}
 												</select>
-												<input type='number' className="w-full border rounded-r-[10px] md:rounded-none md:border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
+												<input type='number' className="w-full border rounded-r-[10px] md:rounded-none md:border-r-0 border-[#71BED8] text-slate-700 py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenAmount} onChange={handleSwapTokenAmount}
 												/>
 											</div>
-											<div className="flex">
+											<div className="flex text-slate-700">
 												<input readOnly className="w-full border rounded-l-[10px] md:rounded-none border-r-0 border-[#71BED8] py-2 px-3 focus:outline-none focus-visible:outline-none"
 													value={swapTokenToUSD.toFixed(7)}
 												/>
@@ -1300,7 +1319,10 @@ function Buyer() {
 									// 	pathname: `/list/0xD9D1d191F530760Afa9842B36B75EE0800c9B1C9/3`,
 									// }}
 									state={pricedata}
-									onClick={makeCounterOffer}
+									onClick={() => {
+										makeCounterOffer()
+										setRefreshTransaction(() => makeCounterOffer)
+									}}
 								>
 									{
 										MakeOfferLoading === 0 ? 'Make Offer' : (MakeOfferLoading === 1 ? (
@@ -1341,6 +1363,7 @@ function Buyer() {
 				title={transactionStatusModalTitle}
 				approveTitle={approveTitle}
 				confirmTitle={confirmTitle}
+				onRefresh={refreshTransaction}
 			/>
 		</Box >
 	);
