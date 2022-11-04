@@ -18,8 +18,19 @@ import Config from '../../../config/app';
 import { coinTypes } from '../../../content/config';
 import { useWeb3React } from "@web3-react/core";
 import Spinner from '../../../components/Spinner';
+import TransactionStatus from '../../../components/Modal/transactionStatus';
 
-function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coinPrice, coinType, coin }) {
+function Sharelink({
+	contract_address,
+	tokenId,
+	image,
+	name,
+	handleshowFlag,
+	priceValue,
+	coinPrice,
+	coinType,
+	coin
+}) {
 	const { account } = useWeb3React();
 	const pricedata = {
 		coin: coin,
@@ -30,6 +41,12 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 	const [value, setValue] = useState("");
 	const [linkFlag, setLinkFlag] = useState(false);
 	const [loadingState, setLoadingState] = useState(0);
+	const [transactionModalOpen, setTransactionModalOpen] = useState(false);
+	const [approveLoading, setApproveLoading] = useState(0);
+	const [confirmLoading, setConfirmLoading] = useState(0);
+	const [transactionStatusModalTitle, setTransactionModalTitle] = useState('Create Order');
+	const [approveTitle, setApproveTitle] = useState('');
+	const [confirmTitle, setConfirmTitle] = useState('');
 
 	const handleLinkaddress = (nonce) => {
 		setValue(`${window.location.origin}/#/buyer/${nonce}`);
@@ -64,13 +81,23 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 
 		if (owner !== account) return alert('you are not an owner of this nft.')
 
+		setTransactionModalOpen(true);
+		setApproveTitle(`${coin ? coinTypes[coin].name : 'BNB'} ( ${pricedata.priceValue} )`);
+		setConfirmTitle(`Listing ${name}`)
+		setApproveLoading(1);
 		tokenContract.approve(Config.shakeonit.address, amountGet)
 			.then(() => { })
-			.catch(() => setLoadingState(0));
+			.catch(() => {
+				setLoadingState(0)
+				setApproveLoading(3)
+			});
 
 		nftContract.approve(Config.shakeonit.address, amountGive)
 			.then(() => { })
-			.catch(() => setLoadingState(0));
+			.catch(() => {
+				setLoadingState(0)
+				setApproveLoading(3)
+			});
 
 		setLoadingState(1);
 
@@ -80,16 +107,21 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 		}
 
 		const processCallback = () => {
-			if (!flags.nft || !flags.token) return;
 			// TODO: process
 			setLoadingState(2);
-			shakeContract.makeOrder(give, get, amountGive, amountGet, buyer, {
-				gasLimit: 300000
-			})
+			setApproveLoading(2);
+			setConfirmLoading(1);
+			shakeContract.makeOrder(give, get, amountGive, amountGet, buyer, { gasLimit: 300000 })
+				.then(() => { })
+				.catch(() => {
+					setLoadingState(0);
+					setConfirmLoading(3);
+				})
 		}
 
 		tokenContract.on("Approval", (owner, spender, value) => {
 			if (owner === account && value.toString() === amountGet.toString()) {
+				if (!flags.nft || !flags.token) return;
 				flags.token = true;
 				processCallback();
 			}
@@ -97,6 +129,7 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 
 		nftContract.on("Approval", (owner, approved, tokenId) => {
 			if (owner === account && tokenId.toString() === amountGive) {
+				if (!flags.nft || !flags.token) return;
 				flags.nft = true;
 				processCallback();
 			}
@@ -104,6 +137,8 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 
 		shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
 			setLoadingState(3);
+			setConfirmLoading(2);
+			alert('Create Order Successfully');
 			handleLinkaddress(nonce);
 		})
 	}
@@ -197,6 +232,18 @@ function Sharelink({ contract_address, tokenId, handleshowFlag, priceValue, coin
 					</Link>
 				</Box>
 			</Card>
+			<TransactionStatus
+				name={name}
+				image={image}
+				contractAddress={contract_address}
+				open={transactionModalOpen}
+				setOpen={setTransactionModalOpen}
+				approveLoading={approveLoading}
+				confirmLoading={confirmLoading}
+				title={transactionStatusModalTitle}
+				approveTitle={approveTitle}
+				confirmTitle={confirmTitle}
+			/>
 		</Box>
 	);
 }

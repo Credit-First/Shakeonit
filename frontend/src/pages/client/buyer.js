@@ -28,6 +28,7 @@ import { httpGet } from "../../utils/http.utils";
 import CancelSale from "../../components/Modal/cancelsale";
 import ChangePrice from "../../components/Modal/changeprice";
 import Spinner from "../../components/Spinner";
+import TransactionStatus from "../../components/Modal/transactionStatus";
 
 const BIG_TEN = new BigNumber(10);
 
@@ -155,6 +156,13 @@ function Buyer() {
 	const [swapTokenAmount, setSwapTokenAmount] = useState(0);
 	const [swapTokenToUSD, setSwapTokenToUSD] = useState(0);
 
+	const [transactionModalOpen, setTransactionModalOpen] = useState(false);
+	const [approveLoading, setApproveLoading] = useState(0);
+	const [confirmLoading, setConfirmLoading] = useState(0);
+	const [transactionStatusModalTitle, setTransactionModalTitle] = useState('Make Offer');
+	const [approveTitle, setApproveTitle] = useState('');
+	const [confirmTitle, setConfirmTitle] = useState('');
+
 	const getEstimateAmount = async (_swapTokenAddress) => {
 		const accounts = await ethereum.request({
 			method: "eth_requestAccounts",
@@ -201,6 +209,7 @@ function Buyer() {
 	const handleModalFlag = () => {
 		setModalFlag(true);
 	}
+
 	const handleChangeFlag = async () => {
 		setModalFlag(false);
 
@@ -223,17 +232,25 @@ function Buyer() {
 		// ethers contract instantiation
 		const shakeContract = new ethers.Contract(Config.shakeonit.address, Config.shakeonit.abi, signer)
 		// getActiveOrderLength 
-		setUpdateOrderLodaing(1)
+		setUpdateOrderLodaing(1);
+		setTransactionModalOpen(true);
+		setTransactionModalTitle('Update Order');
+		setApproveTitle('');
+		setConfirmTitle(`${nftDetail.name} ${nonce}`);
+		setConfirmLoading(1);
+
 		await shakeContract.updateOrder(nonce, nftDetail.get.toString(), amount)
 			.then(res => {
 				console.log(res)
 			}).catch(() => {
-				setUpdateOrderLodaing(0)
+				setUpdateOrderLodaing(0);
+				setConfirmLoading(3);
 			})
 		const _nonce = nonce;
 		shakeContract.on('CancelOrder', (nonce) => {
 			if (nonce === _nonce) {
-				setUpdateOrderLodaing(0)
+				setUpdateOrderLodaing(0);
+				setConfirmLoading(2);
 			}
 		})
 	}
@@ -794,26 +811,39 @@ function Buyer() {
 
 		const processCallback = () => {
 			if (flags < givesTokenAddress.length) return
-			setMakeOfferLoading(2)
-			console.log(nonce, givesTokenAddress, amountOrTokenIds)
+			setMakeOfferLoading(2);
+			setApproveLoading(2);
+			setConfirmLoading(1);
 			shakeContract.makeOfferFromOrder(nonce, givesTokenAddress, amountOrTokenIds)
 				.then(res => {
 					console.log(res)
+				}).catch(() => {
+					setConfirmLoading(3);
 				})
 			shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
-				setMakeOfferLoading(0)
+				setMakeOfferLoading(0);
+				setConfirmLoading(2);
+				alert('Make Offer Successfully');
 			})
 		}
+
+		setTransactionModalTitle('Make Counter Offer');
+		setTransactionModalOpen(true);
 
 		for (let i = 0; i < givesTokenAddress.length; i++) {
 			const address = givesTokenAddress[i];
 			setMakeOfferLoading(1)
+			setApproveTitle(`Tokens and Nfts on Shakeonit`);
+			setApproveLoading(1);
 			if (addressTypes[i] === 'token') {
 				const tokenContract = new ethers.Contract(address, Config.tokenContract.abi, signer)
 
 				await tokenContract.approve(Config.shakeonit.address, amountOrTokenIds[i])
 					.then(() => { })
-					.catch(() => setMakeOfferLoading(0));
+					.catch(() => {
+						setMakeOfferLoading(0);
+						setApproveLoading(3);
+					});
 
 				tokenContract.on('Approval', (owner, spender, value) => {
 					if (owner === account && value.toString() === amountOrTokenIds[i].toString()) {
@@ -825,7 +855,10 @@ function Buyer() {
 				const nftContract = new ethers.Contract(address, Config.nftContract.abi, signer)
 				await nftContract.approve(Config.shakeonit.address, amountOrTokenIds[i])
 					.then(() => { })
-					.catch(() => setMakeOfferLoading(0));
+					.catch(() => {
+						setMakeOfferLoading(0);
+						setApproveLoading(3);
+					});
 
 				nftContract.on('Approval', (owner, approved, tokenId) => {
 					if (owner === account && tokenId === amountOrTokenIds[i]) {
@@ -862,17 +895,35 @@ function Buyer() {
 			/// @dev If at lesat one order is possible then transaction will be successful
 			/// @param nonce - Array - Unique identifier of the order (always incremental)
 			const tokenContract = new ethers.Contract(nftDetail.get, Config.tokenContract.abi, signer);
+			const token = coinTypes.find(_item => _item.address === nftDetail.get);
 
 			tokenContract.approve(Config.shakeonit.address, nftDetail.amountGetOrTokenID.toString())
 				.then(() => { })
-				.catch(() => setBuyLoading(0));
+				.catch(() => {
+					setBuyLoading(0);
+					setApproveLoading(3);
+				});
 
-			setBuyLoading(1)
+			setBuyLoading(1);
+			setApproveTitle(`${token.name || 'BNB'} ${getWeiToInt(nftDetail.amountGetOrTokenID.toString())}`);
+			setTransactionModalTitle('Buy Order');
+			setConfirmTitle(`${nftDetail.name}`);
+			setTransactionModalOpen(true);
+			setApproveLoading(1);
 
 			tokenContract.on('Approval', (owner, spender, value) => {
 				if (owner === account && value.toString() === nftDetail.amountGetOrTokenID.toString()) {
-					setBuyLoading(2)
-					shakeContract.buyOrders([...nonce]).then(() => setBuyLoading(0))
+					setBuyLoading(2);
+					setApproveLoading(2);
+					setConfirmLoading(1);
+					shakeContract.buyOrders([...nonce]).then(() => {
+						setBuyLoading(0);
+						setConfirmLoading(2);
+						alert('Buy Order successfully')
+					}).catch(() => {
+						setBuyLoading(0);
+						setConfirmLoading(2);
+					})
 				}
 			})
 		}
@@ -900,21 +951,37 @@ function Buyer() {
 		}
 
 		const tokenContract = new ethers.Contract(swapTokenAddress, Config.tokenContract.abi, signer)
+		const swapToken = coinTypes.find(_item => _item.address === swapTokenAddress);
 
 		const amount = ethers.utils.parseUnits(swapTokenAmount.toString()).toString()
 		tokenContract.approve(Config.shakeonit.address, amount)
 			.then(() => { })
-			.catch(() => setBuySwapLoading(0));
+			.catch(() => {
+				setBuySwapLoading(0);
+				setApproveLoading(2);
+			});
 
-		setBuySwapLoading(1)
+		setBuySwapLoading(1);
+		setTransactionModalTitle('Buy Token With Swap');
+		setTransactionModalOpen(true);
+		setApproveTitle(`${swapToken ? swapToken.name : 'BNB'} ${swapTokenAmount.toString()}`)
+		setConfirmTitle(nftDetail.name);
+		setApproveLoading(1);
+
 		tokenContract.on('Approval', (owner, spender, value) => {
 			if (owner === account && Number(value) === Number(amount)) {
-				setBuySwapLoading(2)
+				setBuySwapLoading(2);
+				setApproveLoading(3);
+				setConfirmLoading(1);
 				shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, amount).then(res => {
 					console.log(res)
+				}).catch(() => {
+					setConfirmLoading(3);
+					setBuySwapLoading(0);
 				})
 				shakeContract.on('BuyOrder', (nonce) => {
-					setBuySwapLoading(0)
+					setConfirmLoading(2);
+					setBuySwapLoading(0);
 				})
 			}
 		})
@@ -1051,7 +1118,7 @@ function Buyer() {
 												<div className="bg-white border-y border-[#71BED8] flex items-center pr-2">
 													<span>USD</span>
 												</div>
-												<a className='w-[250px] h-[42px] btn px-4 py-3 pulse rounded-l-none text-xs md:text-sm' onClick={handleBuyTokenWithSwap}>
+												<a className='w-[270px] h-[42px] btn px-4 py-3 pulse rounded-l-none text-xs md:text-sm' onClick={handleBuyTokenWithSwap}>
 													{
 														buySwapLoading === 0 ? 'Buy with Swap' : (buySwapLoading === 1 ? (
 															<>
@@ -1254,6 +1321,19 @@ function Buyer() {
 
 			<CancelSale open={isModalOpened} onClose={handleModalClose} image={nftDetail.image} nonce={nonce} />
 			<ChangePrice open={isModalOpen} onClose={handleModalChangeClose} image={nftDetail.image} setPrice={setModalPrice} price={modalPrice} setPriceValue={setModalPriceValue} coinPrice={coinPrice} handleFlag={handleModalFlag} handleChangeFlag={handleChangeFlag} />
+
+			<TransactionStatus
+				name={nftDetail.name}
+				image={nftDetail.image}
+				contractAddress={nftDetail.contract_address}
+				open={transactionModalOpen}
+				setOpen={setTransactionModalOpen}
+				approveLoading={approveLoading}
+				confirmLoading={confirmLoading}
+				title={transactionStatusModalTitle}
+				approveTitle={approveTitle}
+				confirmTitle={confirmTitle}
+			/>
 		</Box >
 	);
 }
