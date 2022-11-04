@@ -19,6 +19,7 @@ import { coinTypes } from '../../../content/config';
 import { useWeb3React } from "@web3-react/core";
 import Spinner from '../../../components/Spinner';
 import TransactionStatus from '../../../components/Modal/transactionStatus';
+import toast from 'react-hot-toast';
 
 function Sharelink({
 	contract_address,
@@ -79,32 +80,34 @@ function Sharelink({
 
 		const owner = await nftContract.ownerOf(amountGive);
 
-		if (owner !== account) return alert('you are not an owner of this nft.')
+		if (owner !== account) return toast.error('you are not an owner of this nft.')
 
 		setTransactionModalOpen(true);
 		setApproveTitle(`${coin ? coinTypes[coin].name : 'BNB'} ( ${pricedata.priceValue} )`);
 		setConfirmTitle(`Listing ${name}`)
 		setApproveLoading(1);
-		tokenContract.approve(Config.shakeonit.address, amountGet)
-			.then(() => { })
-			.catch(() => {
-				setLoadingState(0)
-				setApproveLoading(3)
-			});
-
-		nftContract.approve(Config.shakeonit.address, amountGive)
-			.then(() => { })
-			.catch(() => {
-				setLoadingState(0)
-				setApproveLoading(3)
-			});
-
 		setLoadingState(1);
 
 		const flags = {
 			nft: false,
 			token: false,
 		}
+
+		tokenContract.approve(Config.shakeonit.address, amountGet)
+			.then(() => { })
+			.catch(() => {
+				setLoadingState(0);
+				setApproveLoading(3);
+				toast.error('Metamask transaction Error');
+			});
+
+		nftContract.approve(Config.shakeonit.address, amountGive)
+			.then(() => { })
+			.catch(() => {
+				setLoadingState(0);
+				setApproveLoading(3);
+				toast.error('Metamask transaction Error');
+			});
 
 		const processCallback = () => {
 			// TODO: process
@@ -116,21 +119,22 @@ function Sharelink({
 				.catch(() => {
 					setLoadingState(0);
 					setConfirmLoading(3);
+					toast.error('Create Order Error');
 				})
 		}
 
 		tokenContract.on("Approval", (owner, spender, value) => {
 			if (owner === account && value.toString() === amountGet.toString()) {
-				if (!flags.nft || !flags.token) return;
 				flags.token = true;
+				if (!flags.nft || !flags.token) return;
 				processCallback();
 			}
 		})
 
 		nftContract.on("Approval", (owner, approved, tokenId) => {
 			if (owner === account && tokenId.toString() === amountGive) {
-				if (!flags.nft || !flags.token) return;
 				flags.nft = true;
+				if (!flags.nft || !flags.token) return;
 				processCallback();
 			}
 		});
@@ -138,7 +142,7 @@ function Sharelink({
 		shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
 			setLoadingState(3);
 			setConfirmLoading(2);
-			alert('Create Order Successfully');
+			toast.success('Create Order Successfully');
 			handleLinkaddress(nonce);
 		})
 	}

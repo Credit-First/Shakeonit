@@ -29,6 +29,7 @@ import CancelSale from "../../components/Modal/cancelsale";
 import ChangePrice from "../../components/Modal/changeprice";
 import Spinner from "../../components/Spinner";
 import TransactionStatus from "../../components/Modal/transactionStatus";
+import toast from 'react-hot-toast';
 
 const BIG_TEN = new BigNumber(10);
 
@@ -245,6 +246,7 @@ function Buyer() {
 			}).catch(() => {
 				setUpdateOrderLodaing(0);
 				setConfirmLoading(3);
+				toast.error('Metamask transaction Error');
 			})
 		const _nonce = nonce;
 		shakeContract.on('CancelOrder', (nonce) => {
@@ -819,11 +821,12 @@ function Buyer() {
 					console.log(res)
 				}).catch(() => {
 					setConfirmLoading(3);
+					toast.error('Metamask transaction Error');
 				})
 			shakeContract.on("PlaceOrder", (give, get, amountGive, amountGet, nonce) => {
 				setMakeOfferLoading(0);
 				setConfirmLoading(2);
-				alert('Make Offer Successfully');
+				toast.success('Make Offer Successfully');
 			})
 		}
 
@@ -843,6 +846,7 @@ function Buyer() {
 					.catch(() => {
 						setMakeOfferLoading(0);
 						setApproveLoading(3);
+						toast.error('Metamask transaction Error');
 					});
 
 				tokenContract.on('Approval', (owner, spender, value) => {
@@ -858,6 +862,7 @@ function Buyer() {
 					.catch(() => {
 						setMakeOfferLoading(0);
 						setApproveLoading(3);
+						toast.error('Metamask transaction Error');
 					});
 
 				nftContract.on('Approval', (owner, approved, tokenId) => {
@@ -902,6 +907,7 @@ function Buyer() {
 				.catch(() => {
 					setBuyLoading(0);
 					setApproveLoading(3);
+					toast.error('Metamask transaction Error');
 				});
 
 			setBuyLoading(1);
@@ -919,7 +925,7 @@ function Buyer() {
 					shakeContract.buyOrders([...nonce]).then(() => {
 						setBuyLoading(0);
 						setConfirmLoading(2);
-						alert('Buy Order successfully')
+						toast.success('Buy Order successfully');
 					}).catch(() => {
 						setBuyLoading(0);
 						setConfirmLoading(2);
@@ -946,7 +952,7 @@ function Buyer() {
 		if (order.get !== '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd' || order.get !== '0x0000000000000000000000000000000000000000') {
 			addressList = [swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd', order.get];
 		} else {
-			if (swapTokenAddress !== '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd') return alert('You can only choose ETH to swap')
+			if (swapTokenAddress !== '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd') return toast.error('You can only choose ETH to swap')
 			addressList = [swapTokenAddress, '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd'];
 		}
 
@@ -971,17 +977,19 @@ function Buyer() {
 		tokenContract.on('Approval', (owner, spender, value) => {
 			if (owner === account && Number(value) === Number(amount)) {
 				setBuySwapLoading(2);
-				setApproveLoading(3);
+				setApproveLoading(2);
 				setConfirmLoading(1);
 				shakeContract.buyTokenWithSwap(nonce, routerContractAddress, addressList, amount).then(res => {
 					console.log(res)
 				}).catch(() => {
 					setConfirmLoading(3);
 					setBuySwapLoading(0);
+					toast.error('Metamask transaction Error');
 				})
 				shakeContract.on('BuyOrder', (nonce) => {
 					setConfirmLoading(2);
 					setBuySwapLoading(0);
+					toast.success('Buy Token With Swap Successfully');
 				})
 			}
 		})

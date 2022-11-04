@@ -14,6 +14,7 @@ import { URI_AVAILABLE, UserRejectedRequestError as UserRejectedRequestErrorWall
 import { NoEthereumProviderError, UserRejectedRequestError as UserRejectedRequestErrorInjected } from "@web3-react/injected-connector";
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
 import clsx from 'clsx';
+import { toast } from 'react-hot-toast';
 
 const WalletModal = () => {
     const [open, setOpen] = React.useState(false);
@@ -82,14 +83,14 @@ const WalletModal = () => {
                     ],
                 })
                 .then(() => {
-                    alert("You have successfully changed to Binance Smart Test Network.");
+                    toast.success("You have successfully changed to Binance Smart Test Network.");
                 })
                 .catch((error) => {
                     console.log(error)
-                    alert(error.toString());
+                    toast.error(error.toString());
                 });
         } else {
-            alert('error')
+            toast.error('error')
         }
         onConnectWallet(activating);
         setError(null);

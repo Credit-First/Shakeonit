@@ -19,6 +19,7 @@ import NftProvider from './providers/nftProvider';
 import TokenProvider from './providers/tokenProvider';
 import CollectionItems from './pages/trade/collectionItems';
 import Layout from './components/Layout';
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   const [isOpened, setOpened] = useState(false);
@@ -28,7 +29,7 @@ function App() {
 
   if (path === 'jitsi') {
     return (
-      <Box style={{minHeight : "100vh", position : "relative"}}>
+      <Box style={{ minHeight: "100vh", position: "relative" }}>
         <Routes>
           <Route path="/jitsi/:roomName/:displayName" element={<Jitsi />} />
         </Routes>
@@ -38,30 +39,33 @@ function App() {
 
   return (
     <>
-    <Web3Provider>
-      <NftProvider>
-        <TokenProvider>
-          <Box style={{minHeight : "100vh", position : "relative"}}>
-            <Layout>
-              <Header isOpen={isOpen} isOpened = {isOpened} setOpen = {setOpen} setOpened = {setOpened} />
-              <Routes>
-                <Route path='/' element={<Home />} />
-                <Route path='/collections' element={<Collections />} />
-                <Route path='/collectionItems/:address' element={<CollectionItems />} />
-                <Route path='/preview/:address/:tokenId' element={<Preview />} />
-                <Route path='/list/:address/:tokenId' element={<List />} />
-                <Route path='/company' element={<Company />} />
-                <Route path='/privacypolicy' element={<PrivacyPolicy />} />
-                <Route path='/resources' element={<Resources />} />
-                <Route path='/service' element={<Service />} />
-                <Route path='/buyer/:nonce' element={<Buyer />} />
-              </Routes>
-              <Footer isOpen={isOpen} isOpened = {isOpened} setOpen = {setOpen} setOpened = {setOpened} />
-            </Layout>
-          </Box>
-        </TokenProvider>
-      </NftProvider>
-    </Web3Provider>
+      <Web3Provider>
+        <NftProvider>
+          <TokenProvider>
+            <Box style={{ minHeight: "100vh", position: "relative" }}>
+              <Layout>
+                <Header isOpen={isOpen} isOpened={isOpened} setOpen={setOpen} setOpened={setOpened} />
+                <Routes>
+                  <Route path='/' element={<Home />} />
+                  <Route path='/collections' element={<Collections />} />
+                  <Route path='/collectionItems/:address' element={<CollectionItems />} />
+                  <Route path='/preview/:address/:tokenId' element={<Preview />} />
+                  <Route path='/list/:address/:tokenId' element={<List />} />
+                  <Route path='/company' element={<Company />} />
+                  <Route path='/privacypolicy' element={<PrivacyPolicy />} />
+                  <Route path='/resources' element={<Resources />} />
+                  <Route path='/service' element={<Service />} />
+                  <Route path='/buyer/:nonce' element={<Buyer />} />
+                </Routes>
+                <Footer isOpen={isOpen} isOpened={isOpened} setOpen={setOpen} setOpened={setOpened} />
+              </Layout>
+            </Box>
+          </TokenProvider>
+        </NftProvider>
+      </Web3Provider>
+      <Toaster
+        position="botton-right"
+      />
     </>
   );
 }
